@@ -18,11 +18,11 @@ import { useAuth } from '@/hooks/use-auth'
 import { friendlyAuthError } from '@/lib/auth-errors'
 import { ROUTES } from '@/lib/routes'
 import { supabase } from '@/lib/supabase'
-import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
-import type { CommercialRole } from '@/types/database'
+import { CARGO_LABELS, CARGO_PARA_PERFIL } from '@/types/database'
+import type { Cargo } from '@/types/database'
 
 type FieldErrors = Partial<
-  Record<'fullName' | 'email' | 'whatsapp' | 'commercialRole' | 'password', string>
+  Record<'fullName' | 'email' | 'whatsapp' | 'cargo' | 'password', string>
 >
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -34,7 +34,7 @@ export function CadastroPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
-  const [commercialRole, setCommercialRole] = useState<CommercialRole | ''>('')
+  const [cargo, setCargo] = useState<Cargo | ''>('')
   const [password, setPassword] = useState('')
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -59,8 +59,8 @@ export function CadastroPage() {
     if (digits.length < 10 || digits.length > 13) {
       errors.whatsapp = 'Informe o WhatsApp com DDD (ex.: 11 98888-7777).'
     }
-    if (!commercialRole) {
-      errors.commercialRole = 'Selecione o seu perfil comercial.'
+    if (!cargo) {
+      errors.cargo = 'Selecione o seu cargo.'
     }
     if (password.length < 6) {
       errors.password = 'A senha precisa ter no mínimo 6 caracteres.'
@@ -83,7 +83,8 @@ export function CadastroPage() {
         fullName,
         email,
         whatsapp,
-        commercialRole: commercialRole as CommercialRole,
+        cargo: cargo as Cargo,
+        commercialRole: CARGO_PARA_PERFIL[cargo as Cargo],
         password,
       })
 
@@ -102,7 +103,7 @@ export function CadastroPage() {
             full_name: fullName.trim(),
             email: email.trim(),
             whatsapp: whatsapp.trim(),
-            commercial_role: commercialRole,
+            cargo,
           },
         })
         if (error) console.warn('register-lead falhou, cadastro segue liberado:', error)
@@ -214,30 +215,24 @@ export function CadastroPage() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="commercialRole">Perfil comercial</Label>
+              <Label htmlFor="cargo">Cargo</Label>
               <Select
-                value={commercialRole}
-                onValueChange={(value) => setCommercialRole(value as CommercialRole)}
+                value={cargo}
+                onValueChange={(value) => setCargo(value as Cargo)}
                 disabled={submitting}
               >
-                <SelectTrigger
-                  id="commercialRole"
-                  className="w-full"
-                  aria-invalid={Boolean(fieldErrors.commercialRole)}
-                >
-                  <SelectValue placeholder="Selecione o seu perfil" />
+                <SelectTrigger id="cargo" className="w-full" aria-invalid={Boolean(fieldErrors.cargo)}>
+                  <SelectValue placeholder="Selecione o seu cargo" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(Object.keys(COMMERCIAL_ROLE_LABELS) as CommercialRole[]).map((role) => (
-                    <SelectItem key={role} value={role}>
-                      {COMMERCIAL_ROLE_LABELS[role]}
+                  {(Object.keys(CARGO_LABELS) as Cargo[]).map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {CARGO_LABELS[c]}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {fieldErrors.commercialRole && (
-                <p className="text-sm text-destructive">{fieldErrors.commercialRole}</p>
-              )}
+              {fieldErrors.cargo && <p className="text-sm text-destructive">{fieldErrors.cargo}</p>}
             </div>
 
             <div className="grid gap-2">

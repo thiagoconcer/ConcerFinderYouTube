@@ -96,11 +96,31 @@ async function idDaTag(nome: string): Promise<string | null> {
   }
 }
 
+/**
+ * Rótulos do campo "Cargo Newsletter" (id 35) do ActiveCampaign, exatamente
+ * como estão lá, inclusive o "(a)". O campo é do tipo radio: valor fora desta
+ * lista o AC aceita mas não casa com nenhuma opção, então a segmentação por
+ * cargo passaria a mentir em silêncio.
+ */
+const ROTULO_CARGO: Record<string, string> = {
+  fundador: 'Fundador (a)',
+  socio: 'Sócio (a)',
+  presidente_ceo: 'Presidente ou CEO',
+  vice_presidente: 'Vice-presidente',
+  diretor: 'Diretor (a)',
+  coordenador: 'Coordenador (a)',
+  supervisor: 'Supervisor (a)',
+  gerente: 'Gerente',
+  vendedor: 'Vendedor',
+}
+
 export interface DadosDoLead {
   nome: string
   email: string
   whatsapp: string
   perfil: PerfilComercial
+  /** Slug do cargo. Ausente nos cadastros anteriores a esta mudança. */
+  cargo?: string | null
   cadastradoEm: string
   /** Preenchidos a partir da primeira busca; ausentes no momento do cadastro. */
   dorPrincipal?: string
@@ -155,6 +175,9 @@ export async function sincronizarLead(
   }
 
   põe('CF_PERFIL_COMERCIAL', ROTULO_PERFIL[dados.perfil])
+  // Alimenta o campo que a Concer já usava na newsletter, então o lead do
+  // ConcerFinder fica no mesmo eixo do resto da base.
+  põe('CARGO_NEWSLETTER', dados.cargo ? ROTULO_CARGO[dados.cargo] : undefined)
   põe('CF_DATA_CADASTRO_CONCERFINDER', dataAC(dados.cadastradoEm))
   põe('CF_DOR_PRINCIPAL', dados.dorPrincipal)
   põe('CF_TEMAS_BUSCADOS', dados.temas?.join(', '))

@@ -2,12 +2,13 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import type { CommercialRole, Profile } from '@/types/database'
+import type { Cargo, CommercialRole, Profile } from '@/types/database'
 
 export interface SignUpPayload {
   fullName: string
   email: string
   whatsapp: string
+  cargo: Cargo
   commercialRole: CommercialRole
   password: string
 }
@@ -109,6 +110,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data: {
           full_name: payload.fullName.trim(),
           whatsapp: payload.whatsapp.trim(),
+          cargo: payload.cargo,
+          // Redundante de propósito: o trigger deriva o perfil do cargo e
+          // ignora este valor. Fica como rede se um dia o cargo vier vazio.
           commercial_role: payload.commercialRole,
         },
       },

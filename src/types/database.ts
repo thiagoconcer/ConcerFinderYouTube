@@ -40,3 +40,49 @@ export const COMMERCIAL_ROLE_LABELS: Record<CommercialRole, string> = {
   gestor_comercial: 'Gestor comercial',
   dono_empresa: 'Dono de empresa',
 }
+
+/**
+ * Cargo declarado no cadastro. São os mesmos 9 do campo "Cargo Newsletter"
+ * do ActiveCampaign, na mesma ordem hierárquica, para o lead do ConcerFinder
+ * ficar comparável com o resto da base da Concer.
+ */
+export type Cargo =
+  | 'fundador'
+  | 'socio'
+  | 'presidente_ceo'
+  | 'vice_presidente'
+  | 'diretor'
+  | 'coordenador'
+  | 'supervisor'
+  | 'gerente'
+  | 'vendedor'
+
+/** Os rótulos são idênticos aos do ActiveCampaign, inclusive o "(a)". */
+export const CARGO_LABELS: Record<Cargo, string> = {
+  fundador: 'Fundador (a)',
+  socio: 'Sócio (a)',
+  presidente_ceo: 'Presidente ou CEO',
+  vice_presidente: 'Vice-presidente',
+  diretor: 'Diretor (a)',
+  coordenador: 'Coordenador (a)',
+  supervisor: 'Supervisor (a)',
+  gerente: 'Gerente',
+  vendedor: 'Vendedor',
+}
+
+/**
+ * Só para a UI antecipar o que vai acontecer. Quem decide de verdade é o
+ * banco, na função `public.perfil_do_cargo`, e o trigger reescreve o perfil
+ * mesmo que o cliente mande outra coisa. Se um dia divergirem, o banco vence.
+ */
+export const CARGO_PARA_PERFIL: Record<Cargo, CommercialRole> = {
+  fundador: 'dono_empresa',
+  socio: 'dono_empresa',
+  presidente_ceo: 'dono_empresa',
+  vice_presidente: 'dono_empresa',
+  diretor: 'gestor_comercial',
+  coordenador: 'gestor_comercial',
+  supervisor: 'gestor_comercial',
+  gerente: 'gestor_comercial',
+  vendedor: 'vendedor',
+}

@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Cargos } from '@/components/admin/cargos'
 import { GestaoEquipe } from '@/components/admin/gestao-equipe'
 import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
 import { RankingTrechos } from '@/components/admin/ranking-trechos'
@@ -19,7 +20,7 @@ import { supabase } from '@/lib/supabase'
 import { formatDateTime, topicLabel } from '@/lib/format'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole, Lead } from '@/types/database'
-import type { AudienceInsights } from '@/types/search'
+import type { AudienceInsights, CargoInsights } from '@/types/search'
 
 /**
  * /admin/audiencia
@@ -38,6 +39,7 @@ const TODOS = 'todos'
 
 export function AdminAudienciaPage() {
   const [insights, setInsights] = useState<AudienceInsights | null>(null)
+  const [cargos, setCargos] = useState<CargoInsights | null>(null)
   const [leads, setLeads] = useState<Lead[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
@@ -56,11 +58,14 @@ export function AdminAudienciaPage() {
       .limit(200)
     if (perfil) leadsQuery = leadsQuery.eq('commercial_role', perfil)
 
-    const [insightsRes, leadsRes] = await Promise.all([
+    // O corte por cargo não usa o filtro de perfil: ele é justamente a visão
+    // mais fina, e filtrar por perfil deixaria só os cargos daquele grupo.
+    const [insightsRes, cargosRes, leadsRes] = await Promise.all([
       supabase.rpc(
         'get_audience_insights',
         perfil ? { filter_commercial_role: perfil } : {},
       ),
+      supabase.rpc('get_cargo_insights', {}),
       leadsQuery,
     ])
 
@@ -68,6 +73,7 @@ export function AdminAudienciaPage() {
       setErro('Não foi possível carregar os insights de audiência.')
     }
     setInsights((insightsRes.data as unknown as AudienceInsights) ?? null)
+    setCargos((cargosRes.data as unknown as CargoInsights) ?? null)
     setLeads(leadsRes.data ?? [])
   }, [filtroPerfil])
 
@@ -265,6 +271,8 @@ export function AdminAudienciaPage() {
           {/* Quem procura o quê */}
           <section className="mb-8">
             <PerfisPorTema perfis={insights.perfis_por_tema ?? []} />
+
+            <Cargos dados={cargos} />
           </section>
 
           {/* O que a busca devolve x o que as pessoas abrem */}

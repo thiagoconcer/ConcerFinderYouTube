@@ -17,10 +17,11 @@ Perfil de cada usuário cadastrado, estendendo `auth.users` (papel comercial e d
 | `full_name` | text | NOT NULL |
 | `email` | text | NOT NULL |
 | `whatsapp` | text | NOT NULL |
-| `commercial_role` | text | NOT NULL, CHECK IN ('vendedor','gestor_comercial','dono_empresa') |
+| `commercial_role` | text | NOT NULL, CHECK IN ('vendedor','gestor_comercial','dono_empresa'). **Derivado de `cargo`** pelo trigger `deriva_perfil_do_cargo()`. |
+| `cargo` | text | NULL. **[Extensão do doc]** CHECK `perfil_do_cargo(cargo) is not null`: fundador, socio, presidente_ceo, vice_presidente, diretor, coordenador, supervisor, gerente, vendedor. Mesmos rótulos do campo Cargo Newsletter do ActiveCampaign. |
 | `role` | text | NOT NULL, default `'user'`, CHECK IN ('user','content_admin','audience_manager','admin') |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
-**Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; `idx_profiles_role` em `role`.
+**Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; `idx_profiles_cargo` em `cargo`; `idx_profiles_role` em `role`.
 
 ### `leads`
 Registro do lead gerado no cadastro e o estado de envio para a régua de nutrição.
@@ -31,11 +32,12 @@ Registro do lead gerado no cadastro e o estado de envio para a régua de nutriç
 | `full_name` | text | NOT NULL |
 | `email` | text | NOT NULL |
 | `whatsapp` | text | NOT NULL |
-| `commercial_role` | text | NOT NULL |
+| `commercial_role` | text | NOT NULL. Derivado de `cargo`. |
+| `cargo` | text | NULL. **[Extensão do doc]** Mesmo domínio de `profiles.cargo`. |
 | `nurture_status` | text | NOT NULL, default `'pending'`, CHECK IN ('pending','sent','failed') |
 | `nurture_sent_at` | timestamptz | NULL |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
-**Índices:** PK; `idx_leads_profile_id` em `profile_id`; `idx_leads_nurture_status` em `nurture_status`; `idx_leads_commercial_role` em `commercial_role`.
+**Índices:** PK; `idx_leads_profile_id` em `profile_id`; `idx_leads_nurture_status` em `nurture_status`; `idx_leads_commercial_role` em `commercial_role`; `idx_leads_cargo` em `cargo`.
 
 ### `videos`
 Um registro por vídeo do canal do Concer capturado via scraping.
@@ -172,7 +174,7 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 ## 4. Páginas do frontend
 
 - **`/`** (`landing`) — apresentação: explica que o usuário descreve qualquer dor de vendas e encontra onde o Concer fala sobre ela; CTA para cadastro.
-- **`/cadastro`** (`sign-up`) — formulário de cadastro (nome, e-mail, WhatsApp, perfil comercial) que gera lead e libera a busca.
+- **`/cadastro`** (`sign-up`) — formulário de cadastro (nome, e-mail, WhatsApp, **cargo**) que gera lead e libera a busca. O perfil comercial não é mais perguntado: sai do cargo. **[Extensão do doc]**
 - **`/login`** (`login`) — login por senha ou magic link para usuários já cadastrados.
 - **`/busca`** (`search`) — caixa onde o usuário descreve a dor em linguagem natural; exibe recomendações com vídeo, minutagem exata e plano de ação. Protegida (só autenticado).
 - **`/busca/historico`** (`search-history`) — histórico de buscas do próprio usuário e novas explorações por tema.

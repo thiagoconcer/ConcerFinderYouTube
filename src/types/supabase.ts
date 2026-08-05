@@ -52,6 +52,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          cargo: string | null
           commercial_role: string
           created_at: string
           email: string
@@ -64,6 +65,7 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          cargo?: string | null
           commercial_role: string
           created_at?: string
           email: string
@@ -76,6 +78,7 @@ export type Database = {
           whatsapp: string
         }
         Update: {
+          cargo?: string | null
           commercial_role?: string
           created_at?: string
           email?: string
@@ -99,6 +102,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cargo: string | null
           commercial_role: string
           created_at: string
           email: string
@@ -109,6 +113,7 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          cargo?: string | null
           commercial_role: string
           created_at?: string
           email: string
@@ -119,6 +124,7 @@ export type Database = {
           whatsapp: string
         }
         Update: {
+          cargo?: string | null
           commercial_role?: string
           created_at?: string
           email?: string
@@ -391,6 +397,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_cargo_insights: {
+        Args: { from_date?: string; to_date?: string }
+        Returns: Json
+      }
       get_content_dashboard: { Args: never; Returns: Json }
       get_equipe: { Args: never; Returns: Json }
       get_search_results: {
@@ -416,6 +426,7 @@ export type Database = {
       get_video_detail: { Args: { p_video_id: string }; Returns: Json }
       is_concer_admin: { Args: never; Returns: boolean }
       is_concer_staff: { Args: never; Returns: boolean }
+      perfil_do_cargo: { Args: { p_cargo: string }; Returns: string }
       run_ingestion_step: { Args: { step: string }; Returns: number }
       search_videos: {
         Args: {

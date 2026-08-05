@@ -30,14 +30,15 @@
 **Propósito:** cadastrar o visitante (gerando lead) e liberar o acesso à busca, disparando a régua de nutrição por e-mail e WhatsApp.
 
 **Seções da tela:**
-- Formulário de cadastro com campos: **nome completo**, **e-mail**, **WhatsApp** e **perfil comercial** (seleção: vendedor / gestor comercial / dono de empresa) e senha (ou opção de magic link).
+- Formulário de cadastro com campos: **nome completo**, **e-mail**, **WhatsApp** e **cargo** e senha (ou opção de magic link).
+- **[Extensão do doc]** O cargo tem 9 opções, idênticas às do campo Cargo Newsletter do ActiveCampaign: Fundador (a), Sócio (a), Presidente ou CEO, Vice-presidente, Diretor (a), Coordenador (a), Supervisor (a), Gerente, Vendedor. O **perfil comercial** (vendedor / gestor / dono), que é o gatilho da régua de nutrição, passa a ser **derivado** do cargo em vez de perguntado. Motivo: mesma quantidade de campos no formulário, dado muito mais rico para a segmentação, e o lead fica comparável com o resto da base da Concer.
 - Texto de contexto reforçando que o cadastro é gratuito e libera a busca imediatamente.
 - Aviso de consentimento (LGPD) informando que o usuário receberá conteúdos por e-mail e WhatsApp.
 - Botão **"Criar conta e buscar"** (chama a Edge Function `register-lead`).
 - Link secundário **"Já tenho conta"** → `/login`.
 
 **Estados:**
-- **Vazia:** formulário limpo com placeholders e o perfil comercial sem seleção.
+- **Vazia:** formulário limpo com placeholders e o cargo sem seleção.
 - **Carregando:** botão em estado de loading ("Criando conta...") durante o `register-lead`; campos desabilitados.
 - **Erro:** mensagens inline por campo (e-mail inválido, WhatsApp obrigatório, e-mail já cadastrado) e banner geral se o cadastro/lead falhar, com opção de tentar novamente. Se o disparo da nutrição falhar mas a conta for criada, o usuário ainda é liberado para a busca (a nutrição fica com `nurture_status='failed'` para reprocessamento pela equipe).
 
@@ -152,6 +153,7 @@
 - **Indicadores de leads** (total de cadastros, distribuição por perfil comercial: vendedor / gestor comercial / dono de empresa).
 - **Ranking de temas/dores mais buscados** (agregação de `searches.detected_topics` via `get_audience_insights()`), cruzado por perfil comercial.
 - **Quem procura o quê**: para cada perfil comercial (vendedor / gestor / dono), os temas que ele mais busca. É o corte que sustenta a conversa com um parceiro. **[Extensão do doc]**
+- **Cadastros por cargo** e **o que cada cargo procura** (`get_cargo_insights()`): a mesma leitura na granularidade dos 9 cargos, que é a que interessa a um parceiro ("temos N diretores comerciais procurando previsibilidade" diz mais do que "temos N gestores"). Cada cargo aparece com a régua para a qual aponta. **[Extensão do doc]**
 - **Trechos mais recomendados** (o que a busca devolveu, de `search_results`) e **trechos mais assistidos** (o que as pessoas abriram, de `video_views`), lado a lado. A distância entre os dois mostra o que recomenda bem mas não convence a clicar. **[Extensão do doc]**
 - **Vídeos que mais aparecem**, com recomendações e aberturas por vídeo, para decidir o que repostar e sobre o que gravar mais. **[Extensão do doc]**
 - **Tabela de leads** com nome, e-mail, WhatsApp, perfil, status da nutrição (`nurture_status`) e data de cadastro.

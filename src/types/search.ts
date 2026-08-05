@@ -118,3 +118,19 @@ export interface AudienceInsights {
   }>
   buscas_sem_resultado: Array<{ query_text: string; created_at: string }>
 }
+
+/**
+ * Retorno de `get_cargo_insights`. O cargo é a granularidade fina do cadastro
+ * (9 opções); o `commercial_role` que vem junto é a régua de nutrição para a
+ * qual aquele cargo aponta.
+ */
+export interface CargoInsights {
+  periodo: { de: string; ate: string }
+  pessoas_por_cargo: Array<{ cargo: string; commercial_role: string; total: number }>
+  temas_por_cargo: Array<{
+    cargo: string
+    total: number
+    temas: Array<{ topico: string; total: number }>
+  }>
+  buscas_no_periodo: number
+}

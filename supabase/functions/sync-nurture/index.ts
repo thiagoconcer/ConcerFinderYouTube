@@ -72,7 +72,7 @@ Deno.serve(handler(async (req) => {
 
   const { data: perfil, error } = await db
     .from('profiles')
-    .select('id, full_name, email, whatsapp, commercial_role, created_at')
+    .select('id, full_name, email, whatsapp, commercial_role, cargo, created_at')
     .eq('id', profileId)
     .maybeSingle()
 
@@ -103,6 +103,7 @@ Deno.serve(handler(async (req) => {
     email: perfil.email,
     whatsapp: perfil.whatsapp,
     perfil: perfil.commercial_role as PerfilComercial,
+    cargo: perfil.cargo,
     cadastradoEm: perfil.created_at,
     totalBuscas: totalBuscas ?? 0,
     abriuAlgumTrecho: (totalAberturas ?? 0) > 0,

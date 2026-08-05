@@ -12,11 +12,31 @@ import { requireUser, serviceClient } from '../_shared/supabase.ts'
 const PAPEIS = ['vendedor', 'gestor_comercial', 'dono_empresa'] as const
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/**
+ * O cadastro pergunta o cargo (9 opções, iguais às do ActiveCampaign) e o
+ * perfil comercial que move a régua é derivado. A regra canônica é a função
+ * `public.perfil_do_cargo` no banco; este mapa é a cópia que a função precisa
+ * para validar antes de gravar. Se divergirem, o trigger do banco corrige.
+ */
+const CARGO_PARA_PERFIL: Record<string, (typeof PAPEIS)[number]> = {
+  fundador: 'dono_empresa',
+  socio: 'dono_empresa',
+  presidente_ceo: 'dono_empresa',
+  vice_presidente: 'dono_empresa',
+  diretor: 'gestor_comercial',
+  coordenador: 'gestor_comercial',
+  supervisor: 'gestor_comercial',
+  gerente: 'gestor_comercial',
+  vendedor: 'vendedor',
+}
+
 interface Body {
   profile_id?: string
   full_name?: string
   email?: string
   whatsapp?: string
+  cargo?: string
+  /** Aceito só para não quebrar chamadas antigas; o cargo tem precedência. */
   commercial_role?: string
 }
 
@@ -55,7 +75,9 @@ Deno.serve(handler(async (req) => {
   const fullName = (body.full_name ?? '').trim()
   const email = (body.email ?? user.email ?? '').trim().toLowerCase()
   const whatsapp = (body.whatsapp ?? '').trim()
-  const commercialRole = (body.commercial_role ?? '').trim()
+  const cargo = (body.cargo ?? '').trim()
+  // Cargo manda. Só cai no commercial_role solto se o cadastro não mandou cargo.
+  const commercialRole = cargo ? (CARGO_PARA_PERFIL[cargo] ?? '') : (body.commercial_role ?? '').trim()
 
   if (fullName.length < 3) {
     throw new AppError('Informe o nome completo.', 400, 'invalid_name')
@@ -66,11 +88,18 @@ Deno.serve(handler(async (req) => {
   if (whatsapp.replace(/\D/g, '').length < 10) {
     throw new AppError('Informe o WhatsApp com DDD.', 400, 'invalid_whatsapp')
   }
+  if (cargo && !CARGO_PARA_PERFIL[cargo]) {
+    throw new AppError(
+      `Cargo inválido. Use um de: ${Object.keys(CARGO_PARA_PERFIL).join(', ')}.`,
+      400,
+      'invalid_cargo',
+    )
+  }
   if (!PAPEIS.includes(commercialRole as (typeof PAPEIS)[number])) {
     throw new AppError(
-      `Perfil comercial inválido. Use um de: ${PAPEIS.join(', ')}.`,
+      `Informe o cargo. Valores aceitos: ${Object.keys(CARGO_PARA_PERFIL).join(', ')}.`,
       400,
-      'invalid_commercial_role',
+      'invalid_cargo',
     )
   }
 
@@ -85,6 +114,7 @@ Deno.serve(handler(async (req) => {
       email,
       whatsapp,
       commercial_role: commercialRole,
+      ...(cargo ? { cargo } : {}),
     },
     { onConflict: 'id' },
   )
@@ -113,6 +143,7 @@ Deno.serve(handler(async (req) => {
       email,
       whatsapp,
       commercial_role: commercialRole,
+      ...(cargo ? { cargo } : {}),
       nurture_status: 'pending',
     })
     .select('id')
@@ -141,6 +172,7 @@ Deno.serve(handler(async (req) => {
           email,
           whatsapp,
           commercial_role: commercialRole,
+          cargo: cargo || null,
           origem: 'concerfinder',
           created_at: new Date().toISOString(),
         }),
