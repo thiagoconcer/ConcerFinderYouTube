@@ -1,0 +1,163 @@
+# Páginas do Frontend — ConcerFinder
+
+> **Caminho de build:** Lovable + Supabase — React + Tailwind + shadcn/ui. As telas abaixo seguem exatamente as rotas definidas na ESTRUTURA técnica. Papéis referenciados no PROCESSO: **Visitante**, **Usuário cadastrado** (perfil comercial: vendedor / gestor comercial / dono de empresa), **Administrador de conteúdo** e **Gestor de audiência/comercial** (ambos = staff Concer).
+
+---
+
+### `/` — Landing (`landing`)
+
+**Propósito:** apresentar o ConcerFinder e converter o visitante em lead, explicando que ele pode descrever qualquer dor de vendas e encontrar exatamente onde o Thiago Concer fala sobre ela.
+
+**Seções da tela:**
+- Hero com proposta de valor ("Descreva sua dor de vendas e receba o vídeo e o minuto exato onde o Concer resolve") e CTA principal **"Criar conta grátis"** → `/cadastro`.
+- Bloco explicativo do problema: o canal tem centenas de vídeos e o YouTube só busca por palavra-chave, deixando passar insights no meio do vídeo.
+- Bloco "Como funciona" em 3 passos (descreve a dor → busca semântica → vídeos com minutagem exata + plano de ação).
+- Exemplos de dores de vendas (ex.: "meu time não contorna objeção de preço", "não sei estruturar prospecção").
+- Prova social / referência ao Thiago Concer como maior referência em vendas do Brasil.
+- Rodapé com link secundário **"Já tenho conta"** → `/login`.
+
+**Estados:**
+- **Vazia:** não aplicável — conteúdo é estático/institucional, sempre presente.
+- **Carregando:** skeleton leve do hero enquanto a página monta (mínimo, é conteúdo estático).
+- **Erro:** se algum recurso não carregar, exibe a página com fallback textual; CTAs de cadastro/login continuam funcionando.
+
+**Permissões:** pública, acessível a **qualquer pessoa (Visitante)**. Usuários já autenticados que caírem aqui veem um CTA alterado para **"Ir para a busca"** → `/busca` em vez de "Criar conta".
+
+---
+
+### `/cadastro` — Sign-up (`sign-up`)
+
+**Propósito:** cadastrar o visitante (gerando lead) e liberar o acesso à busca, disparando a régua de nutrição por e-mail e WhatsApp.
+
+**Seções da tela:**
+- Formulário de cadastro com campos: **nome completo**, **e-mail**, **WhatsApp** e **perfil comercial** (seleção: vendedor / gestor comercial / dono de empresa) e senha (ou opção de magic link).
+- Texto de contexto reforçando que o cadastro é gratuito e libera a busca imediatamente.
+- Aviso de consentimento (LGPD) informando que o usuário receberá conteúdos por e-mail e WhatsApp.
+- Botão **"Criar conta e buscar"** (chama a Edge Function `register-lead`).
+- Link secundário **"Já tenho conta"** → `/login`.
+
+**Estados:**
+- **Vazia:** formulário limpo com placeholders e o perfil comercial sem seleção.
+- **Carregando:** botão em estado de loading ("Criando conta...") durante o `register-lead`; campos desabilitados.
+- **Erro:** mensagens inline por campo (e-mail inválido, WhatsApp obrigatório, e-mail já cadastrado) e banner geral se o cadastro/lead falhar, com opção de tentar novamente. Se o disparo da nutrição falhar mas a conta for criada, o usuário ainda é liberado para a busca (a nutrição fica com `nurture_status='failed'` para reprocessamento pela equipe).
+
+**Permissões:** pública, voltada ao **Visitante**. Usuário já autenticado é redirecionado para `/busca`.
+
+---
+
+### `/login` — Login (`login`)
+
+**Propósito:** autenticar usuários já cadastrados por senha ou magic link.
+
+**Seções da tela:**
+- Formulário de login com **e-mail** e **senha**.
+- Opção **"Entrar com link mágico"** (magic link enviado ao e-mail) para reduzir atrito.
+- Link **"Esqueci minha senha"**.
+- Link secundário **"Ainda não tenho conta"** → `/cadastro`.
+
+**Estados:**
+- **Vazia:** formulário limpo.
+- **Carregando:** botão em loading durante autenticação; ao usar magic link, exibe confirmação "Enviamos um link para seu e-mail".
+- **Erro:** mensagem de credenciais inválidas ou conta não encontrada, com CTA para cadastro; erro de envio de magic link com opção de reenviar.
+
+**Permissões:** pública. Usuário já autenticado é redirecionado para `/busca`. Após login, staff (Administrador de conteúdo / Gestor de audiência) passa a enxergar os links dos painéis `/admin/*` na navegação.
+
+---
+
+### `/busca` — Search (`search`)
+
+**Propósito:** permitir que o usuário descreva a dor de vendas em linguagem natural e receba recomendações de vídeos com minutagem exata e plano de ação.
+
+**Seções da tela:**
+- Caixa de busca em linguagem natural (textarea) com exemplos de dores como sugestão.
+- Botão **"Buscar insights"** (dispara a RPC `search_videos` + `generate-action-plan`).
+- **Plano de ação** gerado pela IA no topo dos resultados, resumindo os passos para resolver a dor descrita.
+- **Lista de recomendações**: cards de vídeo com thumbnail, título, minutagem exata do insight (start_seconds formatado), score de relevância e botão **"Ver no minuto X"** → `/video/:id`.
+- Atalho para **novas buscas** e link para `/busca/historico`.
+
+**Estados:**
+- **Vazia (antes da primeira busca):** tela de boas-vindas com a caixa de busca em destaque e sugestões de dores comuns; sem resultados ainda.
+- **Sem resultados relevantes:** mensagem "Não encontramos trechos suficientemente relevantes para essa dor" com sugestão de reformular a descrição (regra: a busca é por significado, não palavra-chave).
+- **Carregando:** skeleton dos cards e indicador "Analisando sua dor e localizando os melhores trechos..." enquanto embeddings, busca vetorial e plano de ação são gerados.
+- **Erro:** banner de erro ("Não foi possível processar sua busca") com botão de tentar novamente, preservando o texto digitado.
+
+**Permissões:** **protegida — apenas Usuário cadastrado** (e staff). Visitante sem cadastro é redirecionado para `/cadastro` (regra crítica: sem cadastro não vê recomendações). A tela é idêntica por perfil comercial; o perfil é usado apenas para segmentação de audiência nos bastidores.
+
+---
+
+### `/busca/historico` — Search History (`search-history`)
+
+**Propósito:** exibir o histórico de buscas do próprio usuário e permitir novas explorações por tema já pesquisado.
+
+**Seções da tela:**
+- Lista das buscas anteriores do usuário (query descrita, data e temas detectados).
+- Chips de **temas/dores recorrentes** para refazer a busca com um clique.
+- Ação **"Repetir busca"** / **"Ver resultados"** que reabre as recomendações associadas.
+- Atalho para nova busca → `/busca`.
+
+**Estados:**
+- **Vazia:** mensagem "Você ainda não fez nenhuma busca" com CTA **"Fazer minha primeira busca"** → `/busca`.
+- **Carregando:** skeleton de lista de itens de histórico.
+- **Erro:** banner "Não foi possível carregar seu histórico" com botão de recarregar.
+
+**Permissões:** **protegida — apenas Usuário cadastrado**. Cada usuário vê somente o próprio histórico (RLS: `profile_id = auth.uid()`). Staff vê os próprios registros; a visão agregada de todas as buscas fica em `/admin/audiencia`.
+
+---
+
+### `/video/:id` — Video Detail (`video-detail`)
+
+**Propósito:** abrir o vídeo do canal do Concer diretamente no minuto do insight recomendado (deep-link para o YouTube no timestamp).
+
+**Seções da tela:**
+- Player/embed do vídeo do YouTube iniciando no `start_seconds` do trecho relevante.
+- Título, descrição e data de publicação do vídeo.
+- Trecho/segmento destacado (contexto textual do insight) e sua minutagem.
+- Lista de **outros trechos relevantes** do mesmo vídeo (se houver) e vídeos relacionados por tema.
+- Botão **"Voltar aos resultados"** → `/busca` e botão **"Abrir no YouTube"** com o link no timestamp.
+
+**Estados:**
+- **Vazia:** se o vídeo existir mas ainda não tiver trecho destacado, mostra o vídeo desde o início com aviso "Sem timestamp específico para esta recomendação".
+- **Carregando:** skeleton do player e dos metadados.
+- **Erro:** mensagem "Vídeo não encontrado ou indisponível" com CTA para voltar à busca; trata o caso de vídeo removido do canal.
+
+**Permissões:** **protegida — apenas Usuário cadastrado** (e staff). Visitante é redirecionado para `/cadastro`.
+
+---
+
+### `/admin/conteudo` — Admin Content (`admin-content`)
+
+**Propósito:** dar ao Administrador de conteúdo visão do status de scraping, transcrição e indexação de cada vídeo e das execuções de ingestão.
+
+**Seções da tela:**
+- Painel de **status geral da base** (total de vídeos, quantos indexados, pendentes, falhas).
+- **Tabela de vídeos** com título, `youtube_video_id`, data de publicação e `transcription_status` (pending / transcribing / transcribed / indexed / failed).
+- **Log de `ingestion_runs`** por tipo (scrape / transcribe / index), status, quantidade processada, erro e tempos.
+- Botão **"Rodar scraping agora"** (dispara `scrape-youtube-channel` manualmente, além do cron diário).
+- Ação de **sinalizar vídeo/trecho para revisão** quando a minutagem estiver imprecisa.
+
+**Estados:**
+- **Vazia:** se a base ainda não foi ingerida, mensagem "Nenhum vídeo indexado ainda" com CTA **"Rodar primeira ingestão"**.
+- **Carregando:** skeleton da tabela e dos indicadores de status.
+- **Erro:** banner de falha ao carregar os dados de ingestão; falhas individuais aparecem destacadas em vermelho na tabela com o `error_message`.
+
+**Permissões:** **staff-only — Administrador de conteúdo** (papel `content_admin`). Gestor de audiência pode ter acesso de leitura conforme atribuição interna. Usuário cadastrado comum e Visitante não acessam — redirecionados para `/busca` (ou `/` se não autenticado).
+
+---
+
+### `/admin/audiencia` — Admin Audience (`admin-audience`)
+
+**Propósito:** dar ao Gestor de audiência/comercial a visão consolidada de leads, perfis e temas/dores mais buscados para segmentar a audiência e viabilizar parcerias.
+
+**Seções da tela:**
+- **Indicadores de leads** (total de cadastros, distribuição por perfil comercial: vendedor / gestor comercial / dono de empresa).
+- **Ranking de temas/dores mais buscados** (agregação de `searches.detected_topics` via `get_audience_insights()`), cruzado por perfil comercial.
+- **Tabela de leads** com nome, e-mail, WhatsApp, perfil, status da nutrição (`nurture_status`) e data de cadastro.
+- Segmentação/filtros por perfil e por tema de interesse para identificar grupos relevantes a empresas parceiras.
+- Indicador de saúde da nutrição (pending / sent / failed) para acompanhar a régua de e-mail e WhatsApp.
+
+**Estados:**
+- **Vazia:** se ainda não houver leads/buscas, mensagem "Sem dados de audiência ainda — os insights aparecem conforme os usuários se cadastram e buscam".
+- **Carregando:** skeleton dos gráficos, do ranking e da tabela de leads.
+- **Erro:** banner "Não foi possível carregar os insights de audiência" com botão de recarregar.
+
+**Permissões:** **staff-only — Gestor de audiência/comercial** (papel `audience_manager`). Administrador de conteúdo pode ter acesso de leitura conforme atribuição interna. Usuário cadastrado comum e Visitante não acessam — redirecionados para `/busca` (ou `/`). Dados sensíveis de leads só são expostos aqui, protegidos por RLS (`is_concer_staff()`).

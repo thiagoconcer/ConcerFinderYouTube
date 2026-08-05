@@ -1,0 +1,245 @@
+# Functions & Endpoints — ConcerFinder
+
+> **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions Deno + Realtime + pg_cron).
+> **Convenções:** Edge Functions em **kebab-case**, invocadas via `supabase.functions.invoke(...)` (Lovable/cliente) ou por webhook externo. Postgres Functions em **snake_case**, chamadas via `supabase.rpc(...)`, por trigger de tabela ou por agendamento `pg_cron`.
+> **Padrão de autenticação:** funções que gravam em `leads`, `videos`, `video_segments`, `search_results` e `ingestion_runs` rodam com **`service_role`** (chave nunca exposta no frontend — só dentro da Edge Function). Funções de leitura de vídeos exigem **usuário logado**. Painéis internos exigem **staff** (`is_concer_staff()`).
+>
+> Todas as functions abaixo estão listadas na ESTRUTURA. Onde eu precisei acrescentar detalhe de validação para cumprir uma regra do PROCESSO, sinalizo com **[Extensão do doc]**.
+
+---
+
+## Edge Functions
+
+### `register-lead`
+- **Propósito:** concluir o cadastro do visitante, gerar o lead e dispará-lo para a régua de nutrição (e-mail via ActiveCampaign + WhatsApp) através do webhook existente (Make / N8N).
+- **Autenticação exigida:** **usuário logado** (chamada logo após o signup do Supabase Auth, com JWT válido do usuário recém-criado). A função usa `service_role` internamente para escrever em `leads`.
+- **Input (body JSON):**
+  ```json
+  {
+    "profile_id": "uuid",
+    "full_name": "string",
+    "email": "string",
+    "whatsapp": "string",
+    "commercial_role": "vendedor | gestor_comercial | dono_empresa"
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "lead_id": "uuid",
+    "nurture_status": "sent | pending | failed",
+    "message": "Cadastro concluído. Busca liberada."
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Confere que `profile_id === auth.uid()` do JWT (impede gerar lead em nome de terceiro). **[Extensão do doc]**
+  - Valida `commercial_role` contra `('vendedor','gestor_comercial','dono_empresa')`; rejeita valor fora da lista.
+  - Valida formato de `email` e presença de `whatsapp` (ambos obrigatórios para a nutrição — Regra: "todo cadastro concluído gera lead e entra na régua").
+  - Faz **upsert** em `profiles` (garante consistência caso o trigger `handle_new_user` ainda não tenha rodado) e **insere** em `leads` com `nurture_status='pending'`.
+  - Dispara o **webhook de nutrição** (Make → ActiveCampaign + WhatsApp / fluxo N8N existente). Em sucesso: `nurture_status='sent'` + `nurture_sent_at=now()`. Em falha do webhook: `nurture_status='failed'` (não bloqueia o cadastro; a busca é liberada mesmo assim). **[Extensão do doc]**
+  - Idempotência: se já existir `lead` para o `profile_id`, não duplica — apenas retorna o existente.
+
+---
+
+### `scrape-youtube-channel`
+- **Propósito:** capturar a lista de vídeos do canal do Thiago Concer e fazer upsert na tabela `videos` para posterior transcrição/indexação.
+- **Autenticação exigida:** **admin (staff `content_admin`)** quando chamada manualmente pelo painel `/admin/conteudo`; **service_role** quando disparada pelo `pg_cron`.
+- **Input (body JSON, opcional):**
+  ```json
+  {
+    "channel_id": "string (default: canal do Concer)",
+    "force_full": false
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "run_id": "uuid",
+    "videos_found": 0,
+    "videos_new": 0,
+    "status": "completed | failed"
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Abre um registro em `ingestion_runs` com `run_type='scrape'`, `status='running'`; ao final grava `videos_processed`, `finished_at` e `status`.
+  - Consulta a **YouTube Data API v3**; usa **Apify** como fallback/enriquecimento quando a API não cobrir metadados ou legendas.
+  - Faz **upsert** em `videos` pela chave única `youtube_video_id`; vídeos novos entram com `transcription_status='pending'`.
+  - Não reprocessa vídeos já `indexed` a menos que `force_full=true`.
+  - Regra do PROCESSO: "novos vídeos publicados no canal devem ser incorporados à base" — garantida pela execução diária via cron.
+  - Em erro, grava `error_message` no `ingestion_runs` e retorna `status='failed'`.
+
+---
+
+### `transcribe-videos`
+- **Propósito:** transcrever o áudio dos vídeos pendentes e quebrar o texto em `video_segments` com janelas de tempo (base da minutagem exata).
+- **Autenticação exigida:** **service_role** (cron + gatilho pós-scrape) ou **admin** para reprocessar um vídeo específico pelo painel.
+- **Input (body JSON, opcional):**
+  ```json
+  {
+    "video_id": "uuid (opcional; se ausente, processa lote de pending)",
+    "batch_size": 10
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "run_id": "uuid",
+    "videos_transcribed": 0,
+    "segments_created": 0,
+    "status": "completed | failed"
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Seleciona vídeos com `transcription_status='pending'` (limitado por `batch_size` para controlar custo/tempo de execução da Edge Function). **[Extensão do doc]**
+  - Marca cada vídeo como `transcribing` antes de começar (evita corrida entre execuções concorrentes do cron). **[Extensão do doc]**
+  - Chama a **API de STT (OpenAI Whisper)** para gerar o texto e os timestamps.
+  - Divide a transcrição em `video_segments` preenchendo `segment_text`, `start_seconds`, `end_seconds` e (opcionalmente) `topic_tags`.
+  - Ao concluir, atualiza `videos.transcription_status='transcribed'`; em falha, `='failed'` com log em `ingestion_runs (run_type='transcribe')`.
+
+---
+
+### `index-segments`
+- **Propósito:** gerar os embeddings vetoriais de cada segmento transcrito, habilitando a busca semântica.
+- **Autenticação exigida:** **service_role** (cron + gatilho pós-transcrição).
+- **Input (body JSON, opcional):**
+  ```json
+  {
+    "video_id": "uuid (opcional)",
+    "batch_size": 100
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "run_id": "uuid",
+    "segments_indexed": 0,
+    "videos_indexed": 0,
+    "status": "completed | failed"
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Seleciona vídeos com `transcription_status='transcribed'` e seus `video_segments` sem `embedding`.
+  - Gera embedding com **OpenAI `text-embedding-3-small` (1536 dims)** — mesma dimensão do índice `vector(1536)`; rejeita/pula segmentos vazios. **[Extensão do doc]**
+  - Grava o `embedding` no segmento; quando todos os segmentos do vídeo estiverem vetorizados, marca `videos.transcription_status='indexed'` e preenche `indexed_at`.
+  - Registra `ingestion_runs (run_type='index')`.
+  - Regra: só vídeos `indexed` participam da busca (a RPC `search_videos` só encontra segmentos com embedding).
+
+---
+
+### `generate-action-plan`
+- **Propósito:** gerar o texto do plano de ação a partir da dor descrita pelo usuário e dos top segmentos recuperados na busca.
+- **Autenticação exigida:** **usuário logado** (chamada dentro do fluxo de busca; o JWT do usuário é validado).
+- **Input (body JSON):**
+  ```json
+  {
+    "search_id": "uuid",
+    "query_text": "string",
+    "top_segments": [
+      { "video_id": "uuid", "segment_text": "string", "start_seconds": 0 }
+    ]
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "search_id": "uuid",
+    "action_plan": "string (passos práticos ancorados nos insights dos vídeos)"
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Valida que a `search` pertence ao usuário logado (`searches.profile_id = auth.uid()`) antes de gravar. **[Extensão do doc]**
+  - Chama o LLM **Gemini 2.5 Pro** (contexto longo, consolida vários trechos; alternativa custo-eficiente **Gemini 3.5 Flash** para pico de buscas).
+  - O plano é construído **apenas** a partir dos segmentos recuperados (Regra/Suposição: o plano deriva dos próprios insights dos vídeos relacionados à dor).
+  - Persiste o resultado em `searches.action_plan` (via `service_role`).
+  - Se não houver segmentos relevantes (nenhum resultado), retorna um `action_plan` indicando que não foram encontrados trechos e sugere refinar a dor. **[Extensão do doc]**
+
+---
+
+### `nurture-webhook-callback`
+- **Propósito:** receber do Make/N8N o status de entrega da régua de nutrição e atualizar o lead correspondente.
+- **Autenticação exigida:** **webhook externo com validação HMAC** (assinatura no header, segredo compartilhado) — não usa JWT de usuário. **[Extensão do doc]**
+- **Input (body JSON):**
+  ```json
+  {
+    "lead_id": "uuid",
+    "delivery_status": "sent | failed",
+    "channel": "email | whatsapp",
+    "signature": "hmac-sha256 (via header X-Signature)"
+  }
+  ```
+- **Output:**
+  ```json
+  { "ok": true, "lead_id": "uuid", "nurture_status": "sent | failed" }
+  ```
+- **Regras de negócio / validações:**
+  - Verifica a assinatura HMAC antes de qualquer escrita; requisição sem assinatura válida → `401`.
+  - Atualiza `leads.nurture_status` e, quando `sent`, `leads.nurture_sent_at`.
+  - Ignora `lead_id` inexistente (retorna `200` com `ok:false` para não gerar retries infinitos no Make). **[Extensão do doc]**
+
+---
+
+## Postgres Functions (RPC / triggers)
+
+### `search_videos(query_embedding vector, match_count int)`
+- **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`.
+- **Propósito:** núcleo da busca semântica — encontra os trechos de vídeo mais próximos da dor descrita e persiste a busca + resultados.
+- **Quando dispara:** evento HTTP via `supabase.rpc('search_videos', ...)` quando o usuário submete uma dor na caixa de busca (`/busca`). O `query_embedding` é gerado previamente (embedding da `query_text` do usuário).
+- **Input:** `query_embedding vector(1536)`, `match_count int` (nº de recomendações, ex.: 5).
+- **Output:** tabela com `video_id`, `youtube_video_id`, `title`, `start_seconds`, `segment_text`, `similarity_score`, `rank_position`.
+- **Regras de negócio / validações:**
+  - Exige `auth.uid()` válido — se nulo, aborta (Regra crítica: **visitante sem cadastro não vê recomendação**). Por ser `SECURITY DEFINER`, é a **única** via de acesso a `video_segments`, que não é lida pelo frontend.
+  - Faz busca por **similaridade de cosseno** no índice vetorial de `video_segments` (apenas de vídeos `indexed`).
+  - Insere um registro em `searches` (`profile_id = auth.uid()`, `query_text`, `detected_topics`) e um registro por resultado em `search_results` (com `segment_id`, `start_seconds`, `similarity_score`, `rank_position`) — cumpre a Regra: "cada dor pesquisada é registrada e associada ao perfil" (alimenta a segmentação de audiência).
+  - Retorna a **minutagem exata** (`start_seconds`) usada no deep-link para o YouTube. Regra: "cada busca retorna vídeo + minutagem + plano de ação" (o plano vem em seguida via `generate-action-plan`).
+
+---
+
+### `handle_new_user()`
+- **Tipo:** **trigger de tabela** (`AFTER INSERT` em `auth.users`), `SECURITY DEFINER`.
+- **Propósito:** criar automaticamente o registro em `profiles` no momento do signup.
+- **Quando dispara:** **INSERT em `auth.users`** (cadastro por e-mail+senha ou magic link).
+- **Input:** `NEW` da linha inserida em `auth.users` (id, email e metadados do signup — `full_name`, `whatsapp`, `commercial_role`).
+- **Output:** cria uma linha em `profiles` (`id = NEW.id`, `role='user'`); sem retorno para o client.
+- **Regras de negócio / validações:**
+  - Define `role='user'` por padrão; papéis internos (`content_admin`, `audience_manager`) só são atribuídos manualmente pela equipe Concer.
+  - Copia `full_name`, `email`, `whatsapp`, `commercial_role` a partir dos metadados do signup; valida `commercial_role` contra o CHECK. **[Extensão do doc]**
+  - Garante que exista o `profiles` antes de `register-lead` rodar (idempotente com o upsert da Edge Function).
+
+---
+
+### `is_concer_staff()`
+- **Tipo:** **função auxiliar de RLS** (chamável internamente pelas policies; não é endpoint público).
+- **Propósito:** determinar se o usuário atual é da equipe Concer, controlando acesso aos painéis e dados sensíveis.
+- **Quando dispara:** avaliada dentro das **policies de RLS** (SELECT/UPDATE de `leads`, `videos`, `searches`, `ingestion_runs`) e pela RPC `get_audience_insights`.
+- **Input:** nenhum (usa `auth.uid()` internamente).
+- **Output:** `boolean` — `true` se `profiles.role IN ('content_admin','audience_manager')`.
+- **Regras de negócio / validações:**
+  - Regra: "apenas a equipe Concer acessa os painéis de gestão e os dados consolidados de leads."
+  - Não pode ser burlada pelo frontend, pois é usada nas policies do banco.
+
+---
+
+### `get_audience_insights()`
+- **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`, **staff-only**.
+- **Propósito:** consolidar dores/temas buscados cruzados com o perfil comercial dos leads, para o painel de audiência e a monetização com empresas parceiras.
+- **Quando dispara:** evento HTTP via `supabase.rpc('get_audience_insights')` na página `/admin/audiencia`.
+- **Input:** filtros opcionais (`from_date`, `to_date`, `commercial_role`). **[Extensão do doc]**
+- **Output:** agregações — temas mais buscados (`searches.detected_topics`) × `profiles.commercial_role`, contagem de leads por perfil, ranking de dores.
+- **Regras de negócio / validações:**
+  - Bloqueia execução se `is_concer_staff()` for `false` (aborta com erro de permissão).
+  - Somente leitura/agregação; não expõe dados individuais além do necessário para segmentação.
+  - Alimenta a Regra de negócio: "usa esses dados para abordar empresas que precisam alcançar esse público" (fonte de receita descrita na ideia).
+
+---
+
+## Agendamentos pg_cron (orquestração da ingestão)
+
+Cadeia diária que garante a Regra "novos vídeos entram na base automaticamente":
+
+| Job | Função disparada | Frequência sugerida |
+|---|---|---|
+| `cron_scrape_channel` | `scrape-youtube-channel` (via `net.http_post` para a Edge Function) | diário, madrugada |
+| `cron_transcribe` | `transcribe-videos` | diário, após o scrape |
+| `cron_index` | `index-segments` | diário, após a transcrição |
+
+> Os jobs de cron chamam as Edge Functions correspondentes com `service_role`. Cada etapa só processa o que a anterior deixou pronto (`pending → transcribed → indexed`), garantindo idempotência mesmo que uma execução falhe no meio.
