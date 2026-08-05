@@ -16,8 +16,10 @@ Depois de salvar os secrets **não precisa republicar nada**: as funções leem 
 
 | Secret | Onde pegar | O que quebra sem ela |
 |---|---|---|
-| `OPENAI_API_KEY` | platform.openai.com → API keys | `search-pain` e `index-segments`. Sem ela não há embedding, logo não há busca semântica. |
-| `GEMINI_API_KEY` | aistudio.google.com → Get API key | `generate-action-plan`. A busca ainda devolve os vídeos e a minutagem, mas sem o plano de ação. |
+| `OPENAI_API_KEY` | platform.openai.com → API keys | `search-pain` e `index-segments`. Sem ela não há embedding, logo não há busca semântica. **Esta é a única que ainda falta.** |
+| ~~`ANTHROPIC_API_KEY`~~ | já configurada | `generate-action-plan`. Usa a chave Claude da conta Concer, testada e funcionando com o Opus 5. |
+
+> **Por que a chave da OpenAI não pôde ser substituída pela do Claude:** a Anthropic não oferece API de embeddings. A API do Claude expõe Messages, Batches, Files, Token Counting e Models, e nenhum endpoint de vetorização. O `pgvector` precisa de vetores de 1536 dimensões, e quem os gera é o `text-embedding-3-small` da OpenAI. O Claude cobre a parte de geração de texto (o plano de ação), que é onde ele é melhor mesmo.
 
 ## Obrigatórias para a ingestão dos vídeos
 
@@ -33,7 +35,8 @@ Depois de salvar os secrets **não precisa republicar nada**: as funções leem 
 | `APIFY_TOKEN` | Fallback de transcrição. A primeira tentativa é a legenda pública do YouTube, que é grátis; o Apify cobre os vídeos sem legenda ativada. |
 | `APIFY_TRANSCRIPT_ACTOR` | Trocar o actor de transcrição do Apify. Padrão: `topaz_sharingan~Youtube-Transcript-Scraper-1`. |
 | `AUDIO_SOURCE_URL` | Último recurso de transcrição, via Whisper. Deve ser uma URL com `{video_id}` que devolva o áudio do vídeo. Precisa de `OPENAI_API_KEY`. |
-| `GEMINI_MODEL` | Trocar o modelo do plano de ação. Padrão: `gemini-2.5-pro`. Em pico de buscas, um modelo Flash sai mais barato. |
+| `ANTHROPIC_MODEL` | Trocar o modelo do plano de ação. Padrão: `claude-opus-5`. Em pico de buscas, `claude-sonnet-5` sai mais barato e responde mais rápido. |
+| `ANTHROPIC_EFFORT` | Profundidade de raciocínio do plano: `low`, `medium` (padrão), `high`, `xhigh` ou `max`. Baixar reduz latência e custo; subir melhora planos para dores mais complexas. |
 | `NURTURE_WEBHOOK_URL` | URL do webhook do N8N que dispara a régua (ActiveCampaign + WhatsApp). Sem ela o lead é criado com `nurture_status='pending'` e nada é disparado. |
 | `NURTURE_WEBHOOK_TOKEN` | Bearer token, se o seu webhook do N8N exigir autenticação. |
 | `NURTURE_WEBHOOK_SECRET` | Segredo compartilhado do HMAC-SHA256 do `nurture-webhook-callback`, que o N8N usa para reportar o status de entrega. |

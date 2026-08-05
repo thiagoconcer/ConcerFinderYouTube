@@ -107,7 +107,7 @@ O ConcerFinder é dividido em três camadas: **frontend React**, **backend Supab
         ▼ (ingestão)                              ▼ (runtime busca / nutrição)
 ┌───────────────────────┐             ┌───────────────────────────┐
 │ YouTube Data API v3    │             │ API embeddings (OpenAI)   │
-│ Apify (fallback)       │             │ LLM plano (Gemini 2.5 Pro)│
+│ Apify (fallback)       │             │ LLM plano (Claude Opus 5) │
 │ STT / Whisper (áudio→  │             │ Make → ActiveCampaign +   │
 │ texto)                 │             │ WhatsApp / N8N existente  │
 └───────────────────────┘             └───────────────────────────┘
@@ -134,7 +134,7 @@ O ConcerFinder é dividido em três camadas: **frontend React**, **backend Supab
 **Frontend — React + Tailwind + shadcn/ui sobre Supabase:**
 App React (Vite) construído e mantido no **Claude Code**, com Tailwind e shadcn/ui na camada visual e `@supabase/supabase-js` para Auth, consultas com RLS, RPC e chamadas às Edge Functions. Cobre o cadastro com geração de lead, a busca semântica e os painéis de conteúdo e audiência, com o código versionado no repositório do projeto.
 
-**Integrações externas (todas via Edge Function):** YouTube Data API v3, Apify (fallback), STT/Whisper, API de embeddings OpenAI `text-embedding-3-small` (1536 dims), **Gemini 2.5 Pro** para o plano de ação (contexto longo consolidando múltiplos trechos, ~US$1.25/Mtok in; **Gemini 3.5 Flash** ~US$0.30/Mtok in como alternativa custo-eficiente sob alto volume), e Make → ActiveCampaign + WhatsApp / N8N existente para nutrição.
+**Integrações externas (todas via Edge Function):** YouTube Data API v3, Apify (fallback), STT/Whisper, API de embeddings OpenAI `text-embedding-3-small` (1536 dims), **Claude Opus 5** para o plano de ação (contexto de 1M tokens consolidando múltiplos trechos, US$5/Mtok in; **Claude Sonnet 5** US$3/Mtok in como alternativa custo-eficiente sob alto volume). A Anthropic não oferece API de embeddings, por isso a vetorização permanece na OpenAI, e Make → ActiveCampaign + WhatsApp / N8N existente para nutrição.
 
 **Automação:** Make + Supabase Edge Functions/pg_cron. O disparo pós-cadastro pluga no webhook de nutrição que a equipe já mantém (onde você lê "webhook de nutrição", conecta o fluxo N8N/ActiveCampaign existente sem retrabalho).
 
@@ -162,7 +162,7 @@ App React (Vite) construído e mantido no **Claude Code**, com Tailwind e shadcn
 
 **Dados sensíveis / LGPD:** `leads` e `profiles` guardam dados pessoais (nome, e-mail, WhatsApp) — base legal de coleta é o consentimento do cadastro para nutrição, que deve ser explicitado no formulário `/cadastro`. Acesso a esses dados é restrito a staff via RLS. Deve existir processo de exclusão a pedido do titular (delete via service_role). O envio a Make/ActiveCampaign/WhatsApp trafega dado pessoal e deve constar na política de privacidade.
 
-**Segredos e API keys:** YouTube Data API, Apify, chaves OpenAI (STT/embeddings), Gemini e a URL do webhook de nutrição ficam exclusivamente em variáveis de ambiente das Edge Functions (Supabase secrets) — nunca hardcoded nem expostas no frontend. Nenhuma integração externa é chamada direto do cliente.
+**Segredos e API keys:** YouTube Data API, Apify, chaves OpenAI (STT/embeddings), Anthropic (plano de ação) e a URL do webhook de nutrição ficam exclusivamente em variáveis de ambiente das Edge Functions (Supabase secrets) — nunca hardcoded nem expostas no frontend. Nenhuma integração externa é chamada direto do cliente.
 
 ---
 
@@ -178,7 +178,7 @@ App React (Vite) construído e mantido no **Claude Code**, com Tailwind e shadcn
 
 **Limites conhecidos e mitigação:**
 - **Timeout de Edge Function (~60s):** `transcribe-videos` e `index-segments` devem processar em lotes pequenos (poucos vídeos/segmentos por invocação), retomando na próxima execução de cron — nunca transcrever centenas de vídeos numa única chamada.
-- **Tamanho de payload:** `generate-action-plan` deve limitar o número de segmentos enviados ao LLM (top-N) para não estourar contexto/custo; Gemini 2.5 Pro (contexto longo) suporta consolidar vários trechos, mas o top-N controla custo por busca.
+- **Tamanho de payload:** `generate-action-plan` deve limitar o número de segmentos enviados ao LLM (top-N) para não estourar contexto/custo; o Claude Opus 5 (1M tokens) suporta consolidar vários trechos com folga, mas o top-N controla custo por busca. A implementação limita a 8 segmentos.
 - **Volume de edge invocations:** a ingestão diária multiplica invocações — Supabase Pro é recomendado justamente pelo volume de edge invocations e pelo pgvector em escala.
 - **Rate limits externos:** YouTube Data API e Apify têm cotas; o scrape deve paginar e respeitar limites, com Apify como fallback quando a API não cobrir legendas.
-- **Latência de busca:** a vetorização da query (embeddings) + `search_videos` + plano de ação deve ficar dentro de segundos; para alto volume simultâneo, Gemini 3.5 Flash é a alternativa custo-eficiente com resposta mais imediata.
+- **Latência de busca:** a vetorização da query (embeddings) + `search_videos` + plano de ação deve ficar dentro de segundos; para alto volume simultâneo, baixar o `ANTHROPIC_EFFORT` ou trocar para Claude Sonnet 5 pelo secret `ANTHROPIC_MODEL` reduz a latência sem republicar a função.
