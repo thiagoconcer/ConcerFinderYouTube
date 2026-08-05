@@ -77,6 +77,25 @@ Deno.serve(handler(async (req) => {
     searchId = ultima?.id
   }
 
+  /*
+    Agora existe dor real para contar, então o lead entra na régua: o sync
+    grava os campos personalizados e aplica a tag do perfil, que é o gatilho
+    da automação no ActiveCampaign. Não bloqueia a resposta da busca.
+  */
+  try {
+    await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/sync-nurture`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.get('Authorization') ?? '',
+      },
+      body: JSON.stringify({ aplicar_gatilho: true }),
+      signal: AbortSignal.timeout(20_000),
+    })
+  } catch (error) {
+    console.warn('sync-nurture falhou apos a busca:', error)
+  }
+
   return json({
     search_id: searchId,
     query_text: queryText,

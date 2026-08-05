@@ -20,6 +20,28 @@ interface Body {
   commercial_role?: string
 }
 
+/**
+ * Dispara o sync com o ActiveCampaign sem bloquear a resposta ao usuário:
+ * falha de CRM não pode impedir o acesso à busca, que é o que a pessoa está
+ * esperando naquele instante.
+ */
+async function sincronizarNoAc(req: Request, profileId: string, aplicarGatilho: boolean) {
+  try {
+    const r = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/sync-nurture`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: req.headers.get('Authorization') ?? '',
+      },
+      body: JSON.stringify({ profile_id: profileId, aplicar_gatilho: aplicarGatilho }),
+      signal: AbortSignal.timeout(20_000),
+    })
+    if (!r.ok) console.warn('sync-nurture respondeu', r.status, (await r.text()).slice(0, 200))
+  } catch (error) {
+    console.warn('sync-nurture falhou:', error)
+  }
+}
+
 Deno.serve(handler(async (req) => {
   const user = await requireUser(req)
   const body: Body = await req.json().catch(() => ({}))
@@ -141,6 +163,11 @@ Deno.serve(handler(async (req) => {
       })
       .eq('id', lead.id)
   }
+
+  // Cria o contato no ActiveCampaign com as tags de base. SEM gatilho: a
+  // pessoa ainda não buscou nada, e a régua depende da dor real para o
+  // primeiro e-mail fazer sentido. Quem dispara é o search-pain.
+  await sincronizarNoAc(req, profileId, false)
 
   return json({
     lead_id: lead.id,

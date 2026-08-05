@@ -31,6 +31,11 @@ verify_jwt = false
 [functions.index-segments]
 verify_jwt = false
 
+# Chamada pelo register-lead e pelo search-pain com o JWT do usuario, ou
+# internamente com X-Cron-Secret. A autenticacao acontece dentro da funcao.
+[functions.sync-nurture]
+verify_jwt = false
+
 # Webhook do N8N/Make: sem JWT, valida HMAC-SHA256 no header X-Signature
 [functions.nurture-webhook-callback]
 verify_jwt = false

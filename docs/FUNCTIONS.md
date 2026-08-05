@@ -181,6 +181,23 @@
 
 ---
 
+### `sync-nurture`
+- **Propósito:** empurrar o lead para o ActiveCampaign com a personalização real: a dor que a pessoa escreveu, os temas detectados e o link do trecho no minuto exato. **[Extensão do doc]**
+- **Por que existe:** a API do ActiveCampaign **não permite criar automação nem campanha** (`405` nas duas). A régua é montada na interface e disparada por tag; esta função é quem preenche os campos personalizados e aplica a tag no momento certo.
+- **Autenticação exigida:** usuário logado (sincroniza o próprio perfil) ou chamada interna com `X-Cron-Secret`/`service_role` (aí aceita `profile_id`).
+- **Input (body JSON):**
+  ```json
+  { "profile_id": "uuid (só no modo interno)", "aplicar_gatilho": false }
+  ```
+- **Regras de negócio / validações:**
+  - **A tag de gatilho só entra depois da primeira busca.** No cadastro ainda não existe dor para contar, e o primeiro e-mail sairia sem justamente aquilo que diferencia o ConcerFinder. Por isso `register-lead` chama com `aplicar_gatilho: false` e `search-pain` chama com `true`.
+  - Os campos personalizados são gravados **antes** da tag de gatilho: o AC dispara a automação no instante em que a tag entra.
+  - Ids de campo e de tag são resolvidos em runtime pelo nome, não fixados no código, para sobreviver a renomeação no AC.
+  - Idempotente: `contact/sync` faz upsert por e-mail e tag repetida não é erro.
+  - Falha de sincronização **não bloqueia** o cadastro nem a busca: o acesso é o que o usuário está esperando naquele instante.
+
+---
+
 ### `nurture-webhook-callback`
 - **Propósito:** receber do Make/N8N o status de entrega da régua de nutrição e atualizar o lead correspondente.
 - **Autenticação exigida:** **webhook externo com validação HMAC** (assinatura no header, segredo compartilhado) — não usa JWT de usuário. **[Extensão do doc]**

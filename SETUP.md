@@ -77,7 +77,8 @@ Se o OAuth não for viável, `APIFY_TOKEN` (apify.com) contorna o bloqueio do Yo
 | `AUDIO_SOURCE_URL` | Último recurso de transcrição, via Whisper. Deve ser uma URL com `{video_id}` que devolva o áudio do vídeo. Precisa de `OPENAI_API_KEY`. |
 | `ANTHROPIC_MODEL` | Trocar o modelo do plano de ação. Padrão: `claude-opus-5`. Em pico de buscas, `claude-sonnet-5` sai mais barato e responde mais rápido. |
 | `ANTHROPIC_EFFORT` | Profundidade de raciocínio do plano: `low`, `medium` (padrão), `high`, `xhigh` ou `max`. Baixar reduz latência e custo; subir melhora planos para dores mais complexas. |
-| `NURTURE_WEBHOOK_URL` | URL do webhook do N8N que dispara a régua (ActiveCampaign + WhatsApp). Sem ela o lead é criado com `nurture_status='pending'` e nada é disparado. |
+| `ACTIVECAMPAIGN_API_TOKEN` | **Já configurada.** Token da API do ActiveCampaign. É o que cria o contato, preenche a personalização e aplica as tags da régua. |
+| `NURTURE_WEBHOOK_URL` | URL de um webhook do N8N, opcional e independente do ActiveCampaign. Sem ela o lead é criado com `nurture_status='pending'` e nada é disparado por esse caminho. |
 | `NURTURE_WEBHOOK_TOKEN` | Bearer token, se o seu webhook do N8N exigir autenticação. |
 | `NURTURE_WEBHOOK_SECRET` | Segredo compartilhado do HMAC-SHA256 do `nurture-webhook-callback`, que o N8N usa para reportar o status de entrega. |
 
