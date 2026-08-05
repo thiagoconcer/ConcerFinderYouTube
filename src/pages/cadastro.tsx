@@ -120,7 +120,7 @@ export function CadastroPage() {
 
   if (awaitingConfirmation) {
     return (
-      <div className="mx-auto w-full max-w-lg px-4 py-16 sm:px-6">
+      <div className="mx-auto w-full max-w-lg px-5 py-16 sm:px-8">
         <Card>
           <CardHeader>
             <MailCheck className="size-6 text-muted-foreground" aria-hidden="true" />
@@ -141,7 +141,7 @@ export function CadastroPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-16 sm:px-6">
+    <div className="mx-auto w-full max-w-lg px-5 py-16 sm:px-8">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Criar conta grátis</CardTitle>

@@ -5,7 +5,7 @@ import { ROUTES } from '@/lib/routes'
 
 function AuthLoading() {
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-16 sm:px-6">
+    <div className="mx-auto w-full max-w-3xl space-y-4 px-4 py-16 sm:px-8">
       <Skeleton className="h-9 w-64" />
       <Skeleton className="h-5 w-full max-w-md" />
       <Skeleton className="h-40 w-full" />

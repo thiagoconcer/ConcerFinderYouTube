@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { LogOut, Menu, User as UserIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Logo } from '@/components/brand/logo'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -60,9 +61,10 @@ export function SiteHeader() {
     }
   }
 
+  // Header sticky com vidro fosco, como o da LP: 68px de altura, blur 16px
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-50 h-[68px] w-full border-b bg-background/85 backdrop-blur-[16px] supports-[backdrop-filter]:bg-background/70">
+      <div className="mx-auto flex h-full w-full max-w-[1180px] items-center gap-4 px-5 sm:px-8">
         <Link
           to={isAuthenticated ? ROUTES.busca : ROUTES.landing}
           className="rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -92,6 +94,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

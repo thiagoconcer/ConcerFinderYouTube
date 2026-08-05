@@ -79,7 +79,7 @@ export function AdminAudienciaPage() {
   const maiorTema = insights?.temas?.[0]?.total ?? 1
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
+    <div className="mx-auto w-full max-w-[1180px] px-5 py-10 sm:px-8 sm:py-12">
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Audiência e leads</h1>

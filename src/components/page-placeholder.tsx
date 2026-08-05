@@ -27,7 +27,7 @@ export function PagePlaceholder({
   backTo,
 }: PagePlaceholderProps) {
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6">
+    <div className="mx-auto w-full max-w-3xl px-5 py-16 sm:px-8">
       <Card>
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">

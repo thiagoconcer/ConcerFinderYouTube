@@ -53,7 +53,7 @@ export function VideoDetailPage() {
 
   if (carregando) {
     return (
-      <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-6">
+      <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-10 sm:px-8">
         <Skeleton className="aspect-video w-full" />
         <Skeleton className="h-8 w-3/4" />
         <Skeleton className="h-4 w-full" />
@@ -64,7 +64,7 @@ export function VideoDetailPage() {
 
   if (erro || !detalhe) {
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-16 sm:px-6">
+      <div className="mx-auto w-full max-w-2xl px-5 py-16 sm:px-8">
         <Alert variant="destructive">
           <AlertCircle />
           <AlertTitle>Vídeo indisponível</AlertTitle>
@@ -84,7 +84,7 @@ export function VideoDetailPage() {
   const outros = segments.filter((s) => s.segment_id !== destacado?.segment_id)
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8 sm:py-10">
       <Button asChild variant="ghost" size="sm" className="mb-4 -ml-2">
         <Link to={ROUTES.busca}>
           <ArrowLeft />

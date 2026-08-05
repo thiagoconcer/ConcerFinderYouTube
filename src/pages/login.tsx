@@ -92,7 +92,7 @@ export function LoginPage() {
 
   if (magicLinkSent) {
     return (
-      <div className="mx-auto w-full max-w-md px-4 py-16 sm:px-6">
+      <div className="mx-auto w-full max-w-md px-5 py-16 sm:px-8">
         <Card>
           <CardHeader>
             <MailCheck className="size-6 text-muted-foreground" aria-hidden="true" />
@@ -116,7 +116,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-16 sm:px-6">
+    <div className="mx-auto w-full max-w-md px-5 py-16 sm:px-8">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Entrar</CardTitle>

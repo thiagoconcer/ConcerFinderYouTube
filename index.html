@@ -9,6 +9,25 @@
       content="ConcerFinder: descreva sua dor de vendas e receba os vídeos do Thiago Concer com a minutagem exata do insight e um plano de ação."
     />
     <title>ConcerFinder: busca inteligente nos vídeos do Thiago Concer</title>
+    <meta name="theme-color" content="#0A1628" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F6F8FC" media="(prefers-color-scheme: light)" />
+    <script>
+      // Aplica o tema antes da primeira pintura, senão a tela pisca em branco
+      // no tema escuro enquanto o React monta.
+      (function () {
+        try {
+          var salvo = localStorage.getItem('concerfinder-theme')
+          var escuro =
+            salvo === 'dark' ||
+            ((!salvo || salvo === 'system') &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', escuro)
+          document.documentElement.style.colorScheme = escuro ? 'dark' : 'light'
+        } catch (e) {
+          /* storage bloqueado: segue no tema claro */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

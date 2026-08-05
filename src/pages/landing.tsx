@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Clock, ListChecks, Search, Sparkles } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/use-auth'
@@ -45,18 +44,20 @@ export function LandingPage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="border-b">
-        <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
+      {/*
+        Hero em banda navy, o visual assinatura da marca. Fica navy nos dois
+        temas de propósito: é a "foto de palco" da LP, o ponto onde a marca se
+        apresenta. O ritmo vertical vem da alternância com as bandas claras.
+      */}
+      <section className="banda-navy border-b border-white/10">
+        <div className="mx-auto w-full max-w-[1180px] px-5 py-20 sm:px-8 lg:py-28">
           <div className="max-w-3xl">
-            <Badge variant="secondary" className="mb-6">
-              Acervo do canal do Thiago Concer
-            </Badge>
-            <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+            <span className="eyebrow mb-6">Acervo do canal do Thiago Concer</span>
+            <h1 className="text-[clamp(32px,4.6vw,58px)] font-semibold text-white">
               Descreva sua dor de vendas e receba o vídeo e o{' '}
-              <span className="text-muted-foreground">minuto exato</span> onde o Concer resolve.
+              <span className="text-primary">minuto exato</span> onde o Concer resolve.
             </h1>
-            <p className="mt-6 text-pretty text-lg text-muted-foreground">
+            <p className="mt-6 max-w-2xl text-lg text-[#C6D2E6]">
               São centenas de vídeos sobre vendas. O ConcerFinder encontra, dentro deles, o
               trecho que responde exatamente ao seu problema, e ainda monta um plano de ação
               para você aplicar hoje.
@@ -69,20 +70,29 @@ export function LandingPage() {
                 </Link>
               </Button>
               {!isAuthenticated && (
-                <Button asChild size="lg" variant="ghost">
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                >
                   <Link to={ROUTES.login}>Já tenho conta</Link>
                 </Button>
               )}
             </div>
+            <p className="mt-6 text-sm text-[#B5C2D8]">
+              Cadastro gratuito. Libera a busca na hora.
+            </p>
           </div>
         </div>
       </section>
 
       {/* Problema */}
       <section className="border-b bg-muted/30">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto grid w-full max-w-[1180px] gap-8 px-5 py-[clamp(64px,8vw,116px)] sm:px-8 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <span className="eyebrow mb-4">O problema</span>
+            <h2 className="text-[clamp(25px,3.4vw,42px)] font-semibold">
               O insight que você precisa está lá. No meio de um vídeo de 40 minutos.
             </h2>
           </div>
@@ -102,15 +112,23 @@ export function LandingPage() {
 
       {/* Como funciona */}
       <section className="border-b">
-        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Como funciona</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {HOW_IT_WORKS.map((step) => (
-              <Card key={step.title}>
+        <div className="mx-auto w-full max-w-[1180px] px-5 py-[clamp(64px,8vw,116px)] sm:px-8">
+          <span className="eyebrow mb-4">Como funciona</span>
+          <h2 className="text-[clamp(25px,3.4vw,42px)] font-semibold">Três passos, nada mais</h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {HOW_IT_WORKS.map((step, i) => (
+              <Card key={step.title} className="sombra-card">
                 <CardHeader>
-                  <step.icon className="size-5 text-muted-foreground" aria-hidden="true" />
-                  <CardTitle className="text-lg">{step.title}</CardTitle>
-                  <CardDescription>{step.description}</CardDescription>
+                  <span className="mb-1 inline-flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+                    <step.icon className="size-4.5" aria-hidden="true" />
+                  </span>
+                  <CardTitle className="text-xl">
+                    <span className="mr-1.5 font-bold tabular-nums text-primary">{i + 1}.</span>
+                    {step.title}
+                  </CardTitle>
+                  <CardDescription className="text-[15px] leading-relaxed">
+                    {step.description}
+                  </CardDescription>
                 </CardHeader>
               </Card>
             ))}
@@ -119,19 +137,20 @@ export function LandingPage() {
       </section>
 
       {/* Exemplos de dores */}
-      <section className="border-b bg-muted/30">
-        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <section className="border-b bg-muted/40">
+        <div className="mx-auto w-full max-w-[1180px] px-5 py-[clamp(64px,8vw,116px)] sm:px-8">
+          <span className="eyebrow mb-4">Exemplos</span>
+          <h2 className="text-[clamp(25px,3.4vw,42px)] font-semibold">
             Dores que você pode pesquisar
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-3 max-w-2xl text-[17px] text-muted-foreground">
             Escreva como você falaria com um colega. É assim que a busca funciona melhor.
           </p>
           <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {PAIN_EXAMPLES.map((pain) => (
               <li
                 key={pain}
-                className="rounded-lg border bg-background px-4 py-3 text-sm text-muted-foreground"
+                className="sombra-card rounded-lg border bg-card px-4 py-3.5 text-[15px] text-muted-foreground"
               >
                 “{pain}”
               </li>
@@ -140,26 +159,24 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Prova social + CTA final */}
-      <section>
-        <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-          <div className="rounded-xl border bg-card p-8 sm:p-12">
-            <ListChecks className="size-6 text-muted-foreground" aria-hidden="true" />
-            <h2 className="mt-4 text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
-              Todo o conteúdo do maior nome de vendas do Brasil, pesquisável por dor.
-            </h2>
-            <p className="mt-4 max-w-2xl text-muted-foreground">
-              Thiago Concer é a maior referência em vendas do Brasil. O ConcerFinder organiza esse
-              acervo para vendedores, gestores comerciais e donos de empresa acharem resposta em
-              segundos. O cadastro é gratuito e libera a busca na hora.
-            </p>
-            <Button asChild size="lg" className="mt-8">
-              <Link to={primaryCta.to}>
-                {primaryCta.label}
-                <ArrowRight />
-              </Link>
-            </Button>
-          </div>
+      {/* Prova social + CTA final, fechando em banda navy como a LP */}
+      <section className="banda-navy">
+        <div className="mx-auto w-full max-w-[1180px] px-5 py-[clamp(64px,8vw,116px)] sm:px-8">
+          <ListChecks className="size-6 text-primary" aria-hidden="true" />
+          <h2 className="mt-4 max-w-3xl text-[clamp(25px,3.4vw,42px)] font-semibold text-white">
+            Todo o conteúdo do maior nome de vendas do Brasil, pesquisável por dor.
+          </h2>
+          <p className="mt-4 max-w-2xl text-[17px] text-[#C6D2E6]">
+            Thiago Concer é a maior referência em vendas do Brasil. O ConcerFinder organiza esse
+            acervo para vendedores, gestores comerciais e donos de empresa acharem resposta em
+            segundos. O cadastro é gratuito e libera a busca na hora.
+          </p>
+          <Button asChild size="lg" className="mt-8">
+            <Link to={primaryCta.to}>
+              {primaryCta.label}
+              <ArrowRight />
+            </Link>
+          </Button>
         </div>
       </section>
     </>

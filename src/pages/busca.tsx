@@ -133,7 +133,7 @@ export function BuscaPage() {
   const carregando = estado.fase === 'buscando'
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
       <header className="mb-8">
         <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
           Qual é a sua dor de vendas?
