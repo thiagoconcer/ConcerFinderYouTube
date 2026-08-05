@@ -139,7 +139,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       isAuthenticated: Boolean(session),
-      isStaff: profile?.role === 'content_admin' || profile?.role === 'audience_manager',
+      /*
+        Precisa espelhar `is_concer_staff()` no banco, que aceita os TRÊS
+        papéis. Faltava 'admin' aqui, então quem tinha o papel mais alto era
+        justamente o único barrado nos painéis: o banco liberava e a rota do
+        frontend recusava.
+      */
+      isStaff:
+        profile?.role === 'content_admin' ||
+        profile?.role === 'audience_manager' ||
+        profile?.role === 'admin',
       signInWithPassword,
       signInWithMagicLink,
       signUp,

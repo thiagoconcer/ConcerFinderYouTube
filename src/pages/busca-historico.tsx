@@ -8,20 +8,45 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/routes'
 import { formatDateTime, topicLabel } from '@/lib/format'
-import type { Search as SearchRow } from '@/types/database'
+import { CARGO_LABELS } from '@/types/database'
+import type { Cargo, Search as SearchRow } from '@/types/database'
 import type { SearchHit, SearchResultRow } from '@/types/search'
 
 /**
  * /busca/historico
- * Buscas anteriores do próprio usuário (RLS: profile_id = auth.uid()).
+ * Buscas anteriores. Por padrão, SÓ as do próprio usuário.
+ *
+ * A RLS de `searches` libera staff a ler tudo, então sem o filtro explícito
+ * quem é da equipe via o histórico da base inteira misturado com o próprio,
+ * sem ter pedido. Ver as buscas dos outros é uma ação deliberada, então virou
+ * um seletor separado, visível só para staff.
+ *
  * Os resultados persistidos são reabertos pela RPC get_search_results,
  * já que video_segments não é legível direto pelo frontend.
  */
+
+type Escopo = 'minhas' | 'todas'
+
+/** Buscas de outras pessoas vêm com o autor embutido; as próprias, não. */
+type BuscaComAutor = SearchRow & {
+  profiles?: { full_name: string | null; email: string | null; cargo: string | null } | null
+}
+
 export function BuscaHistoricoPage() {
-  const [buscas, setBuscas] = useState<SearchRow[] | null>(null)
+  const { user, isStaff } = useAuth()
+  const [escopo, setEscopo] = useState<Escopo>('minhas')
+  const [buscas, setBuscas] = useState<BuscaComAutor[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [aberta, setAberta] = useState<string | null>(null)
   const [detalhes, setDetalhes] = useState<Record<string, SearchResultRow[]>>({})
@@ -30,19 +55,28 @@ export function BuscaHistoricoPage() {
   const carregar = useCallback(async () => {
     setErro(null)
     setBuscas(null)
-    const { data, error } = await supabase
+    const verTodas = escopo === 'todas' && isStaff
+    let consulta = supabase
       .from('searches')
-      .select('*')
+      .select(verTodas ? '*, profiles(full_name, email, cargo)' : '*')
       .order('created_at', { ascending: false })
       .limit(50)
 
+    // Sem este filtro a RLS entrega a base inteira para quem é staff.
+    if (!verTodas) {
+      if (!user?.id) return
+      consulta = consulta.eq('profile_id', user.id)
+    }
+
+    const { data, error } = await consulta
+
     if (error) {
-      setErro('Não foi possível carregar seu histórico.')
+      setErro('Não foi possível carregar o histórico.')
       setBuscas([])
       return
     }
-    setBuscas(data ?? [])
-  }, [])
+    setBuscas((data ?? []) as unknown as BuscaComAutor[])
+  }, [escopo, isStaff, user?.id])
 
   useEffect(() => {
     void carregar()
@@ -76,17 +110,36 @@ export function BuscaHistoricoPage() {
     <div className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Suas buscas</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            {escopo === 'todas' ? 'Buscas de todas as pessoas' : 'Suas buscas'}
+          </h1>
           <p className="mt-2 text-muted-foreground">
-            Tudo o que você já pesquisou, com os temas identificados em cada dor.
+            {escopo === 'todas'
+              ? 'O que a audiência inteira pesquisou. Visão da equipe Concer.'
+              : 'Tudo o que você já pesquisou, com os temas identificados em cada dor.'}
           </p>
         </div>
-        <Button asChild>
-          <Link to={ROUTES.busca}>
-            <Search />
-            Nova busca
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Só staff enxerga o seletor. Ver a busca dos outros é uma ação
+              deliberada, nunca o padrão de quem abre a própria página. */}
+          {isStaff && (
+            <Select value={escopo} onValueChange={(v) => setEscopo(v as Escopo)}>
+              <SelectTrigger className="w-52">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="minhas">Minhas buscas</SelectItem>
+                <SelectItem value="todas">Todas as pessoas</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+          <Button asChild>
+            <Link to={ROUTES.busca}>
+              <Search />
+              Nova busca
+            </Link>
+          </Button>
+        </div>
       </header>
 
       {erro && (
@@ -161,6 +214,19 @@ export function BuscaHistoricoPage() {
                           </CardTitle>
                           <p className="mt-1.5 text-sm text-muted-foreground">
                             {formatDateTime(busca.created_at)}
+                            {/* Sem o autor, a lista de todas as pessoas vira um
+                                amontoado de frases sem dono. */}
+                            {escopo === 'todas' && busca.profiles && (
+                              <>
+                                {' · '}
+                                <span className="text-foreground">
+                                  {busca.profiles.full_name || busca.profiles.email}
+                                </span>
+                                {busca.profiles.cargo && (
+                                  <> ({CARGO_LABELS[busca.profiles.cargo as Cargo] ?? busca.profiles.cargo})</>
+                                )}
+                              </>
+                            )}
                           </p>
                         </div>
                         <div className="flex shrink-0 gap-2">

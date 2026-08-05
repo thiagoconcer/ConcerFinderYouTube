@@ -9,7 +9,15 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/routes'
-import { formatDate, formatTimestamp, topicLabel, youtubeEmbedUrl, youtubeUrl } from '@/lib/format'
+import {
+  formatDate,
+  formatDuration,
+  formatTimeRange,
+  formatTimestamp,
+  topicLabel,
+  youtubeEmbedUrl,
+  youtubeUrl,
+} from '@/lib/format'
 import type { VideoDetail } from '@/types/search'
 
 /**
@@ -152,7 +160,14 @@ export function VideoDetailPage() {
           <Card>
             <CardContent className="space-y-3 pt-6">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge>minuto {formatTimestamp(destacado.start_seconds)}</Badge>
+                {/* Onde termina importa tanto quanto onde comeca: a promessa
+                    do produto e a pessoa nao assistir o video inteiro. */}
+                <Badge>{formatTimeRange(destacado.start_seconds, destacado.end_seconds)}</Badge>
+                {formatDuration(destacado.start_seconds, destacado.end_seconds) && (
+                  <Badge variant="outline">
+                    {formatDuration(destacado.start_seconds, destacado.end_seconds)} de leitura
+                  </Badge>
+                )}
                 {(destacado.topic_tags ?? []).slice(0, 3).map((tag) => (
                   <Badge key={tag} variant="secondary">
                     {topicLabel(tag)}
@@ -190,8 +205,13 @@ export function VideoDetailPage() {
                 >
                   <span className="mb-2 flex items-center gap-2">
                     <Badge variant="outline">
-                      minuto {formatTimestamp(segmento.start_seconds)}
+                      {formatTimeRange(segmento.start_seconds, segmento.end_seconds)}
                     </Badge>
+                    {formatDuration(segmento.start_seconds, segmento.end_seconds) && (
+                      <span className="text-xs text-muted-foreground">
+                        {formatDuration(segmento.start_seconds, segmento.end_seconds)}
+                      </span>
+                    )}
                   </span>
                   <span className="line-clamp-2 text-sm text-muted-foreground">
                     {segmento.segment_text}

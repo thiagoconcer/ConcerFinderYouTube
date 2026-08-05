@@ -9,6 +9,26 @@ export function formatTimestamp(segundos: number): string {
   return h > 0 ? `${h}:${mm}:${ss}` : `${m}:${ss}`
 }
 
+/**
+ * Faixa do trecho: "0:43 → 1:52". A promessa do produto é a pessoa NÃO
+ * assistir o vídeo inteiro, então saber onde o raciocínio termina vale tanto
+ * quanto saber onde começa.
+ */
+export function formatTimeRange(inicio: number, fim?: number | null): string {
+  if (fim === null || fim === undefined || fim <= inicio) return formatTimestamp(inicio)
+  return `${formatTimestamp(inicio)} → ${formatTimestamp(fim)}`
+}
+
+/** Duração do trecho em linguagem de gente: "1 min 9 s", "48 s". */
+export function formatDuration(inicio: number, fim?: number | null): string | null {
+  if (fim === null || fim === undefined || fim <= inicio) return null
+  const total = Math.round(fim - inicio)
+  const m = Math.floor(total / 60)
+  const s = total % 60
+  if (m === 0) return `${s} s`
+  return s === 0 ? `${m} min` : `${m} min ${s} s`
+}
+
 /** Deep-link do YouTube já no minuto do insight. */
 export function youtubeUrl(youtubeVideoId: string, startSeconds?: number): string {
   const base = `https://www.youtube.com/watch?v=${youtubeVideoId}`

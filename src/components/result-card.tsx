@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ROUTES } from '@/lib/routes'
-import { formatScore, formatTimestamp, thumbnailUrl } from '@/lib/format'
+import { formatDuration, formatScore, formatTimeRange, formatTimestamp, thumbnailUrl } from '@/lib/format'
 import type { SearchHit } from '@/types/search'
 
 /**
@@ -14,6 +14,8 @@ import type { SearchHit } from '@/types/search'
  */
 export function ResultCard({ hit }: { hit: SearchHit }) {
   const minuto = formatTimestamp(hit.start_seconds)
+  const faixa = formatTimeRange(hit.start_seconds, hit.end_seconds)
+  const duracao = formatDuration(hit.start_seconds, hit.end_seconds)
   const destino = `${ROUTES.video(hit.video_id)}?t=${hit.start_seconds}&s=${hit.segment_id}`
 
   return (
@@ -37,10 +39,13 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
 
         <div className="flex min-w-0 flex-1 flex-col gap-3 p-4 sm:py-4 sm:pl-0 sm:pr-4">
           <div className="flex flex-wrap items-center gap-2">
+            {/* Faixa, não só o início: a pessoa precisa saber quanto vai
+                assistir antes de decidir clicar. */}
             <Badge variant="secondary" className="gap-1">
               <Clock className="size-3" />
-              minuto {minuto}
+              {faixa}
             </Badge>
+            {duracao && <Badge variant="outline">{duracao}</Badge>}
             <Badge variant="outline">{formatScore(hit.similarity_score)} de relevância</Badge>
           </div>
 
