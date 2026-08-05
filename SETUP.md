@@ -26,7 +26,47 @@ Depois de salvar os secrets **não precisa republicar nada**: as funções leem 
 | Secret | Onde pegar | O que quebra sem ela |
 |---|---|---|
 | `YOUTUBE_API_KEY` | console.cloud.google.com → APIs → YouTube Data API v3 | `scrape-youtube-channel`. Sem ela a base fica vazia. |
-| `YOUTUBE_CHANNEL_ID` | o ID do canal do Concer, no formato `UC...` | idem. Dá para descobrir em youtube.com/@thiagoconcer → ver código-fonte, ou pela própria API. |
+| `YOUTUBE_CHANNEL_ID` | `UC7vIOWvsGpl5YXZ13mvaZDQ` (canal do Concer, já confirmado) | idem. |
+
+## Obrigatórias para a transcrição: OAuth do dono do canal
+
+> **Por que isso é necessário.** Verificado em 05/08/2026: o YouTube passou a responder
+> `LOGIN_REQUIRED` ("faça login para confirmar que você não é um bot") para requisições
+> anônimas vindas de IP de datacenter, o que inclui as Edge Functions do Supabase e
+> qualquer VPS. Nenhum método público de baixar legenda funciona mais nesse ambiente.
+>
+> Como a Concer é **dona do canal**, existe o caminho oficial e gratuito: a YouTube Data
+> API permite ao dono baixar as legendas dos próprios vídeos, inclusive as automáticas.
+> Isso exige OAuth, não basta a API key.
+
+| Secret | O que é |
+|---|---|
+| `YOUTUBE_OAUTH_CLIENT_ID` | ID do cliente OAuth criado no Google Cloud |
+| `YOUTUBE_OAUTH_CLIENT_SECRET` | Segredo desse mesmo cliente |
+| `YOUTUBE_OAUTH_REFRESH_TOKEN` | Token de atualização gerado autorizando com a conta dona do canal |
+
+### Como gerar (uma vez, cerca de 10 minutos)
+
+**1. Crie o cliente OAuth** em console.cloud.google.com, no mesmo projeto da `YOUTUBE_API_KEY`:
+
+- **APIs e serviços → Tela de permissão OAuth**: tipo *Externo*, preencha o básico e adicione o e-mail dono do canal em "Usuários de teste".
+- **APIs e serviços → Credenciais → Criar credenciais → ID do cliente OAuth**, tipo **Aplicativo da Web**.
+- Em "URIs de redirecionamento autorizados", adicione exatamente:
+  `https://developers.google.com/oauthplayground`
+- Anote o **Client ID** e o **Client secret**.
+
+**2. Gere o refresh token** em https://developers.google.com/oauthplayground:
+
+- Clique na engrenagem (canto superior direito) e marque **"Use your own OAuth credentials"**. Cole o Client ID e o Client secret.
+- Na lista da esquerda, cole no campo de escopo: `https://www.googleapis.com/auth/youtube.force-ssl`
+- **Authorize APIs** e faça login **com a conta Google que é dona do canal** (esse ponto é o que faz tudo funcionar; outra conta não consegue baixar as legendas).
+- Clique em **Exchange authorization code for tokens** e copie o **Refresh token**.
+
+**3. Cole os três** nos Secrets do Supabase e rode a transcrição em `/admin/conteudo`.
+
+### Alternativa paga
+
+Se o OAuth não for viável, `APIFY_TOKEN` (apify.com) contorna o bloqueio do YouTube por conta própria. O código já tenta o Apify automaticamente quando o OAuth não está configurado. Custa por uso e é bem mais caro que o caminho oficial, que é gratuito.
 
 ## Opcionais (melhoram ou completam o fluxo)
 

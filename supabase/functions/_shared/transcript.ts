@@ -5,13 +5,20 @@ import { AppError, fetchJson, optionalSecret, requireSecret } from './http.ts'
  *
  * Por que legenda e não áudio: a Edge Function roda em Deno isolado, sem
  * yt-dlp e sem ffmpeg, então baixar e extrair áudio do YouTube ali dentro não
- * é viável. O caminho realista, e o que o docs/ESTRUTURA.md já previa ao citar
- * o Apify para "captura de legendas", é puxar a legenda com timestamps.
+ * é viável. O caminho realista é puxar a legenda com timestamps.
+ *
+ * IMPORTANTE (verificado em 05/08/2026): o YouTube passou a responder
+ * `LOGIN_REQUIRED` ("faça login para confirmar que você não é um bot") para
+ * requisições anônimas vindas de IP de datacenter, o que inclui as Edge
+ * Functions. Os caminhos públicos (timedtext e player interno) não funcionam
+ * mais nesse ambiente. O caminho oficial e gratuito é a YouTube Data API com
+ * OAuth do DONO do canal, que é o caso da Concer.
  *
  * Ordem de tentativa:
- *  1. timedtext público do YouTube (grátis, cobre vídeo com legenda ativada)
- *  2. Apify (APIFY_TOKEN), que também alcança legenda automática
- *  3. Whisper (OPENAI_API_KEY + AUDIO_SOURCE_URL), quando existe um serviço
+ *  1. YouTube Data API com OAuth do dono do canal (oficial, grátis, principal)
+ *  2. timedtext público (mantido: funciona de IP residencial e pode voltar)
+ *  3. Apify (APIFY_TOKEN), serviço pago que contorna o bloqueio por conta própria
+ *  4. Whisper (OPENAI_API_KEY + AUDIO_SOURCE_URL), quando existe um serviço
  *     próprio que devolve o áudio do vídeo
  */
 
@@ -19,6 +26,129 @@ export interface TranscriptCue {
   text: string
   start: number
   duration: number
+}
+
+// ------------------------------------------------------------------
+// 1. YouTube Data API (OAuth do dono do canal)
+// ------------------------------------------------------------------
+
+/** Cache do access token enquanto a instância da função viver. */
+let tokenCache: { valor: string; expiraEm: number } | null = null
+
+async function accessTokenDoDono(): Promise<string | null> {
+  const clientId = optionalSecret('YOUTUBE_OAUTH_CLIENT_ID')
+  const clientSecret = optionalSecret('YOUTUBE_OAUTH_CLIENT_SECRET')
+  const refreshToken = optionalSecret('YOUTUBE_OAUTH_REFRESH_TOKEN')
+  if (!clientId || !clientSecret || !refreshToken) return null
+
+  if (tokenCache && tokenCache.expiraEm > Date.now() + 60_000) return tokenCache.valor
+
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    }),
+  })
+
+  if (!res.ok) {
+    throw new AppError(
+      `Não foi possível renovar o token do YouTube: ${(await res.text()).slice(0, 200)}. ` +
+        'Confira YOUTUBE_OAUTH_CLIENT_ID, YOUTUBE_OAUTH_CLIENT_SECRET e YOUTUBE_OAUTH_REFRESH_TOKEN.',
+      502,
+      'youtube_oauth_failed',
+    )
+  }
+
+  const data = await res.json()
+  tokenCache = {
+    valor: data.access_token,
+    expiraEm: Date.now() + (data.expires_in ?? 3600) * 1000,
+  }
+  return tokenCache.valor
+}
+
+/** Converte SRT (formato que a API devolve) em cues com segundos. */
+function parseSrt(srt: string): TranscriptCue[] {
+  const cues: TranscriptCue[] = []
+  const tempo = (t: string) => {
+    const m = t.trim().match(/(\d+):(\d+):(\d+)[,.](\d+)/)
+    if (!m) return 0
+    return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]) + Number(m[4]) / 1000
+  }
+
+  for (const bloco of srt.split(/\r?\n\r?\n/)) {
+    const linhas = bloco.split(/\r?\n/).filter((l) => l.trim())
+    if (linhas.length < 2) continue
+    const linhaTempo = linhas.find((l) => l.includes('-->'))
+    if (!linhaTempo) continue
+
+    const [de, ate] = linhaTempo.split('-->')
+    const inicio = tempo(de)
+    const fim = tempo(ate)
+    const texto = linhas
+      .slice(linhas.indexOf(linhaTempo) + 1)
+      .join(' ')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+    if (texto) cues.push({ text: texto, start: inicio, duration: Math.max(0, fim - inicio) })
+  }
+  return cues
+}
+
+async function viaDataApi(videoId: string): Promise<TranscriptCue[]> {
+  const token = await accessTokenDoDono()
+  if (!token) return []
+
+  const auth = { Authorization: `Bearer ${token}` }
+
+  // lista as faixas de legenda do vídeo
+  const lista = await fetch(
+    `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}`,
+    { headers: auth },
+  )
+  if (!lista.ok) {
+    throw new AppError(
+      `captions.list falhou para ${videoId}: ${(await lista.text()).slice(0, 200)}`,
+      502,
+      'captions_list_failed',
+    )
+  }
+
+  const faixas: any[] = (await lista.json()).items ?? []
+  if (faixas.length === 0) return []
+
+  // preferência: pt-BR manual > pt manual > pt-BR automática > qualquer pt > primeira
+  const pontuar = (f: any) => {
+    const lang = String(f.snippet?.language ?? '')
+    const auto = f.snippet?.trackKind === 'ASR'
+    let p = 0
+    if (lang.startsWith('pt')) p += 4
+    if (lang === 'pt-BR') p += 1
+    if (!auto) p += 2
+    return p
+  }
+  const escolhida = [...faixas].sort((a, b) => pontuar(b) - pontuar(a))[0]
+
+  const download = await fetch(
+    `https://www.googleapis.com/youtube/v3/captions/${escolhida.id}?tfmt=srt`,
+    { headers: auth },
+  )
+  if (!download.ok) {
+    throw new AppError(
+      `captions.download falhou para ${videoId}: ${(await download.text()).slice(0, 200)}. ` +
+        'A conta OAuth precisa ser a DONA do canal.',
+      502,
+      'captions_download_failed',
+    )
+  }
+
+  return parseSrt(await download.text())
 }
 
 // ------------------------------------------------------------------
@@ -139,6 +269,7 @@ async function viaWhisper(videoId: string): Promise<TranscriptCue[]> {
 
 export async function fetchTranscript(videoId: string): Promise<TranscriptCue[]> {
   const estrategias: Array<[string, () => Promise<TranscriptCue[]>]> = [
+    ['data-api', () => viaDataApi(videoId)],
     ['timedtext', () => viaTimedText(videoId)],
     ['apify', () => viaApify(videoId)],
     ['whisper', () => viaWhisper(videoId)],
@@ -157,7 +288,9 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptCue[]>
 
   throw new AppError(
     `Nenhuma transcrição disponível para ${videoId}. Tentativas: ${falhas.join(' | ')}. ` +
-      'Configure APIFY_TOKEN (legenda automática) ou AUDIO_SOURCE_URL + OPENAI_API_KEY (Whisper).',
+      'O YouTube bloqueia acesso anônimo a legendas vindo de datacenter, então o caminho ' +
+      'principal é o OAuth do dono do canal: configure YOUTUBE_OAUTH_CLIENT_ID, ' +
+      'YOUTUBE_OAUTH_CLIENT_SECRET e YOUTUBE_OAUTH_REFRESH_TOKEN. Alternativa paga: APIFY_TOKEN.',
     422,
     'no_transcript',
   )
