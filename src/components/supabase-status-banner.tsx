@@ -27,18 +27,25 @@ export function SupabaseStatusBanner() {
 
     let active = true
 
-    // Consulta leve (head + count) só para validar credencial e existência do schema.
+    // Consulta leve só para validar credencial e existência do schema.
+    // (sem head:true — em 404 o corpo vazio impede a leitura do erro)
     supabase
       .from('videos')
-      .select('id', { count: 'exact', head: true })
+      .select('id')
+      .limit(1)
       .then(({ error }) => {
         if (!active) return
         if (!error) {
           setStatus({ kind: 'ok' })
           return
         }
-        // 42P01 = relation does not exist -> schema ainda não aplicado
-        if (error.code === '42P01' || error.message.includes('does not exist')) {
+        // PGRST205 = tabela ausente no schema cache; 42P01 = relation does not exist
+        if (
+          error.code === 'PGRST205' ||
+          error.code === '42P01' ||
+          error.message.includes('does not exist') ||
+          error.message.includes('schema cache')
+        ) {
           setStatus({ kind: 'missing-schema' })
           return
         }
