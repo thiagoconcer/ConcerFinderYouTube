@@ -100,6 +100,27 @@ export type Database = {
           },
         ]
       }
+      limites_de_uso: {
+        Row: {
+          atualizado_em: string
+          buscas_por_dia: number
+          buscas_por_hora: number
+          papel: string
+        }
+        Insert: {
+          atualizado_em?: string
+          buscas_por_dia: number
+          buscas_por_hora: number
+          papel: string
+        }
+        Update: {
+          atualizado_em?: string
+          buscas_por_dia?: number
+          buscas_por_hora?: number
+          papel?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           cargo: string | null
@@ -443,6 +464,7 @@ export type Database = {
       get_video_detail: { Args: { p_video_id: string }; Returns: Json }
       is_concer_admin: { Args: never; Returns: boolean }
       is_concer_staff: { Args: never; Returns: boolean }
+      limite_de_busca: { Args: never; Returns: Json }
       perfil_do_cargo: { Args: { p_cargo: string }; Returns: string }
       run_ingestion_step: { Args: { step: string }; Returns: number }
       search_videos: {

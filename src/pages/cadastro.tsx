@@ -62,8 +62,10 @@ export function CadastroPage() {
     if (!cargo) {
       errors.cargo = 'Selecione o seu cargo.'
     }
-    if (password.length < 6) {
-      errors.password = 'A senha precisa ter no mínimo 6 caracteres.'
+    // Precisa acompanhar o mínimo do Supabase Auth. Se o front pedir menos,
+    // a pessoa preenche tudo e leva erro do servidor só no envio.
+    if (password.length < 8) {
+      errors.password = 'A senha precisa ter no mínimo 8 caracteres.'
     }
 
     return errors
@@ -242,7 +244,7 @@ export function CadastroPage() {
                 name="password"
                 type="password"
                 autoComplete="new-password"
-                placeholder="Mínimo de 6 caracteres"
+                placeholder="Mínimo de 8 caracteres"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 disabled={submitting}

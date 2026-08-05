@@ -40,6 +40,25 @@ Deno.serve(handler(async (req) => {
 
   const matchCount = Math.min(Math.max(body.match_count ?? 6, 1), 20)
 
+  const db = userClient(req)
+
+  /*
+    Teto de uso, conferido ANTES do embedding. A trava de verdade está dentro
+    da RPC search_videos, que é por onde o acervo sai; esta checagem existe
+    para não pagar a OpenAI por uma chamada que já vai ser recusada.
+  */
+  const { data: limite } = await db.rpc('limite_de_busca')
+  const situacao = limite as { permitido?: boolean; motivo?: string } | null
+  if (situacao && situacao.permitido === false) {
+    throw new AppError(
+      situacao.motivo === 'limite_por_hora'
+        ? 'Você fez muitas buscas na última hora. Tente de novo daqui a pouco.'
+        : 'Você atingiu o limite de buscas do dia. Amanhã ele zera.',
+      429,
+      'rate_limited',
+    )
+  }
+
   // 1. embedding da dor descrita
   const embedding = await embedText(queryText)
 
@@ -47,7 +66,6 @@ Deno.serve(handler(async (req) => {
   const topicos = detectTopics(queryText)
 
   // 3. busca vetorial + persistência de searches/search_results
-  const db = userClient(req)
   const { data, error } = await db.rpc('search_videos', {
     query_embedding: embedding,
     match_count: matchCount,
@@ -58,6 +76,9 @@ Deno.serve(handler(async (req) => {
   if (error) {
     if (error.code === '42501') {
       throw new AppError('É preciso estar autenticado para buscar insights.', 401, 'unauthenticated')
+    }
+    if (error.code === 'P0001' && /limite de buscas/i.test(error.message)) {
+      throw new AppError(error.message, 429, 'rate_limited')
     }
     throw new AppError(`Falha na busca: ${error.message}`, 500, 'search_failed')
   }
