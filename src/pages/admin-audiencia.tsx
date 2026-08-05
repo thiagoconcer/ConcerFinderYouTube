@@ -59,15 +59,13 @@ export function AdminAudienciaPage() {
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
-    // O corte por cargo não usa o filtro de perfil: ele é justamente a visão
-    // mais fina, e filtrar por perfil deixaria só os cargos daquele grupo.
+    // O filtro vai para as TRÊS. Filtrar pela metade é pior que não filtrar:
+    // a pessoa lê a tela inteira como se fosse do recorte escolhido.
+    const filtro = perfil ? { filter_commercial_role: perfil } : {}
     const [insightsRes, cargosRes, engajamentoRes] = await Promise.all([
-      supabase.rpc(
-        'get_audience_insights',
-        perfil ? { filter_commercial_role: perfil } : {},
-      ),
-      supabase.rpc('get_cargo_insights', {}),
-      supabase.rpc('get_engagement_insights', {}),
+      supabase.rpc('get_audience_insights', filtro),
+      supabase.rpc('get_cargo_insights', filtro),
+      supabase.rpc('get_engagement_insights', filtro),
     ])
 
     if (insightsRes.error) {
@@ -151,9 +149,28 @@ export function AdminAudienciaPage() {
         <Card>
           <CardContent className="py-14 text-center">
             <Users className="mx-auto mb-3 size-6 text-muted-foreground" />
-            <p className="font-medium">Sem dados de audiência ainda</p>
+            {/* Com filtro ativo o vazio tem outra causa, e culpar a falta de
+                cadastros mandaria a pessoa procurar um problema que não existe. */}
+            <p className="font-medium">
+              {filtroPerfil === TODOS
+                ? 'Sem dados de audiência ainda'
+                : `Ninguém com o perfil ${COMMERCIAL_ROLE_LABELS[filtroPerfil as CommercialRole] ?? filtroPerfil}`}
+            </p>
             <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Os insights aparecem conforme os usuários se cadastram e buscam suas dores.
+              {filtroPerfil === TODOS ? (
+                'Os insights aparecem conforme os usuários se cadastram e buscam suas dores.'
+              ) : (
+                <>
+                  Nenhum cadastro nesse perfil até agora.{' '}
+                  <button
+                    type="button"
+                    onClick={() => setFiltroPerfil(TODOS)}
+                    className="underline"
+                  >
+                    ver todos os perfis
+                  </button>
+                </>
+              )}
             </p>
           </CardContent>
         </Card>

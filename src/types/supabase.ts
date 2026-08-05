@@ -398,12 +398,20 @@ export type Database = {
         Returns: Json
       }
       get_cargo_insights: {
-        Args: { from_date?: string; to_date?: string }
+        Args: {
+          filter_commercial_role?: string
+          from_date?: string
+          to_date?: string
+        }
         Returns: Json
       }
       get_content_dashboard: { Args: never; Returns: Json }
       get_engagement_insights: {
-        Args: { from_date?: string; to_date?: string }
+        Args: {
+          filter_commercial_role?: string
+          from_date?: string
+          to_date?: string
+        }
         Returns: Json
       }
       get_equipe: { Args: never; Returns: Json }
