@@ -1,0 +1,32 @@
+project_id = "lzjwiibsqbowrrekptvg"
+
+# ------------------------------------------------------------------
+# Edge Functions (kebab-case, conforme docs/FUNCTIONS.md)
+# verify_jwt = true  -> exige Authorization com JWT de usuário ou service_role
+# verify_jwt = false -> chamador externo, autenticação própria dentro da função
+# ------------------------------------------------------------------
+
+[functions.register-lead]
+verify_jwt = true
+
+[functions.search-pain]
+verify_jwt = true
+
+[functions.generate-action-plan]
+verify_jwt = true
+
+# Etapas da esteira: chamadas pelo pg_cron, que não tem JWT. A autenticação
+# acontece dentro da função (requireStaffOrService): JWT de staff, service_role
+# ou o header X-Cron-Secret. Sem isso a função devolve 403.
+[functions.scrape-youtube-channel]
+verify_jwt = false
+
+[functions.transcribe-videos]
+verify_jwt = false
+
+[functions.index-segments]
+verify_jwt = false
+
+# Webhook do N8N/Make: sem JWT, valida HMAC-SHA256 no header X-Signature
+[functions.nurture-webhook-callback]
+verify_jwt = false

@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { friendlyAuthError } from '@/lib/auth-errors'
 import { ROUTES } from '@/lib/routes'
+import { supabase } from '@/lib/supabase'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole } from '@/types/database'
 
@@ -89,6 +90,24 @@ export function CadastroPage() {
       if (needsEmailConfirmation) {
         setAwaitingConfirmation(true)
         return
+      }
+
+      // Gera o lead e dispara a régua de nutrição.
+      // Regra do PAGINAS.md: se a nutrição falhar, o usuário é liberado do
+      // mesmo jeito (o lead fica com nurture_status='failed' para a equipe
+      // reprocessar), então a falha aqui não bloqueia a busca.
+      try {
+        const { error } = await supabase.functions.invoke('register-lead', {
+          body: {
+            full_name: fullName.trim(),
+            email: email.trim(),
+            whatsapp: whatsapp.trim(),
+            commercial_role: commercialRole,
+          },
+        })
+        if (error) console.warn('register-lead falhou, cadastro segue liberado:', error)
+      } catch (error) {
+        console.warn('register-lead indisponível, cadastro segue liberado:', error)
       }
 
       navigate(ROUTES.busca, { replace: true })

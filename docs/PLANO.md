@@ -36,11 +36,13 @@ O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa 
 **Functions:** `scrape-youtube-channel`, `transcribe-videos`, `index-segments`, `search_videos` (RPC), `generate-action-plan`, `register-lead`, `get_audience_insights` (RPC).
 
 **Checklist:**
-- [ ] Edge Functions de ingestão: `scrape-youtube-channel` + `transcribe-videos` + `index-segments`
-- [ ] RPC `search_videos` (busca vetorial) + Edge Function `generate-action-plan`
-- [ ] Página `/busca` + `/video/:id` (deep-link no minuto) + `/busca/historico`
-- [ ] Edge Function `register-lead` com disparo ao webhook de nutrição
-- [ ] Painel `/admin/conteudo` (status de ingestão) e `/admin/audiencia` (leads + temas)
+- [x] Edge Functions de ingestão: `scrape-youtube-channel` + `transcribe-videos` + `index-segments`
+- [x] RPC `search_videos` (busca vetorial) + Edge Function `generate-action-plan`
+- [x] Página `/busca` + `/video/:id` (deep-link no minuto) + `/busca/historico`
+- [x] Edge Function `register-lead` com disparo ao webhook de nutrição
+- [x] Painel `/admin/conteudo` (status de ingestão) e `/admin/audiencia` (leads + temas)
+
+**Concluída em 05/08/2026.** 7 Edge Functions publicadas e 8 funções Postgres no banco. Acrescentadas ao escopo original e registradas em `docs/FUNCTIONS.md` e `docs/DEPARA.md`: a Edge Function **`search-pain`** (o embedding da consulta precisa ser gerado no servidor, porque a chave de IA não pode ir ao navegador) e as RPCs **`get_search_results`**, **`get_video_detail`** e **`get_content_dashboard`** (as telas precisam do texto do trecho, e `video_segments` é fechada ao frontend por regra de negócio). Falta apenas configurar as chaves de API externas, ver `SETUP.md`.
 
 ---
 
@@ -53,6 +55,8 @@ O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa 
 **Functions:** `nurture-webhook-callback`, agenda `pg_cron`.
 
 **Checklist:**
-- [ ] Estados de vazio/erro/loading em `/busca`, painéis e cadastro + responsividade mobile
-- [ ] Agendar `pg_cron` diário: scrape → transcribe → index; `nurture-webhook-callback`
-- [ ] Revisão de segurança (RLS, staff-only nos painéis) e deploy final publicado
+- [x] Estados de vazio/erro/loading em `/busca`, painéis e cadastro + responsividade mobile
+- [x] Agendar `pg_cron` diário: scrape → transcribe → index; `nurture-webhook-callback`
+- [x] Revisão de segurança (RLS, staff-only nos painéis) e deploy final publicado
+
+**Concluída em 05/08/2026.** `pg_cron` e `pg_net` habilitados, com três jobs diários (03:00, 03:30 e 04:00 em Brasília) autenticados por um segredo dedicado guardado no Vault, e não pela `service_role`. Revisão de segurança validada por teste automatizado de 20 casos: visitante sem cadastro não busca, usuário não lê busca alheia, `video_segments` inacessível pelo frontend, painéis staff-only barrados no banco (não só na UI) e nenhum segredo no bundle publicado.

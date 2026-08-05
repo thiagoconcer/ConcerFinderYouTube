@@ -126,6 +126,31 @@
 
 ---
 
+### `search-pain`
+- **Propósito:** receber a dor em linguagem natural, gerar o embedding da consulta e chamar a RPC `search_videos`, devolvendo os trechos com a minutagem exata. **[Extensão do doc]**
+- **Por que existe:** a RPC `search_videos` recebe o `query_embedding` já pronto, mas a chave da API de embeddings não pode chegar ao navegador (gate de segurança do `SKILL.md`). O embedding da consulta precisa ser gerado no servidor, e o `SKILL.md` já previa uma Edge Function `search-pain` nesse ponto do fluxo.
+- **Autenticação exigida:** **usuário logado**. A RPC é chamada com o **JWT do próprio usuário**, não com `service_role`, para que `auth.uid()` seja o dele e a busca fique gravada no perfil certo.
+- **Input (body JSON):**
+  ```json
+  { "query_text": "string", "match_count": 6 }
+  ```
+- **Output:**
+  ```json
+  {
+    "search_id": "uuid",
+    "query_text": "string",
+    "detected_topics": ["objecao-de-preco"],
+    "results": [{ "video_id": "uuid", "youtube_video_id": "string", "title": "string", "segment_id": "uuid", "segment_text": "string", "start_seconds": 0, "similarity_score": 0.0, "rank_position": 1 }],
+    "total": 0
+  }
+  ```
+- **Regras de negócio / validações:**
+  - Exige `query_text` entre 10 e 2000 caracteres; abaixo disso a busca semântica não tem sinal suficiente.
+  - Gera `detected_topics` pela taxonomia de dores de vendas em pt-BR e repassa à RPC, alimentando a segmentação de audiência.
+  - Não persiste nada por conta própria: quem grava `searches` e `search_results` é a RPC `search_videos`.
+
+---
+
 ### `generate-action-plan`
 - **Propósito:** gerar o texto do plano de ação a partir da dor descrita pelo usuário e dos top segmentos recuperados na busca.
 - **Autenticação exigida:** **usuário logado** (chamada dentro do fluxo de busca; o JWT do usuário é validado).
@@ -219,6 +244,39 @@
 
 ---
 
+### `get_search_results(p_search_id uuid)`
+- **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`. **[Extensão do doc]**
+- **Propósito:** reabrir os resultados de uma busca anterior em `/busca/historico`.
+- **Por que existe:** `video_segments` não tem policy para o frontend, então o texto do trecho de uma busca já feita só pode sair por RPC. Devolve apenas o que o usuário já viu.
+- **Input:** `p_search_id uuid`.
+- **Output:** as linhas de `search_results` com `segment_text`, `start_seconds`, título do vídeo e o `action_plan` da busca.
+- **Regras:** aborta se `auth.uid()` for nulo; só devolve se a busca for do próprio usuário ou se `is_concer_staff()`.
+
+---
+
+### `get_video_detail(p_video_id uuid)`
+- **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`. **[Extensão do doc]**
+- **Propósito:** alimentar `/video/:id` com os metadados do vídeo e os trechos relevantes.
+- **Input:** `p_video_id uuid`.
+- **Output:** `jsonb` com `video` (metadados) e `segments` (trechos com `start_seconds` e `topic_tags`).
+- **Regras:** exige `auth.uid()`; devolve **apenas os segmentos que o próprio usuário já recuperou** em buscas dele (staff vê todos). Mantém a regra de que ninguém navega livremente pela transcrição.
+
+---
+
+### `get_content_dashboard()`
+- **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`, **staff-only**. **[Extensão do doc]**
+- **Propósito:** contadores da esteira de ingestão para o painel `/admin/conteudo` (total de vídeos por `transcription_status`, segmentos, segmentos com embedding, última execução).
+- **Regras:** bloqueia se `is_concer_staff()` for falso.
+
+---
+
+### `run_ingestion_step(step text)`
+- **Tipo:** **função interna** (`SECURITY DEFINER`), chamada só pelo `pg_cron`. **[Extensão do doc]**
+- **Propósito:** disparar uma etapa da esteira via `net.http_post` para a Edge Function correspondente.
+- **Regras:** valida `step` contra a lista permitida; lê o segredo `concerfinder_cron_secret` do **Vault** e o envia no header `X-Cron-Secret`. `EXECUTE` revogado de `public`, `anon` e `authenticated`.
+
+---
+
 ### `get_audience_insights()`
 - **Tipo:** **RPC chamável pelo client** — `SECURITY DEFINER`, **staff-only**.
 - **Propósito:** consolidar dores/temas buscados cruzados com o perfil comercial dos leads, para o painel de audiência e a monetização com empresas parceiras.
@@ -236,10 +294,12 @@
 
 Cadeia diária que garante a Regra "novos vídeos entram na base automaticamente":
 
-| Job | Função disparada | Frequência sugerida |
+| Job | Função disparada | Frequência configurada |
 |---|---|---|
-| `cron_scrape_channel` | `scrape-youtube-channel` (via `net.http_post` para a Edge Function) | diário, madrugada |
-| `cron_transcribe` | `transcribe-videos` | diário, após o scrape |
-| `cron_index` | `index-segments` | diário, após a transcrição |
+| `cron_scrape_channel` | `run_ingestion_step('scrape-youtube-channel')` | `0 6 * * *` (03:00 em Brasília) |
+| `cron_transcribe` | `run_ingestion_step('transcribe-videos')` | `30 6 * * *` (03:30 em Brasília) |
+| `cron_index` | `run_ingestion_step('index-segments')` | `0 7 * * *` (04:00 em Brasília) |
 
-> Os jobs de cron chamam as Edge Functions correspondentes com `service_role`. Cada etapa só processa o que a anterior deixou pronto (`pending → transcribed → indexed`), garantindo idempotência mesmo que uma execução falhe no meio.
+> Cada etapa só processa o que a anterior deixou pronto (`pending → transcribed → indexed`), garantindo idempotência mesmo que uma execução falhe no meio.
+>
+> **Autenticação do cron:** os jobs **não** usam a `service_role`. Usam um segredo dedicado (`CRON_SECRET`), guardado no **Vault** do Postgres e publicado nos Secrets das Edge Functions, enviado no header `X-Cron-Secret`. Se esse segredo vazar, ele abre só as três rotas de ingestão, não o banco inteiro. Por isso as três funções têm `verify_jwt = false` no `config.toml`: a autenticação acontece dentro da função (`requireStaffOrService`), que aceita JWT de staff, `service_role` ou o `X-Cron-Secret`, e devolve 401 para qualquer outra coisa.

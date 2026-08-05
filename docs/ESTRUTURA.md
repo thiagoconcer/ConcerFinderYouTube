@@ -135,6 +135,7 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`scrape-youtube-channel`** — busca a lista de vídeos do canal do Concer via YouTube Data API (ou Apify como fallback), faz upsert em `videos` com `transcription_status='pending'` e registra `ingestion_runs(run_type='scrape')`. *Chamada por cron diário e manualmente pelo admin.*
 - **`transcribe-videos`** — pega vídeos `pending`, gera transcrição (áudio → texto), quebra em `video_segments` com janelas de tempo. Atualiza `transcription_status='transcribed'`. *Cron + gatilho pós-scrape.*
 - **`index-segments`** — gera `embedding` de cada `video_segments` via API de embeddings e marca vídeo como `indexed`. *Cron + pós-transcrição.*
+- **`search-pain`** — recebe a dor em linguagem natural, gera o embedding da consulta (a chave de embeddings não pode ir ao frontend) e chama a RPC `search_videos` com o JWT do próprio usuário. *Chamada quando o usuário submete a dor em `/busca`.*
 - **`generate-action-plan`** — recebe a query do usuário e os top segmentos, gera o texto do `action_plan` com LLM. *Chamada dentro do fluxo de busca.*
 - **`nurture-webhook-callback`** — recebe status de entrega do Make/N8N e atualiza `leads.nurture_status`. *Webhook externo.*
 
@@ -143,6 +144,10 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`handle_new_user()`** (trigger) — cria `profiles` no signup.
 - **`is_concer_staff()`** — helper de RLS para os painéis internos.
 - **`get_audience_insights()`** (SECURITY DEFINER, staff-only) — agrega `searches.detected_topics` × `profiles.commercial_role` para o painel de audiência.
+- **`get_search_results(p_search_id)`** (SECURITY DEFINER) — reabre os resultados de uma busca anterior em `/busca/historico`.
+- **`get_video_detail(p_video_id)`** (SECURITY DEFINER) — metadados do vídeo e os trechos que o usuário já recuperou, para `/video/:id`.
+- **`get_content_dashboard()`** (SECURITY DEFINER, staff-only) — contadores da esteira para `/admin/conteudo`.
+- **`run_ingestion_step(step)`** (SECURITY DEFINER, interna) — o `pg_cron` usa para chamar as Edge Functions da esteira com o segredo guardado no Vault.
 
 ---
 
