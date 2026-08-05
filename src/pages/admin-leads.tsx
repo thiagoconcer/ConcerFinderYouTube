@@ -187,96 +187,132 @@ export function AdminLeadsPage() {
           <p className="mb-3 text-sm text-muted-foreground">
             {leads.length} {leads.length === 1 ? 'pessoa' : 'pessoas'}
           </p>
-          <ul className="space-y-3">
-            {leads.map((lead) => {
-              const situacao = situacaoDe(lead.email)
-              return (
-                <li key={lead.profile_id}>
-                  <Card>
-                    <CardContent className="p-4 sm:p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="font-semibold">
-                              <Link
-                                to={ROUTES.adminLeadPerfil(lead.profile_id)}
-                                className="hover:underline"
-                              >
-                                {lead.nome}
-                              </Link>
-                            </h2>
-                            {lead.cargo && (
-                              <Badge variant="secondary">
-                                {CARGO_LABELS[lead.cargo as Cargo] ?? lead.cargo}
-                              </Badge>
-                            )}
-                            {situacao?.fluxo && (
-                              <Badge variant="outline">
-                                régua {situacao.fluxo}
-                                {situacao.etapa ? ` · ${ROTULO_ETAPA[situacao.etapa]}` : ''}
-                              </Badge>
-                            )}
+
+          {/* Tabela, e não cards: a leitura aqui é comparar pessoas entre si,
+              e coluna alinhada faz isso melhor que bloco. O overflow fica no
+              contêiner para a página nunca rolar de lado. */}
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full min-w-[980px] text-sm">
+              <thead className="border-b bg-muted/40 text-left">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Pessoa</th>
+                  <th className="px-4 py-3 font-medium">Cargo</th>
+                  <th className="px-4 py-3 font-medium">Régua</th>
+                  <th className="px-4 py-3 text-right font-medium">Buscas</th>
+                  <th className="px-4 py-3 font-medium">Palavras buscadas</th>
+                  <th className="px-4 py-3 font-medium">Último acesso</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {leads.map((lead) => {
+                  const situacao = situacaoDe(lead.email)
+                  return (
+                    <tr key={lead.profile_id} className="border-b last:border-0 align-top">
+                      <td className="px-4 py-3">
+                        <Link
+                          to={ROUTES.adminLeadPerfil(lead.profile_id)}
+                          className="font-medium hover:underline"
+                        >
+                          {lead.nome}
+                        </Link>
+                        <div className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <Mail className="size-3" aria-hidden="true" />
+                            {lead.email}
                           </div>
-                          <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1.5">
-                              <Mail className="size-3.5" aria-hidden="true" />
-                              {lead.email}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <Phone className="size-3.5" aria-hidden="true" />
-                              {lead.whatsapp}
-                            </span>
-                            <span>desde {formatDateTime(lead.cadastrado_em)}</span>
+                          <div className="flex items-center gap-1.5">
+                            <Phone className="size-3" aria-hidden="true" />
+                            {lead.whatsapp}
                           </div>
-                          {lead.ultima_dor && (
-                            <p className="mt-2 line-clamp-1 text-sm">
-                              <span className="text-muted-foreground">última dor: </span>
-                              “{lead.ultima_dor}”
-                            </p>
-                          )}
                         </div>
+                      </td>
 
-                        <div className="flex shrink-0 items-center gap-4">
-                          <div className="text-right text-sm">
-                            <div className="tabular-nums">
-                              <strong>{lead.total_buscas}</strong>{' '}
-                              <span className="text-muted-foreground">
-                                {lead.total_buscas === 1 ? 'busca' : 'buscas'}
-                              </span>
-                            </div>
-                            <div className="tabular-nums text-muted-foreground">
-                              {lead.trechos_abertos} abertos
-                            </div>
-                          </div>
-                          <Button asChild variant="outline" size="sm">
-                            <Link to={ROUTES.adminLeadPerfil(lead.profile_id)}>
-                              Ver perfil
-                              <ChevronRight />
-                            </Link>
-                          </Button>
+                      <td className="px-4 py-3">
+                        {lead.cargo ? (
+                          <Badge variant="secondary" className="font-normal">
+                            {CARGO_LABELS[lead.cargo as Cargo] ?? lead.cargo}
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">não informado</span>
+                        )}
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {COMMERCIAL_ROLE_LABELS[lead.perfil_comercial as CommercialRole] ??
+                            lead.perfil_comercial}
                         </div>
-                      </div>
+                      </td>
 
-                      {lead.temas.length > 0 && (
-                        <ul className="mt-3 flex flex-wrap gap-1.5">
-                          {lead.temas.slice(0, 6).map((t) => (
-                            <li key={t}>
-                              <Badge variant="outline" className="font-normal">
-                                {topicLabel(t)}
-                              </Badge>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      <td className="px-4 py-3">
+                        {situacao?.fluxo ? (
+                          <>
+                            <Badge variant="outline" className="font-normal">
+                              {situacao.fluxo}
+                            </Badge>
+                            {situacao.etapa && (
+                              <div className="mt-1 text-xs text-muted-foreground">
+                                {ROTULO_ETAPA[situacao.etapa]}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">fora da régua</span>
+                        )}
+                      </td>
 
-                    </CardContent>
-                  </Card>
-                </li>
-              )
-            })}
-          </ul>
+                      <td className="px-4 py-3 text-right tabular-nums">
+                        <div className="font-medium">{lead.total_buscas}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {lead.trechos_abertos} abertos
+                        </div>
+                      </td>
+
+                      <td className="max-w-72 px-4 py-3">
+                        {lead.temas.length > 0 ? (
+                          <ul className="flex flex-wrap gap-1">
+                            {lead.temas.slice(0, 4).map((t) => (
+                              <li key={t}>
+                                <Badge variant="outline" className="font-normal">
+                                  {topicLabel(t)}
+                                </Badge>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">ainda não buscou</span>
+                        )}
+                        {lead.ultima_dor && (
+                          // title no elemento: a dor inteira fica a um hover,
+                          // sem esticar a linha da tabela.
+                          <p
+                            className="mt-1.5 line-clamp-2 text-xs text-muted-foreground"
+                            title={lead.ultima_dor}
+                          >
+                            “{lead.ultima_dor}”
+                          </p>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {formatDateTime(lead.ultima_atividade)}
+                      </td>
+
+                      <td className="px-4 py-3 text-right">
+                        <Button asChild variant="outline" size="sm">
+                          <Link to={ROUTES.adminLeadPerfil(lead.profile_id)}>
+                            Ver perfil
+                            <ChevronRight />
+                          </Link>
+                        </Button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
+
     </div>
   )
 }
