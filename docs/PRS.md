@@ -2,7 +2,7 @@
 
 > Especificação de Requisitos de Sistema (Product/System Requirements Specification).
 > **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions + Realtime + pg_cron) — não negociável.
-> **Frontend / caminho de build:** Lovable + Supabase.
+> **Frontend / caminho de build:** Claude Code + Supabase (React + Tailwind + shadcn/ui).
 > Convenção de rastreabilidade: cada RS aponta o RF do PRD que satisfaz. RFs inferidos do PROCESSO/ESTRUTURA do ConcerFinder:
 > - **RF-01** — Cadastro de visitante gerando lead (nome, e-mail, WhatsApp, perfil comercial).
 > - **RF-02** — Disparo automático da régua de nutrição (e-mail via ActiveCampaign + WhatsApp) pós-cadastro.
@@ -80,11 +80,11 @@ Rastreia: RF-11, RF-13
 
 ## 2. Arquitetura
 
-O ConcerFinder é dividido em três camadas: **frontend Lovable (React)**, **backend Supabase** e **pipeline de ingestão + integrações externas** orquestrado por Edge Functions e pg_cron.
+O ConcerFinder é dividido em três camadas: **frontend React**, **backend Supabase** e **pipeline de ingestão + integrações externas** orquestrado por Edge Functions e pg_cron.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  FRONTEND — Lovable (React + Tailwind + shadcn/ui)        │
+│  FRONTEND (React + Tailwind + shadcn/ui)                  │
 │  /  /cadastro  /login  /busca  /busca/historico          │
 │  /video/:id   /admin/conteudo   /admin/audiencia         │
 └───────────────┬─────────────────────────┬────────────────┘
@@ -131,14 +131,14 @@ O ConcerFinder é dividido em três camadas: **frontend Lovable (React)**, **bac
 - **Realtime** — atualização em tempo real dos painéis de status de ingestão (opcional para o admin de conteúdo).
 - **pg_cron** — agenda diária da cadeia de ingestão, incorporando novos vídeos do canal automaticamente.
 
-**Frontend — Lovable + Supabase (React + Tailwind + shadcn/ui):**
-Você indicou que já opera com N8N, ActiveCampaign, Sellflux, ElephantAI e Plug AI — ou seja, um perfil **no-code/low-code**, sem menção a um time de engenharia próprio. Para o ConcerFinder (cadastro com geração de lead, busca semântica, painéis de conteúdo e audiência), o Lovable gera o app React integrado nativamente ao Supabase pelo caminho mais rápido e mantido por você, sem depender de desenvolvedores. Por isso o caminho é **Lovable**, não Claude Code.
+**Frontend — React + Tailwind + shadcn/ui sobre Supabase:**
+App React (Vite) construído e mantido no **Claude Code**, com Tailwind e shadcn/ui na camada visual e `@supabase/supabase-js` para Auth, consultas com RLS, RPC e chamadas às Edge Functions. Cobre o cadastro com geração de lead, a busca semântica e os painéis de conteúdo e audiência, com o código versionado no repositório do projeto.
 
 **Integrações externas (todas via Edge Function):** YouTube Data API v3, Apify (fallback), STT/Whisper, API de embeddings OpenAI `text-embedding-3-small` (1536 dims), **Gemini 2.5 Pro** para o plano de ação (contexto longo consolidando múltiplos trechos, ~US$1.25/Mtok in; **Gemini 3.5 Flash** ~US$0.30/Mtok in como alternativa custo-eficiente sob alto volume), e Make → ActiveCampaign + WhatsApp / N8N existente para nutrição.
 
 **Automação:** Make + Supabase Edge Functions/pg_cron. O disparo pós-cadastro pluga no webhook de nutrição que a equipe já mantém (onde você lê "webhook de nutrição", conecta o fluxo N8N/ActiveCampaign existente sem retrabalho).
 
-**Custo de partida:** Lovable Pro (R$95/mês) + Supabase Pro (R$125/mês — necessário para pgvector em escala e volume de edge invocations da ingestão) + APIs de IA por token + Make conforme volume. Base pequena pode validar em free tier do Supabase.
+**Custo de partida:** Supabase Pro (R$125/mês — necessário para pgvector em escala e volume de edge invocations da ingestão) + APIs de IA por token + Make conforme volume. Base pequena pode validar em free tier do Supabase.
 
 ---
 
@@ -162,7 +162,7 @@ Você indicou que já opera com N8N, ActiveCampaign, Sellflux, ElephantAI e Plug
 
 **Dados sensíveis / LGPD:** `leads` e `profiles` guardam dados pessoais (nome, e-mail, WhatsApp) — base legal de coleta é o consentimento do cadastro para nutrição, que deve ser explicitado no formulário `/cadastro`. Acesso a esses dados é restrito a staff via RLS. Deve existir processo de exclusão a pedido do titular (delete via service_role). O envio a Make/ActiveCampaign/WhatsApp trafega dado pessoal e deve constar na política de privacidade.
 
-**Segredos e API keys:** YouTube Data API, Apify, chaves OpenAI (STT/embeddings), Gemini e a URL do webhook de nutrição ficam exclusivamente em variáveis de ambiente das Edge Functions (Supabase secrets) — nunca hardcoded nem expostas no frontend Lovable. Nenhuma integração externa é chamada direto do cliente.
+**Segredos e API keys:** YouTube Data API, Apify, chaves OpenAI (STT/embeddings), Gemini e a URL do webhook de nutrição ficam exclusivamente em variáveis de ambiente das Edge Functions (Supabase secrets) — nunca hardcoded nem expostas no frontend. Nenhuma integração externa é chamada direto do cliente.
 
 ---
 

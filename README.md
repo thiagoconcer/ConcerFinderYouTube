@@ -1,8 +1,8 @@
 # ConcerFinder — Pacote de Documentação
 
 > **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions Deno + Realtime + pg_cron) — não negociável.
-> **Build do frontend:** Lovable + Supabase (React + Tailwind + shadcn/ui).
-> Este README é o **primeiro arquivo** que a IDE (Lovable ou Claude Code) deve ler. Ele orquestra todo o pacote: diz o que existe, em que ordem ler e como começar a construir.
+> **Build do frontend:** Claude Code + Supabase (React + Tailwind + shadcn/ui).
+> Este README é o **primeiro arquivo** que a IDE (Claude Code) deve ler. Ele orquestra todo o pacote: diz o que existe, em que ordem ler e como começar a construir.
 
 ---
 
@@ -16,7 +16,7 @@ O **ConcerFinder** é uma plataforma de busca inteligente sobre o acervo de víd
 
 > ⚠️ **LEIA `SKILL.md` ANTES DE ESCREVER QUALQUER LINHA DE CÓDIGO OU CRIAR QUALQUER TABELA.**
 >
-> O `SKILL.md` é o **guia operacional** de como construir o ConcerFinder especificamente — convenções de nomenclatura, decisões de arquitetura (por que Lovable + Supabase, como o banco vetorial e o pipeline de ingestão funcionam, como a integração com N8N/ActiveCampaign é feita via Edge Functions), padrões de RLS/segurança e a ordem correta de execução. Nenhum código deve ser escrito antes de lê-lo. Depois do `SKILL.md`, siga o `docs/PLANO.md` fase a fase.
+> O `SKILL.md` é o **guia operacional** de como construir o ConcerFinder especificamente — convenções de nomenclatura, decisões de arquitetura (por que React + Supabase, como o banco vetorial e o pipeline de ingestão funcionam, como a integração com N8N/ActiveCampaign é feita via Edge Functions), padrões de RLS/segurança e a ordem correta de execução. Nenhum código deve ser escrito antes de lê-lo. Depois do `SKILL.md`, siga o `docs/PLANO.md` fase a fase.
 
 ---
 
@@ -33,35 +33,22 @@ O **ConcerFinder** é uma plataforma de busca inteligente sobre o acervo de víd
 | **db/schemas.sql** | DDL completo: tabelas (`profiles`, `leads`, `videos`, `video_segments`, `search_results`, `ingestion_runs`), RLS, policies e triggers. | Ao provisionar o banco no Supabase (rodar cedo). |
 | **docs/PLANO.md** | Plano de desenvolvimento em fases (fundação → construção → polimento) referenciando tabelas, páginas e functions reais. | Para saber **em que ordem** construir. |
 | **docs/FUNCTIONS.md** | Edge Functions (kebab-case) e Postgres Functions (snake_case): assinatura, auth (`service_role`), triggers e cron. | Ao implementar lógica server-side, ingestão, busca semântica e integração N8N. |
-| **docs/PAGINAS.md** | Páginas do frontend (rotas, propósito, componentes) geradas no Lovable. | Ao construir as telas (landing, cadastro, busca, resultados, admin). |
+| **docs/PAGINAS.md** | Páginas do frontend (rotas, propósito, componentes) do app React. | Ao construir as telas (landing, cadastro, busca, resultados, admin). |
 | **docs/DEPARA.md** | Matriz de rastreabilidade Tabela → Functions → Páginas para garantir que nada fique órfão. | Como checklist de consistência ao final de cada fase. |
-
----
-
-## Primeiros passos no Lovable
-
-> Caminho recomendado para o ConcerFinder — você opera com N8N/ActiveCampaign e ferramentas no-code (Elephant AI, Plug AI, Sellflux), então o Lovable é o caminho mais rápido do zero ao app no ar, gerando React + Tailwind + shadcn/ui com integração nativa ao Supabase.
-
-1. **Crie o projeto no Lovable** e conecte/ative a integração nativa com **Supabase** (autorize o Lovable a provisionar o backend).
-2. **Provisione o banco:** no Supabase, abra o **SQL Editor** e rode o conteúdo de **`db/schemas.sql`** por inteiro. Isso cria todas as tabelas, RLS, policies e triggers. Habilite a extensão `pgvector` (usada em `video_segments` para a busca semântica) e confirme que `pg_cron` está ativo para a ingestão agendada.
-3. **Configure os segredos** no Supabase (Edge Functions → Secrets): chave da API de transcrição/IA, chave do provedor de embeddings, `service_role` (uso interno), URL do webhook do **N8N** e credenciais de saída para ActiveCampaign/WhatsApp. Nunca exponha `service_role` no frontend.
-4. **Cole o prompt inicial no Lovable**, referenciando os documentos:
-
-   > "Construa o ConcerFinder conforme o pacote de documentação. Leia primeiro `SKILL.md`. Use `docs/ESTRUTURA.md` como fonte de nomenclatura de tabelas, functions e rotas. Implemente as telas de `docs/PAGINAS.md` (`/` landing, cadastro/lead, busca por dor em linguagem natural, resultados com vídeo + timestamp + plano de ação, área admin) seguindo `docs/PLANO.md` fase a fase. O banco já está em `db/schemas.sql`. Backend é Supabase; integração de nutrição (e-mail via ActiveCampaign + WhatsApp) é disparada por Edge Function para o webhook do N8N conforme `docs/FUNCTIONS.md`."
-
-5. **Siga o `docs/PLANO.md`** na ordem: fundação (auth + lead + nutrição), construção (ingestão, transcrição, busca semântica, resultados) e polimento. Ao fim de cada fase, valide com `docs/DEPARA.md`.
 
 ---
 
 ## Primeiros passos no Claude Code
 
-> Alternativa caso você mobilize um time de TI. Mais flexível, mantida por quem sabe codar, também sobre Supabase.
+> Caminho de build do ConcerFinder: app React (Vite + Tailwind + shadcn/ui) sobre Supabase, construído e mantido no Claude Code.
 
-1. **Inicie o projeto** e o repositório Git. Defina a stack de frontend sobre Supabase (React recomendado para paridade com os docs).
-2. **Configure o Supabase CLI:** `supabase init`, faça login (`supabase login`) e vincule ao projeto (`supabase link --project-ref <ref>`). Configure `.env` com as credenciais (anon key no cliente; `service_role` apenas no servidor/Edge Functions).
-3. **Provisione o banco:** rode **`db/schemas.sql`** via `supabase db execute` (ou migration). Habilite `pgvector` e `pg_cron`. Confirme RLS ativa em todas as tabelas.
-4. **Aponte o Claude Code para ler `SKILL.md` PRIMEIRO:**
+1. **Inicie o projeto** e o repositório Git. Frontend em React + Tailwind + shadcn/ui, para paridade com os docs.
+2. **Configure o Supabase CLI:** `supabase init`, faça login (`supabase login`) e vincule ao projeto (`supabase link --project-ref <ref>`). Configure `.env` com as credenciais (publishable/anon key no cliente; `service_role` apenas no servidor/Edge Functions).
+3. **Provisione o banco:** rode **`db/schemas.sql`** por inteiro, pelo **SQL Editor** do Supabase ou via `supabase db push` (o mesmo conteúdo está em `supabase/migrations/`). Isso cria todas as tabelas, RLS, policies e triggers. Habilite a extensão `pgvector` (usada em `video_segments` para a busca semântica) e confirme que `pg_cron` está ativo para a ingestão agendada.
+4. **Configure os segredos** no Supabase (Edge Functions → Secrets): chave da API de transcrição/IA, chave do provedor de embeddings, `service_role` (uso interno), URL do webhook do **N8N** e credenciais de saída para ActiveCampaign/WhatsApp. Nunca exponha `service_role` no frontend.
+5. **Aponte o Claude Code para ler `SKILL.md` PRIMEIRO:**
 
    > "Antes de qualquer código, leia `SKILL.md` por completo. Depois, use `docs/ESTRUTURA.md` como fonte de nomenclatura, `docs/FUNCTIONS.md` para as Edge/Postgres functions (ingestão via API do YouTube/Apify, transcrição em massa, geração de embeddings, busca semântica, disparo ao webhook do N8N) e `docs/PLANO.md` para a ordem de execução. O schema está em `db/schemas.sql`."
 
-5. **Implemente as Edge Functions** de `docs/FUNCTIONS.md` (kebab-case, `service_role` para escrita em `leads`/`videos`/`video_segments`/`ingestion_runs`), configure os **cron jobs** (`pg_cron`) da ingestão recorrente e faça deploy com `supabase functions deploy`. Valide cada fase contra `docs/DEPARA.md`.
+6. **Implemente as Edge Functions** de `docs/FUNCTIONS.md` (kebab-case, `service_role` para escrita em `leads`/`videos`/`video_segments`/`ingestion_runs`), configure os **cron jobs** (`pg_cron`) da ingestão recorrente e faça deploy com `supabase functions deploy`.
+7. **Siga o `docs/PLANO.md`** na ordem: fundação (auth + lead + nutrição), construção (ingestão, transcrição, busca semântica, resultados) e polimento. Ao fim de cada fase, valide com `docs/DEPARA.md`.

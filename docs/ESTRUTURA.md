@@ -1,7 +1,7 @@
 # Estrutura Técnica — ConcerFinder
 
 > **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions + Realtime + pg_cron) — não negociável.
-> **Caminho de build do frontend:** **Lovable + Supabase**. Você descreveu que já usa N8N, ActiveCampaign, Sellflux e outras ferramentas de automação/IA — ou seja, opera no nível **no-code/low-code** e não mencionou um time de engenharia próprio. Para o ConcerFinder (cadastro, busca semântica, painéis de leads e integração com automação), o Lovable entrega o app React + Tailwind + shadcn/ui integrado nativamente ao Supabase pelo caminho mais rápido, e você mantém o controle sem depender de desenvolvedores. Por isso: Lovable.
+> **Caminho de build do frontend:** **Claude Code + Supabase**, app React (Vite) + Tailwind + shadcn/ui. Toda a construção do ConcerFinder (cadastro, busca semântica, painéis de leads e integração com automação) é feita em código, no Claude Code, falando com o Supabase pelo cliente `@supabase/supabase-js`.
 >
 > **Observação sobre automação:** o processo cita o N8N já existente na empresa para nutrição por e-mail (ActiveCampaign) e WhatsApp. Como as regras deste pacote não usam N8N, o disparo pós-cadastro será feito via **Supabase Edge Function → Make** (ou chamada direta ao webhook de nutrição que a equipe já mantém). Onde você lê "webhook de nutrição", pode plugar o fluxo existente sem retrabalho.
 
@@ -170,4 +170,4 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **Make → ActiveCampaign + WhatsApp / N8N existente** — disparo da régua de nutrição pós-cadastro (`register-lead`, `nurture-webhook-callback`). Motivo: automatizar a nutrição por e-mail (ActiveCampaign) e WhatsApp que você já usa, plugando no webhook existente.
 - **pg_cron (Supabase)** — agenda diária de `scrape-youtube-channel` → `transcribe-videos` → `index-segments`. Motivo: garantir que novos vídeos do canal entrem na base automaticamente (regra de negócio).
 
-**Estimativa de custo de partida:** Lovable Pro (R$95/mês) + Supabase Pro (R$125/mês — necessário para pgvector em escala e volume de edge invocations da ingestão) + uso de APIs de IA por token (transcrição/embeddings/plano de ação) + Make conforme volume. Enquanto a base de vídeos for pequena, é possível validar em free tier do Supabase.
+**Estimativa de custo de partida:** Supabase Pro (R$125/mês — necessário para pgvector em escala e volume de edge invocations da ingestão) + uso de APIs de IA por token (transcrição/embeddings/plano de ação) + Make conforme volume. Enquanto a base de vídeos for pequena, é possível validar em free tier do Supabase.

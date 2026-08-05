@@ -20,23 +20,6 @@ end;
 $$;
 
 -- ============================================================
--- Helper de RLS: identifica staff Concer
--- ============================================================
-create or replace function public.is_concer_staff()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.profiles
-    where id = auth.uid()
-      and role in ('content_admin', 'audience_manager')
-  );
-$$;
-
--- ============================================================
 -- TABELA: profiles
 -- ============================================================
 create table public.profiles (
@@ -58,6 +41,24 @@ create trigger trg_profiles_updated_at
   for each row execute function public.set_updated_at();
 
 alter table public.profiles enable row level security;
+
+-- ============================================================
+-- Helper de RLS: identifica staff Concer
+-- (declarado depois de profiles: o corpo da function referencia a tabela)
+-- ============================================================
+create or replace function public.is_concer_staff()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and role in ('content_admin', 'audience_manager')
+  );
+$$;
 
 create policy "profiles_select_own_or_staff" on public.profiles
   for select to authenticated

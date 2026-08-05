@@ -1,6 +1,6 @@
 # DE-PARA — Matriz de Rastreabilidade — ConcerFinder
 
-> **Objetivo:** garantir que nenhuma tabela, function/endpoint ou página fique órfã. Use este documento como checklist de consistência entre `docs/ESTRUTURA.md` (banco/backend) e as páginas do frontend gerado pelo Lovable.
+> **Objetivo:** garantir que nenhuma tabela, function/endpoint ou página fique órfã. Use este documento como checklist de consistência entre `docs/ESTRUTURA.md` (banco/backend) e as páginas do frontend React.
 > Nomes: `snake_case` para tabelas e RPCs Postgres; `kebab-case` para Edge Functions e rotas de página.
 
 ---

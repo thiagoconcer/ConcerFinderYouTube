@@ -1,7 +1,7 @@
 # Functions & Endpoints — ConcerFinder
 
 > **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions Deno + Realtime + pg_cron).
-> **Convenções:** Edge Functions em **kebab-case**, invocadas via `supabase.functions.invoke(...)` (Lovable/cliente) ou por webhook externo. Postgres Functions em **snake_case**, chamadas via `supabase.rpc(...)`, por trigger de tabela ou por agendamento `pg_cron`.
+> **Convenções:** Edge Functions em **kebab-case**, invocadas via `supabase.functions.invoke(...)` (cliente React) ou por webhook externo. Postgres Functions em **snake_case**, chamadas via `supabase.rpc(...)`, por trigger de tabela ou por agendamento `pg_cron`.
 > **Padrão de autenticação:** funções que gravam em `leads`, `videos`, `video_segments`, `search_results` e `ingestion_runs` rodam com **`service_role`** (chave nunca exposta no frontend — só dentro da Edge Function). Funções de leitura de vídeos exigem **usuário logado**. Painéis internos exigem **staff** (`is_concer_staff()`).
 >
 > Todas as functions abaixo estão listadas na ESTRUTURA. Onde eu precisei acrescentar detalhe de validação para cumprir uma regra do PROCESSO, sinalizo com **[Extensão do doc]**.

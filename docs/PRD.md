@@ -97,4 +97,4 @@ O conteúdo do canal do Concer está disperso em centenas de vídeos e, nas suas
 - **Construção da automação de nutrição em si:** a régua de e-mail (ActiveCampaign) e WhatsApp já existe na empresa; o ConcerFinder apenas dispara o webhook existente, sem recriar os fluxos de mensagem.
 - **Geração/edição de conteúdo de vídeo:** a plataforma indexa e recomenda os vídeos existentes do Concer, não produz, edita ou hospeda vídeos próprios.
 - **Multi-canal:** nesta versão a base é exclusivamente o canal do Thiago Concer; indexar outros canais fica para iterações futuras.
-- **App mobile nativo:** a entrega é a aplicação web React gerada no Lovable; apps iOS/Android nativos não estão no escopo desta versão.
+- **App mobile nativo:** a entrega é a aplicação web React; apps iOS/Android nativos não estão no escopo desta versão.

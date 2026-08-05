@@ -1,6 +1,6 @@
 # Páginas do Frontend — ConcerFinder
 
-> **Caminho de build:** Lovable + Supabase — React + Tailwind + shadcn/ui. As telas abaixo seguem exatamente as rotas definidas na ESTRUTURA técnica. Papéis referenciados no PROCESSO: **Visitante**, **Usuário cadastrado** (perfil comercial: vendedor / gestor comercial / dono de empresa), **Administrador de conteúdo** e **Gestor de audiência/comercial** (ambos = staff Concer).
+> **Caminho de build:** Claude Code + Supabase: React + Tailwind + shadcn/ui. As telas abaixo seguem exatamente as rotas definidas na ESTRUTURA técnica. Papéis referenciados no PROCESSO: **Visitante**, **Usuário cadastrado** (perfil comercial: vendedor / gestor comercial / dono de empresa), **Administrador de conteúdo** e **Gestor de audiência/comercial** (ambos = staff Concer).
 
 ---
 

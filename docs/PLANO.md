@@ -1,7 +1,7 @@
 # Plano de Desenvolvimento — ConcerFinder
 
 > **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions + Realtime + pg_cron).
-> **Build do frontend:** Lovable + Supabase (React + Tailwind + shadcn/ui).
+> **Build do frontend:** Claude Code + Supabase (React + Tailwind + shadcn/ui).
 > Cada fase referencia tabelas, páginas e functions REAIS de `docs/ESTRUTURA.md`. Ordem: fundação → construção → polimento.
 
 O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa base pesquisável por dor/tema. O usuário se cadastra (gerando lead + nutrição), descreve a dor de vendas em linguagem natural e recebe os vídeos certos, na minutagem exata, com plano de ação. Este plano constrói isso em 3 fases.
@@ -10,14 +10,14 @@ O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa 
 
 ## Fase 1 — Fundação
 
-**Entregável:** projeto no ar no Lovable, banco criado no Supabase com todas as tabelas e RLS, autenticação (e-mail/senha + magic link) funcionando e layout base navegável.
+**Entregável:** projeto no ar rodando no preview, banco criado no Supabase com todas as tabelas e RLS, autenticação (e-mail/senha + magic link) funcionando e layout base navegável.
 
 **Tabelas:** `profiles`, `leads`, `videos`, `video_segments`, `searches`, `search_results`, `ingestion_runs` (extensão `pgvector`).
 **Páginas:** `/` (landing), `/cadastro` (sign-up), `/login`.
 **Functions:** trigger `handle_new_user()`, helper `is_concer_staff()`.
 
 **Checklist:**
-- [ ] Criar o projeto ConcerFinder no Lovable e conectar ao Supabase
+- [ ] Criar o projeto ConcerFinder (React + Tailwind + shadcn/ui) e conectar ao Supabase
 - [ ] Rodar `db/schemas.sql` no Supabase (tabelas + pgvector + índices vetoriais)
 - [ ] Ligar RLS em todas as tabelas + criar `handle_new_user()` e `is_concer_staff()`
 - [ ] Configurar Supabase Auth (e-mail/senha + magic link) e a página `/login`
