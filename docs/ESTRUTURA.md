@@ -21,6 +21,21 @@ Perfil de cada usuário cadastrado, estendendo `auth.users` (papel comercial e d
 | `cargo` | text | NULL. **[Extensão do doc]** CHECK `perfil_do_cargo(cargo) is not null`: fundador, socio, presidente_ceo, vice_presidente, diretor, coordenador, supervisor, gerente, vendedor. Mesmos rótulos do campo Cargo Newsletter do ActiveCampaign. |
 | `role` | text | NOT NULL, default `'user'`, CHECK IN ('user','content_admin','audience_manager','admin') |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
+### `limites_de_uso` **[Extensão do doc]**
+
+Teto de buscas por pessoa. O acervo transcrito é o ativo do produto e a busca é a única porta por onde ele sai (6 trechos por chamada); sem freio, cerca de mil buscas automatizadas extraem o acervo inteiro e ainda consomem a API paga.
+
+| Coluna | Tipo | Regra |
+|---|---|---|
+| `papel` | text | PK. Hoje só `'user'`. |
+| `buscas_por_hora` | int | NOT NULL. Padrão 30. |
+| `buscas_por_dia` | int | NOT NULL. Padrão 150. |
+| `atualizado_em` | timestamptz | NOT NULL, default `now()`. |
+
+**RLS:** SELECT liberado a `authenticated` (a pessoa pode saber quanto ainda pode buscar). Escrita: ninguém pelo frontend, só `service_role`.
+
+A aplicação do limite fica **dentro da RPC `search_videos`**, não só na Edge Function: quem estiver logado pode chamar a RPC direto com o próprio JWT, e conferir só na borda protegeria o caminho do app deixando o outro aberto. Staff é ilimitado, porque a equipe testa o produto o dia inteiro.
+
 **Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; `idx_profiles_cargo` em `cargo`; `idx_profiles_role` em `role`.
 
 ### `leads`
