@@ -181,6 +181,21 @@
 
 ---
 
+### `nurture-status`
+
+**[Extensão do doc]** Devolve em que etapa da régua cada pessoa está, para o painel de leads.
+
+| | |
+|---|---|
+| Método | `POST` |
+| Auth | staff (JWT) ou `service_role` / `X-Cron-Secret` |
+| Entrada | nenhuma |
+| Saída | `{ disponivel, total, situacoes: { <email>: { fluxo, etapa, rotulo } } }` |
+
+Busca **por tag**, não por contato: perguntar as tags de cada lead custaria uma chamada por pessoa, e com a base grande a página não abriria. São 7 chamadas fixas (3 tags de fluxo + 4 de etapa), independentemente do tamanho da base.
+
+Falha do ActiveCampaign devolve `disponivel: false`, nunca 500: a lista de leads é dado nosso e continua útil sem a coluna de nutrição.
+
 ### `sync-nurture`
 - **Propósito:** empurrar o lead para o ActiveCampaign com a personalização real: a dor que a pessoa escreveu, os temas detectados e o link do trecho no minuto exato. **[Extensão do doc]**
 - **Por que existe:** a API do ActiveCampaign **não permite criar automação nem campanha** (`405` nas duas). A régua é montada na interface e disparada por tag; esta função é quem preenche os campos personalizados e aplica a tag no momento certo.

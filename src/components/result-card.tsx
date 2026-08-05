@@ -24,7 +24,11 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
         <Link
           to={destino}
           className="relative aspect-video w-full shrink-0 overflow-hidden bg-muted sm:aspect-auto sm:h-auto sm:w-56"
-          aria-label={`Abrir ${hit.title} no minuto ${minuto}`}
+          aria-label={
+            duracao
+              ? `Abrir ${hit.title}: insight de ${faixa}, ${duracao} de vídeo`
+              : `Abrir ${hit.title} no minuto ${minuto}`
+          }
         >
           <img
             src={thumbnailUrl(hit.youtube_video_id, hit.thumbnail_url)}
@@ -32,20 +36,25 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
             loading="lazy"
             className="size-full object-cover"
           />
+          {/* Na miniatura vai a DURAÇÃO, que é a convenção de vídeo e responde
+              "quanto tempo isso vai me tomar". A minutagem tem lugar próprio
+              logo abaixo, escrita por extenso. */}
           <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-xs font-medium text-white">
-            {minuto}
+            {duracao ?? minuto}
           </span>
         </Link>
 
         <div className="flex min-w-0 flex-1 flex-col gap-3 p-4 sm:py-4 sm:pl-0 sm:pr-4">
           <div className="flex flex-wrap items-center gap-2">
-            {/* Faixa, não só o início: a pessoa precisa saber quanto vai
-                assistir antes de decidir clicar. */}
+            {/* Escrito por extenso: a seta sozinha ("19:51 → 20:36") e um "45 s"
+                solto ao lado não diziam o que eram. Início e fim do insight é a
+                informação central desta tela, não pode depender de dedução. */}
             <Badge variant="secondary" className="gap-1">
               <Clock className="size-3" />
-              {faixa}
+              {hit.end_seconds && hit.end_seconds > hit.start_seconds
+                ? `Insight de ${formatTimestamp(hit.start_seconds)} até ${formatTimestamp(hit.end_seconds)}`
+                : `Insight no minuto ${minuto}`}
             </Badge>
-            {duracao && <Badge variant="outline">{duracao}</Badge>}
             <Badge variant="outline">{formatScore(hit.similarity_score)} de relevância</Badge>
           </div>
 
@@ -61,7 +70,7 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
             <Button asChild size="sm">
               <Link to={destino}>
                 <PlayCircle />
-                Ver no minuto {minuto}
+                {duracao ? `Assistir ${duracao} a partir de ${minuto}` : `Ver no minuto ${minuto}`}
               </Link>
             </Button>
           </div>

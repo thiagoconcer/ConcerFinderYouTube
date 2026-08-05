@@ -12,7 +12,6 @@ import { ROUTES } from '@/lib/routes'
 import {
   formatDate,
   formatDuration,
-  formatTimeRange,
   formatTimestamp,
   topicLabel,
   youtubeEmbedUrl,
@@ -160,12 +159,17 @@ export function VideoDetailPage() {
           <Card>
             <CardContent className="space-y-3 pt-6">
               <div className="flex flex-wrap items-center gap-2">
-                {/* Onde termina importa tanto quanto onde comeca: a promessa
-                    do produto e a pessoa nao assistir o video inteiro. */}
-                <Badge>{formatTimeRange(destacado.start_seconds, destacado.end_seconds)}</Badge>
+                {/* Por extenso, porque e a informacao central da tela: a
+                    promessa do produto e a pessoa NAO assistir o video todo,
+                    entao onde o insight acaba vale tanto quanto onde comeca. */}
+                <Badge>
+                  {destacado.end_seconds && destacado.end_seconds > destacado.start_seconds
+                    ? `Insight de ${formatTimestamp(destacado.start_seconds)} até ${formatTimestamp(destacado.end_seconds)}`
+                    : `Insight no minuto ${formatTimestamp(destacado.start_seconds)}`}
+                </Badge>
                 {formatDuration(destacado.start_seconds, destacado.end_seconds) && (
                   <Badge variant="outline">
-                    {formatDuration(destacado.start_seconds, destacado.end_seconds)} de leitura
+                    {formatDuration(destacado.start_seconds, destacado.end_seconds)} de vídeo
                   </Badge>
                 )}
                 {(destacado.topic_tags ?? []).slice(0, 3).map((tag) => (
@@ -205,11 +209,13 @@ export function VideoDetailPage() {
                 >
                   <span className="mb-2 flex items-center gap-2">
                     <Badge variant="outline">
-                      {formatTimeRange(segmento.start_seconds, segmento.end_seconds)}
+                      {segmento.end_seconds && segmento.end_seconds > segmento.start_seconds
+                        ? `de ${formatTimestamp(segmento.start_seconds)} até ${formatTimestamp(segmento.end_seconds)}`
+                        : `minuto ${formatTimestamp(segmento.start_seconds)}`}
                     </Badge>
                     {formatDuration(segmento.start_seconds, segmento.end_seconds) && (
                       <span className="text-xs text-muted-foreground">
-                        {formatDuration(segmento.start_seconds, segmento.end_seconds)}
+                        {formatDuration(segmento.start_seconds, segmento.end_seconds)} de vídeo
                       </span>
                     )}
                   </span>

@@ -60,3 +60,19 @@ O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa 
 - [x] Revisão de segurança (RLS, staff-only nos painéis) e deploy final publicado
 
 **Concluída em 05/08/2026.** `pg_cron` e `pg_net` habilitados, com três jobs diários (03:00, 03:30 e 04:00 em Brasília) autenticados por um segredo dedicado guardado no Vault, e não pela `service_role`. Revisão de segurança validada por teste automatizado de 20 casos: visitante sem cadastro não busca, usuário não lê busca alheia, `video_segments` inacessível pelo frontend, painéis staff-only barrados no banco (não só na UI) e nenhum segredo no bundle publicado.
+
+
+---
+
+## Depois das três fases
+
+Trabalho que não estava no plano original e entrou por pedido, todo no ar:
+
+- **Identidade visual da Concer**, com tema claro, escuro e automático.
+- **Cargo no cadastro** (9 opções, iguais às do ActiveCampaign), com o perfil comercial derivado por função no banco.
+- **Painel dividido**: `/admin/dashboard` (agregado) e `/admin/leads` (pessoa a pessoa), com perfil individual em rota própria.
+- **Crescimento, funil de ativação, qualidade da busca, pauta vinda da audiência e acervo ocioso** no dashboard.
+- **Papéis e gestão de equipe**, com a escalação de privilégio corrigida por trigger.
+- **Régua de nutrição no ActiveCampaign**, disparada pela primeira busca e não pelo cadastro.
+- **Camada `analytics` e usuário `nekt_reader`** para o data lake. Ver [DATALAKE.md](DATALAKE.md).
+- **Domínio próprio**: finder.thiagoconcer.com.br.

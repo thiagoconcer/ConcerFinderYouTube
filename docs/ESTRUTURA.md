@@ -180,7 +180,10 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`/busca/historico`** (`search-history`) — histórico de buscas do próprio usuário e novas explorações por tema.
 - **`/video/:id`** (`video-detail`) — abre o vídeo no minuto do insight (deep-link para o YouTube no timestamp).
 - **`/admin/conteudo`** (`admin-content`) — painel do admin de conteúdo: status de scraping/transcrição/indexação por vídeo e `ingestion_runs`. Staff-only.
-- **`/admin/audiencia`** (`admin-audience`) — painel do gestor de audiência: leads, perfis e temas/dores mais buscados para segmentação. Staff-only.
+- **`/admin/dashboard`** (`admin-dashboard`) — painel agregado: crescimento, funil de ativação, qualidade da busca, temas/dores, cargos, rankings de trechos e acervo ocioso. Staff-only. O filtro de perfil vale para a tela inteira. **[Extensão do doc]**
+- **`/admin/leads`** (`admin-leads`) — tabela de pessoas: contato, cargo, etapa da régua, buscas, palavras buscadas e último acesso. Staff-only. **[Extensão do doc]**
+- **`/admin/leads/:id`** (`admin-lead-perfil`) — ficha da pessoa: buscas com temas, trechos abertos e posição na régua. Rota própria para ser linkável do histórico e do painel. Staff-only. **[Extensão do doc]**
+- **`/admin/audiencia`** — rota antiga, redireciona para `/admin/dashboard`.
 
 ---
 
