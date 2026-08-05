@@ -21,6 +21,7 @@ import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
 import { RankingTrechos } from '@/components/admin/ranking-trechos'
 import { supabase } from '@/lib/supabase'
 import { formatDateTime, topicLabel } from '@/lib/format'
+import { amostraPequena, larguraDaFatia } from '@/lib/grafico'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole } from '@/types/database'
 import type { AudienceInsights, CargoInsights, EngagementInsights } from '@/types/search'
@@ -85,7 +86,9 @@ export function AdminAudienciaPage() {
   const semDados =
     !carregando && (insights?.totais.leads ?? 0) === 0 && (insights?.totais.buscas ?? 0) === 0
 
-  const maiorTema = insights?.temas?.[0]?.total ?? 1
+  // Soma dos temas exibidos: a barra mostra a fatia de cada um, e não o
+  // quanto ele se aproxima do primeiro colocado.
+  const totalTemas = (insights?.temas ?? []).reduce((a, t) => a + t.total, 0)
 
   return (
     <div className="mx-auto w-full max-w-[1180px] px-5 py-10 sm:px-8 sm:py-12">
@@ -187,6 +190,20 @@ export function AdminAudienciaPage() {
             />
           )}
 
+          {/* Um ranking sobre poucas buscas é ruído com aparência de conclusão.
+              Melhor dizer isso do que deixar alguém decidir pauta em cima. */}
+          {amostraPequena(insights.totais.buscas) && (
+            <Alert className="mb-8">
+              <AlertCircle />
+              <AlertTitle>Amostra ainda pequena</AlertTitle>
+              <AlertDescription>
+                São {insights.totais.buscas} buscas no período. Os rankings abaixo já funcionam,
+                mas com esse volume a ordem entre os temas é mais sorte do que padrão. A leitura
+                fica confiável a partir de algumas dezenas de buscas.
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="mb-8 grid gap-6 lg:grid-cols-2">
             {/* Ranking de dores */}
             <Card>
@@ -215,7 +232,7 @@ export function AdminAudienciaPage() {
                         >
                           <div
                             className="h-full rounded-full bg-primary"
-                            style={{ width: `${Math.max(4, (tema.total / maiorTema) * 100)}%` }}
+                            style={{ width: larguraDaFatia(tema.total, totalTemas) }}
                           />
                         </div>
                       </li>

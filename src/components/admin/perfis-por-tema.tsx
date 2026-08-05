@@ -2,6 +2,7 @@ import { Users } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { topicLabel } from '@/lib/format'
+import { larguraDaFatia } from '@/lib/grafico'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole } from '@/types/database'
 import type { AudienceInsights } from '@/types/search'
@@ -30,7 +31,7 @@ export function PerfisPorTema({ perfis }: { perfis: AudienceInsights['perfis_por
         ) : (
           <div className="space-y-6">
             {perfis.map((p) => {
-              const maior = p.temas[0]?.total ?? 1
+              const somaDoPerfil = p.temas.reduce((a, t) => a + t.total, 0)
               return (
                 <div key={p.commercial_role}>
                   <div className="mb-3 flex items-center justify-between gap-3">
@@ -59,7 +60,7 @@ export function PerfisPorTema({ perfis }: { perfis: AudienceInsights['perfis_por
                         >
                           <div
                             className="h-full rounded-full bg-primary"
-                            style={{ width: `${Math.max(6, (t.total / maior) * 100)}%` }}
+                            style={{ width: larguraDaFatia(t.total, somaDoPerfil) }}
                           />
                         </div>
                       </li>

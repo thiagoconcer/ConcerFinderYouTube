@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ROUTES } from '@/lib/routes'
 import { formatTimestamp } from '@/lib/format'
+import { larguraDaFatia } from '@/lib/grafico'
 import type { TrechoRanking } from '@/types/search'
 
 /**
@@ -27,7 +28,7 @@ export function RankingTrechos({
   tipo: 'recomendado' | 'assistido'
 }) {
   const Icone = tipo === 'recomendado' ? Sparkles : Eye
-  const maior = trechos[0]?.vezes ?? 1
+  const soma = trechos.reduce((a, t) => a + t.vezes, 0)
 
   return (
     <Card>
@@ -90,7 +91,7 @@ export function RankingTrechos({
                       >
                         <div
                           className="h-full rounded-full bg-primary"
-                          style={{ width: `${Math.max(6, (t.vezes / maior) * 100)}%` }}
+                          style={{ width: larguraDaFatia(t.vezes, soma) }}
                         />
                       </div>
                     </div>

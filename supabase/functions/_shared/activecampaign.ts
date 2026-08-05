@@ -138,12 +138,19 @@ export interface ResultadoSincronizacao {
   gatilhoAplicado: boolean
 }
 
-/** ISO -> MM/DD/YYYY, formato que o campo de data do AC espera. */
+/**
+ * ISO -> YYYY-MM-DD.
+ *
+ * Era MM/DD/YYYY, e esta conta do ActiveCampaign lê barra como DD/MM/YYYY:
+ * um cadastro de 05/08/2026 virava 8 de maio. Com dia e mês ambos <= 12 o erro
+ * é silencioso, e só apareceria como segmentação por data devolvendo gente
+ * errada. YYYY-MM-DD não é ambíguo em nenhuma configuração de conta.
+ */
 function dataAC(iso: string): string {
   const d = new Date(iso)
   const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
   const dd = String(d.getUTCDate()).padStart(2, '0')
-  return `${mm}/${dd}/${d.getUTCFullYear()}`
+  return `${d.getUTCFullYear()}-${mm}-${dd}`
 }
 
 function primeiroNome(nome: string): string {
