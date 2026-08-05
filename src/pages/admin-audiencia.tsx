@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
+import { RankingTrechos } from '@/components/admin/ranking-trechos'
 import { supabase } from '@/lib/supabase'
 import { formatDateTime, topicLabel } from '@/lib/format'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
@@ -151,7 +153,7 @@ export function AdminAudienciaPage() {
             {[
               { rotulo: 'Leads cadastrados', valor: insights.totais.leads },
               { rotulo: 'Buscas no período', valor: insights.totais.buscas },
-              { rotulo: 'Perfis ativos', valor: insights.totais.perfis },
+              { rotulo: 'Trechos abertos', valor: insights.totais.visualizacoes },
               { rotulo: 'Vídeos indexados', valor: insights.totais.videos_indexados },
             ].map((item) => (
               <Card key={item.rotulo}>
@@ -255,6 +257,64 @@ export function AdminAudienciaPage() {
               </Card>
             </div>
           </div>
+
+          {/* Quem procura o quê */}
+          <section className="mb-8">
+            <PerfisPorTema perfis={insights.perfis_por_tema ?? []} />
+          </section>
+
+          {/* O que a busca devolve x o que as pessoas abrem */}
+          <section className="mb-8 grid gap-6 lg:grid-cols-2">
+            <RankingTrechos
+              titulo="Trechos mais recomendados"
+              descricao="O que a busca semântica mais devolveu para as dores pesquisadas."
+              trechos={insights.trechos_mais_recomendados ?? []}
+              tipo="recomendado"
+            />
+            <RankingTrechos
+              titulo="Trechos mais assistidos"
+              descricao="O que as pessoas realmente abriram. A diferença para a coluna ao lado mostra o que recomenda bem mas não convence a clicar."
+              trechos={insights.trechos_mais_assistidos ?? []}
+              tipo="assistido"
+            />
+          </section>
+
+          {/* Vídeos com melhor desempenho */}
+          {(insights.videos_mais_recomendados ?? []).length > 0 && (
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="text-lg">Vídeos que mais aparecem</CardTitle>
+                <CardDescription>
+                  Recomendações e aberturas por vídeo. Bom para escolher o que repostar e sobre o
+                  que gravar mais.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[560px] text-sm">
+                    <thead className="border-b text-left">
+                      <tr>
+                        <th className="pb-2 font-medium">Vídeo</th>
+                        <th className="pb-2 text-right font-medium">Recomendado</th>
+                        <th className="pb-2 text-right font-medium">Aberto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {insights.videos_mais_recomendados.map((v) => (
+                        <tr key={v.video_id} className="border-b last:border-0">
+                          <td className="max-w-md truncate py-2.5 pr-4">{v.title}</td>
+                          <td className="py-2.5 text-right tabular-nums">{v.recomendacoes}</td>
+                          <td className="py-2.5 text-right tabular-nums text-muted-foreground">
+                            {v.visualizacoes}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Buscas sem resultado: pauta de conteúdo */}
           {insights.buscas_sem_resultado.length > 0 && (

@@ -15,6 +15,7 @@
 | `video_segments` | `transcribe-videos` (INSERT segmentos), `index-segments` (UPDATE `embedding`), `search_videos` (busca vetorial por cosseno), `get_search_results` / `get_video_detail` (leitura via RPC) | Nenhuma página lê direto — acesso apenas via RPC `SECURITY DEFINER` | Índice vetorial `ivfflat` sobre `embedding`. RLS bloqueia SELECT pelo frontend por regra de negócio (visitante não vê nada). As RPCs de leitura só devolvem trechos que o usuário já recuperou em buscas próprias. |
 | `searches` | `search_videos` (INSERT da busca + `detected_topics`), `generate-action-plan` (UPDATE `action_plan`), `get_audience_insights()` (agrega `detected_topics`), `get_search_results` (lê) | `search` (registra cada dor buscada), `search-history` (lista buscas do próprio usuário), `admin-audience` (temas mais buscados) | RLS: dono (`profile_id = auth.uid()`) ou staff. INSERT pelo dono/RPC. |
 | `search_results` | `search_videos` (INSERT das recomendações rankeadas via RPC), `get_search_results` / `get_video_detail` (leitura) | `search` (exibe vídeo + minutagem + score), `search-history` (resultados de buscas anteriores), `video-detail` (trechos do vídeo) | SELECT: dono da busca associada ou staff. INSERT só `service_role`/RPC. Guarda `start_seconds` para o deep-link. |
+| `video_views` | `get_audience_insights()` (agrega recomendado × assistido) | `video-detail` (INSERT ao abrir), `admin-audience` (rankings) | **[Extensão do doc]** SELECT: dono ou staff. INSERT: só o próprio usuário. UPDATE/DELETE: ninguém, métrica não se edita. |
 | `ingestion_runs` | `scrape-youtube-channel` (INSERT `run_type='scrape'`), `transcribe-videos` (INSERT `run_type='transcribe'`), `index-segments` (INSERT `run_type='index'`), `get_content_dashboard()` (agrega) | `admin-content` (log de execuções de scraping/transcrição/indexação) | SELECT só staff; escrita só `service_role`. Monitoramento da esteira de ingestão agendada por pg_cron. |
 
 ---
@@ -33,7 +34,7 @@
 | `search_videos(query_embedding, match_count)` (RPC, SECURITY DEFINER) | `video_segments` (busca vetorial), `videos` (JOIN), `searches` (INSERT), `search_results` (INSERT), `profiles` (`profile_id` via `auth.uid()`) | `search`, `search-history` | Núcleo do produto. Exige `auth.uid()` válido — visitante sem cadastro não recebe recomendação. |
 | `handle_new_user()` (RPC/trigger) | `profiles` (INSERT) | `sign-up` (disparada pelo signup no Supabase Auth) | Trigger em `auth.users`. Papel padrão `user`. |
 | `is_concer_staff()` (RPC helper) | `profiles` (lê `role`) | `admin-content`, `admin-audience` (guarda de acesso staff) | Helper de RLS usado nas policies dos painéis internos. |
-| `get_audience_insights()` (RPC, SECURITY DEFINER, staff-only) | `searches` (`detected_topics`), `profiles` (`commercial_role`), `leads` | `admin-audience` | Cruza dores buscadas × perfil comercial para segmentação de audiência (base do modelo de receita). |
+| `get_audience_insights()` (RPC, SECURITY DEFINER, staff-only) | `searches` (`detected_topics`), `profiles` (`commercial_role`), `leads`, `search_results`, `video_views`, `videos`, `video_segments` | `admin-audience` | Cruza dores buscadas × perfil comercial para segmentação de audiência (base do modelo de receita). |
 | `get_search_results(p_search_id)` (RPC, SECURITY DEFINER) | `searches`, `search_results`, `videos`, `video_segments` | `search-history` | **[Extensão do doc]** Reabre resultados persistidos. Só do dono da busca ou staff. |
 | `get_video_detail(p_video_id)` (RPC, SECURITY DEFINER) | `videos`, `video_segments`, `search_results`, `searches` | `video-detail` | **[Extensão do doc]** Metadados + trechos que o próprio usuário já recuperou. |
 | `get_content_dashboard()` (RPC, SECURITY DEFINER, staff-only) | `videos`, `video_segments`, `ingestion_runs` | `admin-content` | **[Extensão do doc]** Contadores da esteira de ingestão. |
@@ -43,7 +44,7 @@
 
 ### Checklist de órfãos (conferência rápida)
 
-- **Todas as 7 tabelas** aparecem na Tabela 1: `profiles`, `leads`, `videos`, `video_segments`, `searches`, `search_results`, `ingestion_runs`. ✔
+- **Todas as 8 tabelas** aparecem na Tabela 1: `profiles`, `leads`, `videos`, `video_segments`, `searches`, `search_results`, `ingestion_runs`, `video_views`. ✔
 - **Todas as 7 Edge Functions + 8 RPCs/funções** aparecem na Tabela 2. ✔
 - **Todas as 8 páginas** são referenciadas por ao menos uma function/tabela: `landing` (institucional, sem dados — CTA para `sign-up`), `sign-up`, `login`, `search`, `search-history`, `video-detail`, `admin-content`, `admin-audience`. ✔
 - **`landing`** é a única página sem escrita/leitura de dados de negócio (apresentação + CTA); intencional, não é órfã de propósito.

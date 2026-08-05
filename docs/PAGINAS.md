@@ -151,6 +151,9 @@
 **Seções da tela:**
 - **Indicadores de leads** (total de cadastros, distribuição por perfil comercial: vendedor / gestor comercial / dono de empresa).
 - **Ranking de temas/dores mais buscados** (agregação de `searches.detected_topics` via `get_audience_insights()`), cruzado por perfil comercial.
+- **Quem procura o quê**: para cada perfil comercial (vendedor / gestor / dono), os temas que ele mais busca. É o corte que sustenta a conversa com um parceiro. **[Extensão do doc]**
+- **Trechos mais recomendados** (o que a busca devolveu, de `search_results`) e **trechos mais assistidos** (o que as pessoas abriram, de `video_views`), lado a lado. A distância entre os dois mostra o que recomenda bem mas não convence a clicar. **[Extensão do doc]**
+- **Vídeos que mais aparecem**, com recomendações e aberturas por vídeo, para decidir o que repostar e sobre o que gravar mais. **[Extensão do doc]**
 - **Tabela de leads** com nome, e-mail, WhatsApp, perfil, status da nutrição (`nurture_status`) e data de cadastro.
 - Segmentação/filtros por perfil e por tema de interesse para identificar grupos relevantes a empresas parceiras.
 - Indicador de saúde da nutrição (pending / sent / failed) para acompanhar a régua de e-mail e WhatsApp.

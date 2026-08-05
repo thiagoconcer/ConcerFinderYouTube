@@ -270,6 +270,68 @@ export type Database = {
           },
         ]
       }
+      video_views: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          search_id: string | null
+          segment_id: string | null
+          start_seconds: number
+          updated_at: string
+          video_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          search_id?: string | null
+          segment_id?: string | null
+          start_seconds?: number
+          updated_at?: string
+          video_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          search_id?: string | null
+          segment_id?: string | null
+          start_seconds?: number
+          updated_at?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_views_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_views_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_views_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "video_segments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "video_views_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       videos: {
         Row: {
           created_at: string
@@ -348,6 +410,7 @@ export type Database = {
       }
       get_video_detail: { Args: { p_video_id: string }; Returns: Json }
       is_concer_staff: { Args: never; Returns: boolean }
+      run_ingestion_step: { Args: { step: string }; Returns: number }
       search_videos: {
         Args: {
           detected_topics?: string[]

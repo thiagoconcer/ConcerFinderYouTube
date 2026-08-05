@@ -283,7 +283,7 @@
 - **Propósito:** consolidar dores/temas buscados cruzados com o perfil comercial dos leads, para o painel de audiência e a monetização com empresas parceiras.
 - **Quando dispara:** evento HTTP via `supabase.rpc('get_audience_insights')` na página `/admin/audiencia`.
 - **Input:** filtros opcionais (`from_date`, `to_date`, `commercial_role`). **[Extensão do doc]**
-- **Output:** agregações — temas mais buscados (`searches.detected_topics`) × `profiles.commercial_role`, contagem de leads por perfil, ranking de dores.
+- **Output:** agregações — temas mais buscados (`searches.detected_topics`) × `profiles.commercial_role`, contagem de leads por perfil, ranking de dores, e ainda **[Extensão do doc]**: `perfis_por_tema` (quem procura o quê), `trechos_mais_recomendados` (de `search_results`), `trechos_mais_assistidos` (de `video_views`) e `videos_mais_recomendados`.
 - **Regras de negócio / validações:**
   - Bloqueia execução se `is_concer_staff()` for `false` (aborta com erro de permissão).
   - Somente leitura/agregação; não expõe dados individuais além do necessário para segmentação.

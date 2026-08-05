@@ -93,6 +93,19 @@ Recomendações retornadas para cada busca (vídeo + minutagem + relevância).
 | `created_at` | timestamptz | NOT NULL, default `now()` |
 **Índices:** PK; `idx_search_results_search_id` em `search_id`; `idx_search_results_video_id` em `video_id`; `idx_search_results_segment_id` em `segment_id`.
 
+### `video_views`
+Registro de cada abertura de `/video/:id`. Existe porque `search_results` diz o que foi **recomendado**, e nada dizia o que foi **aberto**: é esse par que sustenta o ranking de trechos do painel de audiência. **[Extensão do doc]**
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| `id` | uuid | PK, default `gen_random_uuid()` |
+| `profile_id` | uuid | FK → `profiles.id`, NOT NULL |
+| `video_id` | uuid | FK → `videos.id`, NOT NULL |
+| `segment_id` | uuid | FK → `video_segments.id`, NULL (nulo quando abriu sem recomendação) |
+| `search_id` | uuid | FK → `searches.id`, NULL (nulo quando chegou por link direto) |
+| `start_seconds` | int | NOT NULL, default `0` |
+| `created_at` | timestamptz | NOT NULL, default `now()` |
+**Índices:** PK; `idx_video_views_profile_id`; `idx_video_views_video_id`; `idx_video_views_segment_id`; `idx_video_views_created_at`.
+
 ### `ingestion_runs`
 Log de cada execução de scraping/transcrição/indexação (monitoramento pelo admin de conteúdo).
 | Coluna | Tipo | Restrições |
@@ -123,6 +136,7 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 | `searches` | dono (`profile_id = auth.uid()`) ou staff | dono (`profile_id = auth.uid()`) | ninguém | ninguém |
 | `search_results` | dono da busca associada ou staff | `service_role`/RPC | ninguém | ninguém |
 | `ingestion_runs` | staff | `service_role` | `service_role` | ninguém |
+| `video_views` | dono (`profile_id = auth.uid()`) ou staff | dono (`profile_id = auth.uid()`) | ninguém | ninguém |
 
 **Regra crítica de negócio refletida no RLS:** visitante sem cadastro não vê nenhuma recomendação — `videos`/`video_segments` só respondem a usuários autenticados, e os resultados chegam apenas pela RPC `search_videos`, que exige `auth.uid()` válido.
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { AlertCircle, ArrowLeft, ExternalLink } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/routes'
 import { formatDate, formatTimestamp, topicLabel, youtubeEmbedUrl, youtubeUrl } from '@/lib/format'
 import type { VideoDetail } from '@/types/search'
@@ -19,6 +20,7 @@ import type { VideoDetail } from '@/types/search'
 export function VideoDetailPage() {
   const { id } = useParams<{ id: string }>()
   const [params] = useSearchParams()
+  const { user } = useAuth()
 
   const [detalhe, setDetalhe] = useState<VideoDetail | null>(null)
   const [carregando, setCarregando] = useState(true)
@@ -50,6 +52,30 @@ export function VideoDetailPage() {
   useEffect(() => {
     void carregar()
   }, [carregar])
+
+  /*
+    Registra a visualização, uma vez por abertura da tela. É o que alimenta
+    "trechos mais assistidos" no painel de audiência: `search_results` diz o
+    que foi recomendado, isto diz o que a pessoa realmente abriu.
+    Falha aqui não pode atrapalhar a leitura do vídeo, então é silenciosa.
+  */
+  const jaRegistrou = useRef<string | null>(null)
+  useEffect(() => {
+    if (!id || !user?.id || jaRegistrou.current === id) return
+    jaRegistrou.current = id
+
+    void supabase
+      .from('video_views')
+      .insert({
+        profile_id: user.id,
+        video_id: id,
+        segment_id: params.get('s'),
+        start_seconds: Number(params.get('t') ?? 0) || 0,
+      })
+      .then(({ error }) => {
+        if (error) console.warn('não foi possível registrar a visualização:', error.message)
+      })
+  }, [id, user?.id, params])
 
   if (carregando) {
     return (

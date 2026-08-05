@@ -74,13 +74,47 @@ export interface ContentDashboard {
   } | null
 }
 
+/** Um trecho no ranking de recomendados ou assistidos. */
+export interface TrechoRanking {
+  segment_id: string | null
+  video_id: string
+  youtube_video_id: string
+  title: string
+  start_seconds: number
+  trecho: string
+  vezes: number
+  score_medio?: number
+}
+
 /** Retorno da RPC `get_audience_insights`. */
 export interface AudienceInsights {
   periodo: { de: string; ate: string }
-  totais: { leads: number; perfis: number; buscas: number; videos_indexados: number }
+  totais: {
+    leads: number
+    perfis: number
+    buscas: number
+    visualizacoes: number
+    videos_indexados: number
+  }
   leads_por_perfil: Array<{ commercial_role: string; total: number }>
   nutricao: Record<string, number>
   temas: Array<{ topico: string; total: number }>
   temas_por_perfil: Array<{ topico: string; commercial_role: string; total: number }>
+  /** Quem procura o quê: por perfil comercial, os temas que ele mais busca. */
+  perfis_por_tema: Array<{
+    commercial_role: string
+    total: number
+    temas: Array<{ topico: string; total: number }>
+  }>
+  trechos_mais_recomendados: TrechoRanking[]
+  trechos_mais_assistidos: TrechoRanking[]
+  videos_mais_recomendados: Array<{
+    video_id: string
+    youtube_video_id: string
+    title: string
+    thumbnail_url: string | null
+    recomendacoes: number
+    visualizacoes: number
+  }>
   buscas_sem_resultado: Array<{ query_text: string; created_at: string }>
 }
