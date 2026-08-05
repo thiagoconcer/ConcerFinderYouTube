@@ -52,6 +52,7 @@ Deno.serve(handler(async (req) => {
 
     let transcritos = 0
     let segmentosCriados = 0
+    let cotaEsgotada = false
     const falhas: string[] = []
 
     for (const video of videos) {
@@ -89,12 +90,42 @@ Deno.serve(handler(async (req) => {
       } catch (error) {
         const mensagem = error instanceof Error ? error.message : String(error)
         falhas.push(`${video.youtube_video_id}: ${mensagem}`)
-        await db.from('videos').update({ transcription_status: 'failed' }).eq('id', video.id)
+
+        // Cota da YouTube Data API e rate limit são falhas TEMPORÁRIAS: o vídeo
+        // volta para `pending` para o cron tentar amanhã, em vez de ficar preso
+        // em `failed` para sempre. Cada vídeo custa 250 unidades (captions.list
+        // 50 + captions.download 200) contra 10.000/dia, ou seja 40 vídeos/dia.
+        const temporaria =
+          /exceeded your .{0,40}quota|quotaExceeded|rateLimitExceeded|userRateLimitExceeded|\b429\b/i.test(
+            mensagem,
+          )
+
+        await db
+          .from('videos')
+          .update({ transcription_status: temporaria ? 'pending' : 'failed' })
+          .eq('id', video.id)
+
+        if (temporaria) {
+          cotaEsgotada = true
+          break // não adianta insistir no lote: a cota é diária
+        }
       }
     }
 
+    // Os vídeos que sobraram no lote sem serem tocados (o loop parou na cota)
+    // voltam para pending, senão ficariam presos em `transcribing`.
+    if (cotaEsgotada) {
+      await db
+        .from('videos')
+        .update({ transcription_status: 'pending' })
+        .in('id', videos.map((v) => v.id))
+        .eq('transcription_status', 'transcribing')
+    }
+
+    const status = transcritos === 0 && falhas.length > 0 ? 'failed' : 'completed'
+
     await finishRun(db, runId, {
-      status: falhas.length === videos.length ? 'failed' : 'completed',
+      status,
       videos_processed: transcritos,
       error_message: falhas.length > 0 ? falhas.join(' | ').slice(0, 1000) : undefined,
     })
@@ -104,7 +135,8 @@ Deno.serve(handler(async (req) => {
       videos_transcribed: transcritos,
       segments_created: segmentosCriados,
       videos_failed: falhas.length,
-      status: falhas.length === videos.length ? 'failed' : 'completed',
+      quota_exhausted: cotaEsgotada,
+      status,
     })
   } catch (error) {
     const mensagem = error instanceof Error ? error.message : String(error)
