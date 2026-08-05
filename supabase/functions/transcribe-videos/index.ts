@@ -1,4 +1,4 @@
-import { AppError, handler, json } from '../_shared/http.ts'
+import { AppError, ehErroDeCota, handler, json } from '../_shared/http.ts'
 import { finishRun, requireStaffOrService, serviceClient, startRun } from '../_shared/supabase.ts'
 import { buildSegments, fetchTranscript } from '../_shared/transcript.ts'
 import { detectTopics } from '../_shared/topics.ts'
@@ -96,9 +96,7 @@ Deno.serve(handler(async (req) => {
         // em `failed` para sempre. Cada vídeo custa 250 unidades (captions.list
         // 50 + captions.download 200) contra 10.000/dia, ou seja 40 vídeos/dia.
         const temporaria =
-          /exceeded your .{0,40}quota|quotaExceeded|rateLimitExceeded|userRateLimitExceeded|\b429\b/i.test(
-            mensagem,
-          )
+          (error instanceof AppError && error.code === 'youtube_quota') || ehErroDeCota(mensagem)
 
         await db
           .from('videos')

@@ -25,6 +25,33 @@ export class AppError extends Error {
   }
 }
 
+/**
+ * A cota da YouTube Data API zera à meia-noite do Pacífico. Traduz o erro
+ * cru do Google para uma mensagem que diz o que aconteceu e quando volta,
+ * em vez de despejar o JSON da API no painel.
+ */
+export function ehErroDeCota(mensagem: string): boolean {
+  return /exceeded your .{0,60}quota|quotaExceeded|rateLimitExceeded|userRateLimitExceeded/i.test(
+    mensagem,
+  )
+}
+
+export function mensagemDeCota(): string {
+  // meia-noite do Pacífico: 07:00 UTC no horário de verão, 08:00 fora dele
+  const agora = new Date()
+  const reset = new Date(agora)
+  reset.setUTCHours(7, 0, 0, 0)
+  if (reset <= agora) reset.setUTCDate(reset.getUTCDate() + 1)
+  const horas = Math.max(1, Math.round((reset.getTime() - agora.getTime()) / 3_600_000))
+
+  return (
+    'A cota diária da YouTube Data API acabou. Cada vídeo custa 250 unidades ' +
+    '(captions.list 50 + captions.download 200) contra 10.000 por dia, ou seja 40 vídeos. ' +
+    `A cota zera em cerca de ${horas}h e o cron retoma sozinho de madrugada. ` +
+    'Nenhum vídeo foi perdido: os pendentes continuam na fila.'
+  )
+}
+
 /** Secret ausente vira 503 com instrução clara de onde configurar. */
 export function requireSecret(name: string): string {
   const value = Deno.env.get(name)

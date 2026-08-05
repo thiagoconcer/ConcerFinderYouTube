@@ -1,4 +1,13 @@
-import { AppError, fetchJson, handler, json, optionalSecret, requireSecret } from '../_shared/http.ts'
+import {
+  AppError,
+  ehErroDeCota,
+  fetchJson,
+  handler,
+  json,
+  mensagemDeCota,
+  optionalSecret,
+  requireSecret,
+} from '../_shared/http.ts'
 import { finishRun, requireStaffOrService, serviceClient, startRun } from '../_shared/supabase.ts'
 
 /**
@@ -163,10 +172,19 @@ Deno.serve(handler(async (req) => {
       status: 'completed',
     })
   } catch (error) {
-    const mensagem = error instanceof Error ? error.message : String(error)
+    const cru = error instanceof Error ? error.message : String(error)
+    const cota = ehErroDeCota(cru)
+    const mensagem = cota ? mensagemDeCota() : cru
+
     await finishRun(db, runId, { status: 'failed', error_message: mensagem.slice(0, 1000) })
+
+    // A mensagem tratada vai também para o chamador, não só para o log:
+    // é ela que o painel mostra.
+    if (cota) {
+      return json({ run_id: runId, status: 'failed', error: mensagem, quota_exhausted: true }, 429)
+    }
     if (error instanceof AppError) {
-      return json({ run_id: runId, status: 'failed', error: error.message }, error.status)
+      return json({ run_id: runId, status: 'failed', error: mensagem }, error.status)
     }
     throw error
   }

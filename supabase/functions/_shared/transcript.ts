@@ -1,4 +1,11 @@
-import { AppError, fetchJson, optionalSecret, requireSecret } from './http.ts'
+import {
+  AppError,
+  ehErroDeCota,
+  fetchJson,
+  mensagemDeCota,
+  optionalSecret,
+  requireSecret,
+} from './http.ts'
 
 /**
  * Obtenção da transcrição de um vídeo do YouTube.
@@ -113,8 +120,12 @@ async function viaDataApi(videoId: string): Promise<TranscriptCue[]> {
     { headers: auth },
   )
   if (!lista.ok) {
+    const corpo = await lista.text()
+    if (ehErroDeCota(corpo)) {
+      throw new AppError(mensagemDeCota(), 429, 'youtube_quota')
+    }
     throw new AppError(
-      `captions.list falhou para ${videoId}: ${(await lista.text()).slice(0, 200)}`,
+      `captions.list falhou para ${videoId}: ${corpo.slice(0, 200)}`,
       502,
       'captions_list_failed',
     )
@@ -140,8 +151,12 @@ async function viaDataApi(videoId: string): Promise<TranscriptCue[]> {
     { headers: auth },
   )
   if (!download.ok) {
+    const corpo = await download.text()
+    if (ehErroDeCota(corpo)) {
+      throw new AppError(mensagemDeCota(), 429, 'youtube_quota')
+    }
     throw new AppError(
-      `captions.download falhou para ${videoId}: ${(await download.text()).slice(0, 200)}. ` +
+      `captions.download falhou para ${videoId}: ${corpo.slice(0, 200)}. ` +
         'A conta OAuth precisa ser a DONA do canal.',
       502,
       'captions_download_failed',
@@ -282,6 +297,9 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptCue[]>
       if (cues.length > 0) return cues
       falhas.push(`${nome}: sem legenda`)
     } catch (error) {
+      // Cota estourada não é "essa estratégia não serve": nenhuma das outras
+      // vai resolver, e insistir só gera um log gigante. Aborta a cadeia.
+      if (error instanceof AppError && error.code === 'youtube_quota') throw error
       falhas.push(`${nome}: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
