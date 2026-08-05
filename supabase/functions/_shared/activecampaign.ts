@@ -227,6 +227,33 @@ export async function sincronizarLead(
   }
 }
 
+/**
+ * E-mails de todos os contatos que têm uma tag.
+ *
+ * Uma chamada por TAG, não por contato: é o que permite montar a situação da
+ * régua para a base inteira em poucas requisições. Pagina de 100 em 100 porque
+ * o ActiveCampaign não devolve mais que isso de uma vez.
+ */
+export async function contatosPorTag(nomeDaTag: string): Promise<string[]> {
+  const id = await idDaTag(nomeDaTag)
+  if (!id) return []
+
+  const emails: string[] = []
+  let offset = 0
+
+  // Teto de segurança: 50 páginas (5.000 contatos). Sem ele, uma resposta
+  // inesperada da API transformaria isto em laço infinito dentro da função.
+  for (let pagina = 0; pagina < 50; pagina++) {
+    const r = await ac('GET', `contacts?tagid=${id}&limit=100&offset=${offset}`)
+    const lote = (r.json?.contacts ?? []) as Array<{ email?: string }>
+    for (const c of lote) if (c.email) emails.push(c.email.toLowerCase())
+    if (lote.length < 100) break
+    offset += 100
+  }
+
+  return emails
+}
+
 export function acConfigurado(): boolean {
   return Boolean(token())
 }

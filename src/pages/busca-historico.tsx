@@ -46,6 +46,7 @@ type BuscaComAutor = SearchRow & {
 export function BuscaHistoricoPage() {
   const { user, isStaff } = useAuth()
   const [escopo, setEscopo] = useState<Escopo>('minhas')
+  const [tema, setTema] = useState<string>('todos')
   const [buscas, setBuscas] = useState<BuscaComAutor[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [aberta, setAberta] = useState<string | null>(null)
@@ -101,10 +102,14 @@ export function BuscaHistoricoPage() {
     setDetalhes((atual) => ({ ...atual, [searchId]: (data ?? []) as unknown as SearchResultRow[] }))
   }
 
-  // Chips de temas recorrentes, montados a partir do próprio histórico
-  const temasRecorrentes = [
+  // Os temas disponíveis saem do próprio resultado, então a lista nunca
+  // oferece um filtro que devolveria zero linhas.
+  const temasDisponiveis = [
     ...new Set((buscas ?? []).flatMap((b) => b.detected_topics ?? [])),
-  ].slice(0, 10)
+  ].sort()
+
+  const visiveis =
+    tema === 'todos' ? (buscas ?? []) : (buscas ?? []).filter((b) => (b.detected_topics ?? []).includes(tema))
 
   return (
     <div className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
@@ -122,6 +127,21 @@ export function BuscaHistoricoPage() {
         <div className="flex flex-wrap items-center gap-2">
           {/* Só staff enxerga o seletor. Ver a busca dos outros é uma ação
               deliberada, nunca o padrão de quem abre a própria página. */}
+          {temasDisponiveis.length > 1 && (
+            <Select value={tema} onValueChange={setTema}>
+              <SelectTrigger className="w-52">
+                <SelectValue placeholder="Todos os temas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os temas</SelectItem>
+                {temasDisponiveis.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {topicLabel(t)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           {isStaff && (
             <Select value={escopo} onValueChange={(v) => setEscopo(v as Escopo)}>
               <SelectTrigger className="w-52">
@@ -183,23 +203,42 @@ export function BuscaHistoricoPage() {
       {/* Lista */}
       {buscas !== null && buscas.length > 0 && (
         <>
-          {temasRecorrentes.length > 0 && (
+          {temasDisponiveis.length > 0 && (
             <section className="mb-8">
               <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-                Temas que você mais pesquisa
+                {escopo === 'todas' ? 'Temas mais pesquisados' : 'Temas que você mais pesquisa'}
               </h2>
+              {/* Os chips também filtram: clicar no tema é o gesto mais natural
+                  depois de ver que ele existe. */}
               <ul className="flex flex-wrap gap-2">
-                {temasRecorrentes.map((tema) => (
-                  <li key={tema}>
-                    <Badge variant="secondary">{topicLabel(tema)}</Badge>
+                {temasDisponiveis.map((t) => (
+                  <li key={t}>
+                    <button type="button" onClick={() => setTema(tema === t ? 'todos' : t)}>
+                      <Badge
+                        variant={tema === t ? 'default' : 'secondary'}
+                        className="cursor-pointer"
+                      >
+                        {topicLabel(t)}
+                      </Badge>
+                    </button>
                   </li>
                 ))}
               </ul>
             </section>
           )}
 
+          {tema !== 'todos' && (
+            <p className="mb-3 text-sm text-muted-foreground">
+              {visiveis.length} {visiveis.length === 1 ? 'busca' : 'buscas'} em{' '}
+              {topicLabel(tema)}.{' '}
+              <button type="button" onClick={() => setTema('todos')} className="underline">
+                limpar filtro
+              </button>
+            </p>
+          )}
+
           <ul className="space-y-4">
-            {buscas.map((busca) => {
+            {visiveis.map((busca) => {
               const estaAberta = aberta === busca.id
               const resultados = detalhes[busca.id]
 
@@ -219,9 +258,15 @@ export function BuscaHistoricoPage() {
                             {escopo === 'todas' && busca.profiles && (
                               <>
                                 {' · '}
-                                <span className="text-foreground">
+                                {/* Leva ao perfil da pessoa: ver uma dor sem
+                                    poder olhar quem a escreveu deixa a leitura
+                                    pela metade. */}
+                                <Link
+                                  to={ROUTES.adminLeadPerfil(busca.profile_id)}
+                                  className="text-foreground hover:underline"
+                                >
                                   {busca.profiles.full_name || busca.profiles.email}
-                                </span>
+                                </Link>
                                 {busca.profiles.cargo && (
                                   <> ({CARGO_LABELS[busca.profiles.cargo as Cargo] ?? busca.profiles.cargo})</>
                                 )}

@@ -407,6 +407,11 @@ export type Database = {
         Returns: Json
       }
       get_equipe: { Args: never; Returns: Json }
+      get_lead_detail: { Args: { p_profile_id: string }; Returns: Json }
+      get_leads: {
+        Args: { p_busca?: string; p_limit?: number; p_perfil?: string }
+        Returns: Json
+      }
       get_search_results: {
         Args: { p_search_id: string }
         Returns: {

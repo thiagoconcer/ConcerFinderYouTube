@@ -22,14 +22,17 @@ import { RankingTrechos } from '@/components/admin/ranking-trechos'
 import { supabase } from '@/lib/supabase'
 import { formatDateTime, topicLabel } from '@/lib/format'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
-import type { CommercialRole, Lead } from '@/types/database'
+import type { CommercialRole } from '@/types/database'
 import type { AudienceInsights, CargoInsights, EngagementInsights } from '@/types/search'
 
 /**
  * /admin/audiencia
- * Painel do Gestor de audiência: leads, perfis e ranking de dores buscadas.
- * Os agregados vêm da RPC get_audience_insights (staff-only, SECURITY DEFINER);
- * a tabela de leads vem direto da tabela, protegida por leads_select_staff.
+ * Painel agregado: crescimento, ativação, qualidade da busca, temas e rankings.
+ *
+ * A lista de pessoas NÃO mora aqui, mora em /admin/leads. São leituras de
+ * ritmos diferentes: este painel se lê de vez em quando para entender a
+ * audiência como um todo; a lista de leads se consulta no dia a dia para agir
+ * sobre alguém. Juntas, uma atrapalhava a outra.
  */
 
 const NURTURE_LABEL: Record<string, string> = {
@@ -44,7 +47,6 @@ export function AdminAudienciaPage() {
   const [insights, setInsights] = useState<AudienceInsights | null>(null)
   const [cargos, setCargos] = useState<CargoInsights | null>(null)
   const [engajamento, setEngajamento] = useState<EngagementInsights | null>(null)
-  const [leads, setLeads] = useState<Lead[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
 
@@ -53,43 +55,33 @@ export function AdminAudienciaPage() {
     setInsights(null)
     setCargos(null)
     setEngajamento(null)
-    setLeads(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
-    let leadsQuery = supabase
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(200)
-    if (perfil) leadsQuery = leadsQuery.eq('commercial_role', perfil)
-
     // O corte por cargo não usa o filtro de perfil: ele é justamente a visão
     // mais fina, e filtrar por perfil deixaria só os cargos daquele grupo.
-    const [insightsRes, cargosRes, engajamentoRes, leadsRes] = await Promise.all([
+    const [insightsRes, cargosRes, engajamentoRes] = await Promise.all([
       supabase.rpc(
         'get_audience_insights',
         perfil ? { filter_commercial_role: perfil } : {},
       ),
       supabase.rpc('get_cargo_insights', {}),
       supabase.rpc('get_engagement_insights', {}),
-      leadsQuery,
     ])
 
-    if (insightsRes.error || leadsRes.error) {
+    if (insightsRes.error) {
       setErro('Não foi possível carregar os insights de audiência.')
     }
     setInsights((insightsRes.data as unknown as AudienceInsights) ?? null)
     setCargos((cargosRes.data as unknown as CargoInsights) ?? null)
     setEngajamento((engajamentoRes.data as unknown as EngagementInsights) ?? null)
-    setLeads(leadsRes.data ?? [])
   }, [filtroPerfil])
 
   useEffect(() => {
     void carregar()
   }, [carregar])
 
-  const carregando = insights === null && leads === null
+  const carregando = insights === null
   const semDados =
     !carregando && (insights?.totais.leads ?? 0) === 0 && (insights?.totais.buscas ?? 0) === 0
 
@@ -99,9 +91,9 @@ export function AdminAudienciaPage() {
     <div className="mx-auto w-full max-w-[1180px] px-5 py-10 sm:px-8 sm:py-12">
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Audiência e leads</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
           <p className="mt-2 text-muted-foreground">
-            Quem se cadastrou, qual o perfil comercial e quais dores concentram interesse.
+            Como a audiência cresce, ativa e usa o acervo. Pessoa a pessoa fica em Leads.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -381,61 +373,6 @@ export function AdminAudienciaPage() {
             </Card>
           )}
 
-          {/* Tabela de leads */}
-          <section>
-            <h2 className="mb-3 text-lg font-semibold">Leads</h2>
-            {leads && leads.length > 0 ? (
-              <div className="overflow-x-auto rounded-lg border">
-                <table className="w-full min-w-[760px] text-sm">
-                  <thead className="border-b bg-muted/40 text-left">
-                    <tr>
-                      <th className="px-4 py-3 font-medium">Nome</th>
-                      <th className="px-4 py-3 font-medium">E-mail</th>
-                      <th className="px-4 py-3 font-medium">WhatsApp</th>
-                      <th className="px-4 py-3 font-medium">Perfil</th>
-                      <th className="px-4 py-3 font-medium">Nutrição</th>
-                      <th className="px-4 py-3 font-medium">Cadastro</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leads.map((lead) => (
-                      <tr key={lead.id} className="border-b last:border-0">
-                        <td className="px-4 py-3">{lead.full_name}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{lead.email}</td>
-                        <td className="px-4 py-3 text-muted-foreground">{lead.whatsapp}</td>
-                        <td className="px-4 py-3">
-                          {COMMERCIAL_ROLE_LABELS[lead.commercial_role as CommercialRole] ??
-                            lead.commercial_role}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge
-                            variant={
-                              lead.nurture_status === 'sent'
-                                ? 'default'
-                                : lead.nurture_status === 'failed'
-                                  ? 'destructive'
-                                  : 'secondary'
-                            }
-                          >
-                            {NURTURE_LABEL[lead.nurture_status] ?? lead.nurture_status}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground">
-                          {formatDateTime(lead.created_at)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                  Nenhum lead para o filtro selecionado.
-                </CardContent>
-              </Card>
-            )}
-          </section>
         </>
       )}
     </div>

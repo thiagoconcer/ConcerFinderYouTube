@@ -41,8 +41,9 @@ export function SiteHeader() {
         { label: 'Histórico', to: ROUTES.historico },
         ...(isStaff
           ? [
+              { label: 'Dashboard', to: ROUTES.adminDashboard },
+              { label: 'Leads', to: ROUTES.adminLeads },
               { label: 'Conteúdo', to: ROUTES.adminConteudo },
-              { label: 'Audiência', to: ROUTES.adminAudiencia },
             ]
           : []),
       ]

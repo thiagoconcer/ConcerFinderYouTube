@@ -7,5 +7,9 @@ export const ROUTES = {
   historico: '/busca/historico',
   video: (id = ':id') => `/video/${id}`,
   adminConteudo: '/admin/conteudo',
+  adminDashboard: '/admin/dashboard',
+  adminLeads: '/admin/leads',
+  adminLeadPerfil: (id = ':id') => `/admin/leads/${id}`,
+  /** Rota antiga; redireciona para o dashboard para não quebrar link salvo. */
   adminAudiencia: '/admin/audiencia',
 } as const
