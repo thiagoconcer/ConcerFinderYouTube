@@ -379,6 +379,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      definir_papel: {
+        Args: { p_profile_id: string; p_role: string }
+        Returns: Json
+      }
       get_audience_insights: {
         Args: {
           filter_commercial_role?: string
@@ -388,6 +392,7 @@ export type Database = {
         Returns: Json
       }
       get_content_dashboard: { Args: never; Returns: Json }
+      get_equipe: { Args: never; Returns: Json }
       get_search_results: {
         Args: { p_search_id: string }
         Returns: {
@@ -409,6 +414,7 @@ export type Database = {
         }[]
       }
       get_video_detail: { Args: { p_video_id: string }; Returns: Json }
+      is_concer_admin: { Args: never; Returns: boolean }
       is_concer_staff: { Args: never; Returns: boolean }
       run_ingestion_step: { Args: { step: string }; Returns: number }
       search_videos: {

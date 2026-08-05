@@ -23,7 +23,7 @@ export type IngestionRun = Tables<'ingestion_runs'>
 // Os CHECKs do schema não viram enum no Postgres, então os domínios ficam
 // declarados aqui para a UI ter exaustividade.
 export type CommercialRole = 'vendedor' | 'gestor_comercial' | 'dono_empresa'
-export type AppRole = 'user' | 'content_admin' | 'audience_manager'
+export type AppRole = 'user' | 'content_admin' | 'audience_manager' | 'admin'
 export type NurtureStatus = 'pending' | 'sent' | 'failed'
 export type TranscriptionStatus =
   | 'pending'

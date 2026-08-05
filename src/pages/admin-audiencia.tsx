@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { GestaoEquipe } from '@/components/admin/gestao-equipe'
 import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
 import { RankingTrechos } from '@/components/admin/ranking-trechos'
 import { supabase } from '@/lib/supabase'
@@ -122,6 +123,9 @@ export function AdminAudienciaPage() {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Só o admin enxerga; o componente se esconde sozinho */}
+      <GestaoEquipe />
 
       {carregando && (
         <div className="space-y-6">

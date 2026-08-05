@@ -18,7 +18,7 @@ Perfil de cada usuário cadastrado, estendendo `auth.users` (papel comercial e d
 | `email` | text | NOT NULL |
 | `whatsapp` | text | NOT NULL |
 | `commercial_role` | text | NOT NULL, CHECK IN ('vendedor','gestor_comercial','dono_empresa') |
-| `role` | text | NOT NULL, default `'user'`, CHECK IN ('user','content_admin','audience_manager') |
+| `role` | text | NOT NULL, default `'user'`, CHECK IN ('user','content_admin','audience_manager','admin') |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
 **Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; `idx_profiles_role` em `role`.
 
@@ -125,7 +125,11 @@ Log de cada execução de scraping/transcrição/indexação (monitoramento pelo
 
 **Autenticação:** Supabase Auth com **e-mail + senha** e **magic link** habilitados. O magic link reduz atrito no cadastro (o objetivo primário é gerar lead). O trigger `handle_new_user` cria a linha em `profiles` no signup. O papel (`role`) padrão é `user`; papéis internos (`content_admin`, `audience_manager`) são atribuídos manualmente pela equipe Concer.
 
-RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorna true se o `role` do usuário for `content_admin` ou `audience_manager`.
+RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorna true se o `role` do usuário for `content_admin`, `audience_manager` ou `admin`.
+
+**Papel `admin` (administrador do sistema). [Extensão do doc]** Enxerga os dois painéis e é o único que altera o `role` de alguém, pelas RPCs `get_equipe()` e `definir_papel()`.
+
+> ⚠️ **Falha corrigida em 05/08/2026.** A regra "profiles UPDATE: dono ou staff" está certa para nome e WhatsApp, mas deixava a coluna `role` editável pelo próprio usuário: qualquer cadastrado fazia `PATCH` em `profiles.role`, virava staff e passava a ler a tabela `leads` inteira (nome, e-mail e WhatsApp de todos os leads). RLS é por linha, não por coluna, então a correção é o trigger `protege_papel_do_profile()`, que bloqueia mudança de `role` por quem não é `admin`. O dono segue editando os próprios dados normalmente.
 
 | Tabela | SELECT | INSERT | UPDATE | DELETE |
 |---|---|---|---|---|

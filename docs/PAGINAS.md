@@ -157,6 +157,7 @@
 - **Tabela de leads** com nome, e-mail, WhatsApp, perfil, status da nutrição (`nurture_status`) e data de cadastro.
 - Segmentação/filtros por perfil e por tema de interesse para identificar grupos relevantes a empresas parceiras.
 - Indicador de saúde da nutrição (pending / sent / failed) para acompanhar a régua de e-mail e WhatsApp.
+- **Equipe e permissões** (visível apenas para o papel `admin`): lista os usuários com papel e volume de buscas, e permite promover ou rebaixar. O admin não consegue remover o próprio acesso, para a conta nunca ficar sem administrador. **[Extensão do doc]**
 
 **Estados:**
 - **Vazia:** se ainda não houver leads/buscas, mensagem "Sem dados de audiência ainda — os insights aparecem conforme os usuários se cadastram e buscam".
