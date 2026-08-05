@@ -48,6 +48,7 @@
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
+    --color-muted-foreground-soft: var(--muted-foreground-soft);
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary: var(--secondary);
@@ -89,7 +90,14 @@
     --secondary-foreground: #0C1726;
 
     --muted: #EDF1F8;
-    --muted-foreground: #647189;  /* --txt-2-light */
+    /*
+      --ink-soft da marca: o tom de texto de apoio sobre banda clara
+      (descrições, listas, FAQ). O #647189 (--txt-2-light) é mais claro e
+      fica reservado para texto realmente secundário: legendas, rótulos,
+      metadados. Usá-lo no corpo deixava a leitura lavada.
+    */
+    --muted-foreground: #41506A;
+    --muted-foreground-soft: #647189;  /* --txt-2-light */
 
     --accent: #E4ECFB;
     --accent-foreground: #1A5CCC; /* --blue-deep */
@@ -147,7 +155,10 @@
     --secondary-foreground: #FFFFFF;
 
     --muted: #0C1B31;        /* --navy-2 */
-    --muted-foreground: #93A2BF;  /* --txt-2 */
+    /* No navy o problema é o inverso: #93A2BF é escuro demais para corpo de
+       texto. #C6D2E6 é o tom que a marca usa em subtítulo e leitura longa. */
+    --muted-foreground: #C6D2E6;
+    --muted-foreground-soft: #93A2BF;  /* --txt-2 */
 
     --accent: #172C4E;
     --accent-foreground: #FFFFFF;
