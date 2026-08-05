@@ -8,7 +8,7 @@
 
 ## Contexto
 
-O **ConcerFinder** (`https://concer-finder.vercel.app`) é uma busca semântica sobre os vídeos do canal do Thiago Concer. A pessoa descreve uma dor de vendas em linguagem natural e recebe quais vídeos assistir, **o minuto exato** de cada insight e um plano de ação.
+O **ConcerFinder** (`https://finder.thiagoconcer.com.br`) é uma busca semântica sobre os vídeos do canal do Thiago Concer. A pessoa descreve uma dor de vendas em linguagem natural e recebe quais vídeos assistir, **o minuto exato** de cada insight e um plano de ação.
 
 Todo cadastro vira lead. O sistema já grava no ActiveCampaign, via API, o perfil comercial da pessoa e **a dor real que ela pesquisou**, em campos personalizados. Sua tarefa é montar as automações que usam esses dados.
 
@@ -25,7 +25,7 @@ O diferencial desta régua é esse: ela fala da dor específica que a pessoa pro
 | `%CF_DOR_PRINCIPAL%` | A dor que a pessoa escreveu na busca | "meu time não contorna objeção de preço" |
 | `%CF_TEMAS_BUSCADOS%` | Temas detectados, separados por vírgula | "Objeção de preço, Gestão de equipe" |
 | `%CF_VIDEO_RECOMENDADO%` | Título do vídeo mais relevante | "Como contornar a objeção de preço" |
-| `%CF_LINK_TRECHO%` | Link direto do trecho no minuto | `https://concer-finder.vercel.app/video/abc?t=349` |
+| `%CF_LINK_TRECHO%` | Link direto do trecho no minuto | `https://finder.thiagoconcer.com.br/video/abc?t=349` |
 | `%CF_MINUTAGEM%` | Minutagem do insight | "5:49" |
 | `%CF_PERFIL_COMERCIAL%` | Vendedor / Gestor comercial / Dono de empresa | "Gestor comercial" |
 | `%CF_TOTAL_BUSCAS%` | Quantas buscas a pessoa já fez | "3" |
@@ -122,7 +122,7 @@ Abraço,
 Time do Thiago Concer
 
 PS: se aparecer outra dor no meio da semana, volta lá e descreve.
-É de graça e ilimitado: https://concer-finder.vercel.app/busca
+É de graça e ilimitado: https://finder.thiagoconcer.com.br/busca
 ```
 
 ### E-mail 2 (2 dias depois)
@@ -174,7 +174,7 @@ Treinar sozinho é mais simples do que parece:
 Esses quatro passos, toda semana, valem mais que qualquer curso que você comprar
 este ano. E os três primeiros são de graça.
 
-Buscar minha próxima dor: https://concer-finder.vercel.app/busca
+Buscar minha próxima dor: https://finder.thiagoconcer.com.br/busca
 
 Abraço,
 Time do Thiago Concer
@@ -194,7 +194,7 @@ sete dias?
 Essa é a sua próxima busca. Não precisa achar a palavra-chave certa, nem saber em
 que vídeo está. Escreve do jeito que você contaria para um colega no corredor.
 
-https://concer-finder.vercel.app/busca
+https://finder.thiagoconcer.com.br/busca
 
 Você já fez %CF_TOTAL_BUSCAS% busca(s). Quem usa o ConcerFinder toda semana para de
 acumular dúvida e passa a acumular resposta, e a diferença aparece na comissão.
@@ -232,7 +232,7 @@ Abraço,
 Time do Thiago Concer
 
 PS: cada vendedor seu pode ter a conta dele e buscar as próprias dores.
-É de graça: https://concer-finder.vercel.app
+É de graça: https://finder.thiagoconcer.com.br
 ```
 
 ### E-mail 2 (2 dias depois)
@@ -290,7 +290,7 @@ O passo 3 é onde o ConcerFinder entra: você descreve a dor que o vendedor trou
 recebe o trecho pronto, no minuto certo. Sem você precisar lembrar em qual vídeo
 estava, nem garimpar o canal na noite de domingo.
 
-Preparar minha próxima reunião: https://concer-finder.vercel.app/busca
+Preparar minha próxima reunião: https://finder.thiagoconcer.com.br/busca
 
 Abraço,
 Time do Thiago Concer
@@ -310,7 +310,7 @@ sabe que dava para ganhar?
 Descreve essa situação no ConcerFinder. Em segundos você tem o trecho para levar
 para a reunião, e um plano de ação para o time.
 
-https://concer-finder.vercel.app/busca
+https://finder.thiagoconcer.com.br/busca
 
 Você já fez %CF_TOTAL_BUSCAS% busca(s). Gestor que leva um trecho novo toda semana
 constrói repertório no time sem gastar um real de treinamento.
@@ -348,7 +348,7 @@ Abraço,
 Time do Thiago Concer
 
 PS: o acesso é gratuito e ilimitado. Vale colocar seu time comercial inteiro lá:
-https://concer-finder.vercel.app
+https://finder.thiagoconcer.com.br
 ```
 
 ### E-mail 2 (2 dias depois)
@@ -399,7 +399,7 @@ preço, não é o mercado.
 E se souber responder a terceira, tem um atalho: descreve essa etapa no ConcerFinder
 e recebe o que o Concer fala especificamente sobre ela, com a minutagem.
 
-https://concer-finder.vercel.app/busca
+https://finder.thiagoconcer.com.br/busca
 
 Abraço,
 Time do Thiago Concer
@@ -425,7 +425,7 @@ falha repetida é a coisa mais fácil de corrigir, porque é sempre a mesma.
 Descreve onde você acha que está a falha e o ConcerFinder te mostra o que o Concer
 fala sobre ela:
 
-https://concer-finder.vercel.app/busca
+https://finder.thiagoconcer.com.br/busca
 
 Você já fez %CF_TOTAL_BUSCAS% busca(s).
 

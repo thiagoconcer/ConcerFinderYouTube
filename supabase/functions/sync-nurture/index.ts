@@ -27,7 +27,12 @@ interface Body {
   aplicar_gatilho?: boolean
 }
 
-const APP_URL = 'https://concer-finder.vercel.app'
+/**
+ * Base dos links que vão nos e-mails da régua. Configurável por secret para
+ * que uma troca de domínio não exija republicar a função: o link do trecho é
+ * o que a pessoa clica, e ele fica gravado no contato do ActiveCampaign.
+ */
+const APP_URL = Deno.env.get('APP_URL') ?? 'https://finder.thiagoconcer.com.br'
 
 function minutagem(segundos: number): string {
   const s = Math.max(0, Math.floor(segundos))

@@ -23,7 +23,7 @@ O ConcerFinder transforma as centenas de vídeos do canal do Thiago Concer numa 
 - [x] Configurar Supabase Auth (e-mail/senha + magic link) e a página `/login`
 - [x] Montar landing `/` e cadastro `/cadastro` com layout base e navegação
 
-**Concluída em 05/08/2026.** App publicado em `https://concer-finder.vercel.app` (deploy automático a cada push em `main` do repo `thiagoconcer/ConcerFinderYouTube`). Projeto Supabase `lzjwiibsqbowrrekptvg`: 7 tabelas, RLS ligada em todas com as policies da matriz do `docs/ESTRUTURA.md`, `pgvector 0.8.2` e índice ivfflat cosine em `video_segments.embedding vector(1536)`. Confirmação de e-mail desligada, o cadastro libera a busca na hora, conforme o `docs/PROCESSO.md`.
+**Concluída em 05/08/2026.** App publicado em `https://finder.thiagoconcer.com.br` (deploy automático a cada push em `main` do repo `thiagoconcer/ConcerFinderYouTube`). Projeto Supabase `lzjwiibsqbowrrekptvg`: 7 tabelas, RLS ligada em todas com as policies da matriz do `docs/ESTRUTURA.md`, `pgvector 0.8.2` e índice ivfflat cosine em `video_segments.embedding vector(1536)`. Confirmação de e-mail desligada, o cadastro libera a busca na hora, conforme o `docs/PROCESSO.md`.
 
 ---
 
