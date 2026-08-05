@@ -12,7 +12,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Ativacao } from '@/components/admin/ativacao'
 import { Cargos } from '@/components/admin/cargos'
+import { Crescimento } from '@/components/admin/crescimento'
+import { QualidadeBusca } from '@/components/admin/qualidade-busca'
 import { GestaoEquipe } from '@/components/admin/gestao-equipe'
 import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
 import { RankingTrechos } from '@/components/admin/ranking-trechos'
@@ -20,7 +23,7 @@ import { supabase } from '@/lib/supabase'
 import { formatDateTime, topicLabel } from '@/lib/format'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole, Lead } from '@/types/database'
-import type { AudienceInsights, CargoInsights } from '@/types/search'
+import type { AudienceInsights, CargoInsights, EngagementInsights } from '@/types/search'
 
 /**
  * /admin/audiencia
@@ -40,6 +43,7 @@ const TODOS = 'todos'
 export function AdminAudienciaPage() {
   const [insights, setInsights] = useState<AudienceInsights | null>(null)
   const [cargos, setCargos] = useState<CargoInsights | null>(null)
+  const [engajamento, setEngajamento] = useState<EngagementInsights | null>(null)
   const [leads, setLeads] = useState<Lead[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
@@ -47,6 +51,8 @@ export function AdminAudienciaPage() {
   const carregar = useCallback(async () => {
     setErro(null)
     setInsights(null)
+    setCargos(null)
+    setEngajamento(null)
     setLeads(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
@@ -60,12 +66,13 @@ export function AdminAudienciaPage() {
 
     // O corte por cargo não usa o filtro de perfil: ele é justamente a visão
     // mais fina, e filtrar por perfil deixaria só os cargos daquele grupo.
-    const [insightsRes, cargosRes, leadsRes] = await Promise.all([
+    const [insightsRes, cargosRes, engajamentoRes, leadsRes] = await Promise.all([
       supabase.rpc(
         'get_audience_insights',
         perfil ? { filter_commercial_role: perfil } : {},
       ),
       supabase.rpc('get_cargo_insights', {}),
+      supabase.rpc('get_engagement_insights', {}),
       leadsQuery,
     ])
 
@@ -74,6 +81,7 @@ export function AdminAudienciaPage() {
     }
     setInsights((insightsRes.data as unknown as AudienceInsights) ?? null)
     setCargos((cargosRes.data as unknown as CargoInsights) ?? null)
+    setEngajamento((engajamentoRes.data as unknown as EngagementInsights) ?? null)
     setLeads(leadsRes.data ?? [])
   }, [filtroPerfil])
 
@@ -175,6 +183,18 @@ export function AdminAudienciaPage() {
             ))}
           </section>
 
+          {/* Estamos crescendo? A pergunta que o painel não respondia. */}
+          {engajamento && <Crescimento serie={engajamento.serie} />}
+
+          {/* Cadastro que não vira busca é e-mail, não lead qualificado. */}
+          {engajamento && (
+            <Ativacao
+              funil={engajamento.funil}
+              qualidade={engajamento.qualidade}
+              recorrencia={engajamento.recorrencia}
+            />
+          )}
+
           <div className="mb-8 grid gap-6 lg:grid-cols-2">
             {/* Ranking de dores */}
             <Card>
@@ -269,11 +289,20 @@ export function AdminAudienciaPage() {
           </div>
 
           {/* Quem procura o quê */}
-          <section className="mb-8">
+          <section className="mb-8 space-y-6">
             <PerfisPorTema perfis={insights.perfis_por_tema ?? []} />
 
             <Cargos dados={cargos} />
           </section>
+
+          {/* O acervo dá conta do que perguntam? E o que sobrou sem uso? */}
+          {engajamento && (
+            <QualidadeBusca
+              qualidade={engajamento.qualidade}
+              demanda={engajamento.demanda_por_tema}
+              acervo={engajamento.acervo}
+            />
+          )}
 
           {/* O que a busca devolve x o que as pessoas abrem */}
           <section className="mb-8 grid gap-6 lg:grid-cols-2">

@@ -120,6 +120,47 @@ export interface AudienceInsights {
 }
 
 /**
+ * Retorno de `get_engagement_insights`: crescimento, ativação, qualidade da
+ * busca e pauta de conteúdo. Separado de `AudienceInsights` porque responde
+ * outras perguntas (o produto está funcionando? o acervo dá conta?).
+ */
+export interface EngagementInsights {
+  periodo: { de: string; ate: string }
+  serie: Array<{ dia: string; cadastros: number; buscas: number; aberturas: number }>
+  funil: { cadastraram: number; buscaram: number; abriram: number; voltaram: number }
+  qualidade: {
+    buscas: number
+    buscas_com_plano: number
+    buscas_sem_resultado: number
+    /** Similaridade de cosseno do melhor trecho de cada busca. Null sem buscas. */
+    relevancia_media: number | null
+    relevancia_minima: number | null
+    recomendacoes: number
+    aberturas: number
+    buscas_por_pessoa: number | null
+  }
+  demanda_por_tema: Array<{
+    topico: string
+    buscas: number
+    relevancia_media: number | null
+    trechos_no_acervo: number
+  }>
+  acervo: {
+    indexados: number
+    ja_recomendados: number
+    nunca_recomendados: number
+    amostra: Array<{
+      video_id: string
+      youtube_video_id: string
+      title: string
+      thumbnail_url: string | null
+      trechos: number
+    }>
+  }
+  recorrencia: Array<{ dias_ativos: number; pessoas: number }>
+}
+
+/**
  * Retorno de `get_cargo_insights`. O cargo é a granularidade fina do cadastro
  * (9 opções); o `commercial_role` que vem junto é a régua de nutrição para a
  * qual aquele cargo aponta.

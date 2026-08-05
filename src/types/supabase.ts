@@ -402,6 +402,10 @@ export type Database = {
         Returns: Json
       }
       get_content_dashboard: { Args: never; Returns: Json }
+      get_engagement_insights: {
+        Args: { from_date?: string; to_date?: string }
+        Returns: Json
+      }
       get_equipe: { Args: never; Returns: Json }
       get_search_results: {
         Args: { p_search_id: string }
