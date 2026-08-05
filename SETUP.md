@@ -16,8 +16,8 @@ Depois de salvar os secrets **não precisa republicar nada**: as funções leem 
 
 | Secret | Onde pegar | O que quebra sem ela |
 |---|---|---|
-| `OPENAI_API_KEY` | platform.openai.com → API keys | `search-pain` e `index-segments`. Sem ela não há embedding, logo não há busca semântica. **Esta é a única que ainda falta.** |
-| ~~`ANTHROPIC_API_KEY`~~ | já configurada | `generate-action-plan`. Usa a chave Claude da conta Concer, testada e funcionando com o Opus 5. |
+| `OPENAI_API_KEY` | platform.openai.com → API keys | `search-pain` e `index-segments`. Sem ela não há embedding, logo não há busca semântica. |
+| `ANTHROPIC_API_KEY` | console.anthropic.com → API keys | `generate-action-plan`. A busca ainda devolve os vídeos e a minutagem, mas sem o plano de ação. |
 
 > **Por que a chave da OpenAI não pôde ser substituída pela do Claude:** a Anthropic não oferece API de embeddings. A API do Claude expõe Messages, Batches, Files, Token Counting e Models, e nenhum endpoint de vetorização. O `pgvector` precisa de vetores de 1536 dimensões, e quem os gera é o `text-embedding-3-small` da OpenAI. O Claude cobre a parte de geração de texto (o plano de ação), que é onde ele é melhor mesmo.
 
