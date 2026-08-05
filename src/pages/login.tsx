@@ -123,7 +123,7 @@ export function LoginPage() {
           <CardDescription>
             {mode === 'password'
               ? 'Acesse sua conta para buscar insights por dor de vendas.'
-              : 'Informe seu e-mail e enviaremos um link de acesso — sem senha.'}
+              : 'Informe seu e-mail e enviaremos um link de acesso, sem senha.'}
           </CardDescription>
         </CardHeader>
 

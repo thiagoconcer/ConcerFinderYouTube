@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 /**
- * Marca do ConcerFinder: um "play" de vídeo dentro de uma lente de busca —
+ * Marca do ConcerFinder: um "play" de vídeo dentro de uma lente de busca,
  * a ideia central do produto (encontrar o minuto exato dentro do vídeo).
  */
 export function LogoMark({ className }: { className?: string }) {

@@ -66,7 +66,7 @@ export function SiteHeader() {
         <Link
           to={isAuthenticated ? ROUTES.busca : ROUTES.landing}
           className="rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-          aria-label="ConcerFinder — página inicial"
+          aria-label="ConcerFinder, página inicial"
         >
           <Logo />
         </Link>

@@ -1,4 +1,4 @@
-/** Rotas do ConcerFinder — espelham docs/ESTRUTURA.md (seção 4) e docs/PAGINAS.md. */
+/** Rotas do ConcerFinder, espelham docs/ESTRUTURA.md (seção 4) e docs/PAGINAS.md. */
 export const ROUTES = {
   landing: '/',
   cadastro: '/cadastro',

@@ -19,7 +19,7 @@ export interface AuthContextValue {
   /** true enquanto a sessão inicial ainda está sendo restaurada */
   loading: boolean
   isAuthenticated: boolean
-  /** content_admin ou audience_manager — espelha is_concer_staff() no banco */
+  /** content_admin ou audience_manager, espelha is_concer_staff() no banco */
   isStaff: boolean
   signInWithPassword: (email: string, password: string) => Promise<void>
   signInWithMagicLink: (email: string) => Promise<void>

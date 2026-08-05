@@ -10,7 +10,7 @@ type Status =
   | { kind: 'error'; message: string }
 
 /**
- * Diagnóstico de conexão com o Supabase — visível apenas em desenvolvimento.
+ * Diagnóstico de conexão com o Supabase, visível apenas em desenvolvimento.
  * Serve para confirmar, no preview, se o projeto está conectado e se
  * db/schemas.sql já foi aplicado.
  */
@@ -28,7 +28,7 @@ export function SupabaseStatusBanner() {
     let active = true
 
     // Consulta leve só para validar credencial e existência do schema.
-    // (sem head:true — em 404 o corpo vazio impede a leitura do erro)
+    // (sem head:true, em 404 o corpo vazio impede a leitura do erro)
     supabase
       .from('videos')
       .select('id')

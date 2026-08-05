@@ -58,7 +58,7 @@ export function LandingPage() {
             </h1>
             <p className="mt-6 text-pretty text-lg text-muted-foreground">
               São centenas de vídeos sobre vendas. O ConcerFinder encontra, dentro deles, o
-              trecho que responde exatamente ao seu problema — e ainda monta um plano de ação
+              trecho que responde exatamente ao seu problema, e ainda monta um plano de ação
               para você aplicar hoje.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">

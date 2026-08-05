@@ -16,7 +16,7 @@ interface PagePlaceholderProps {
 
 /**
  * Placeholder das telas que ainda não entraram no escopo da fase atual.
- * A rota já existe e navega — a funcionalidade chega na fase indicada.
+ * A rota já existe e navega, a funcionalidade chega na fase indicada.
  */
 export function PagePlaceholder({
   title,

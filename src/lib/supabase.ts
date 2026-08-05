@@ -20,7 +20,7 @@ if (!isSupabaseConfigured) {
 
 /**
  * Cliente único do Supabase para o frontend.
- * Usa apenas a chave publishable/anon — a secret key nunca chega ao navegador
+ * Usa apenas a chave publishable/anon, a secret key nunca chega ao navegador
  * (SKILL.md: escrita sensível roda com service_role dentro de Edge Functions).
  */
 export const supabase = createClient<Database>(
