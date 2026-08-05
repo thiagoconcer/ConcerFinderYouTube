@@ -6,9 +6,17 @@ import { CARGO_LABELS, COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { Cargo, CommercialRole } from '@/types/database'
 import type { CargoInsights } from '@/types/search'
 
-/** 'diretor' -> 'Diretor (a)'; cargo antigo sem valor -> 'Não informado'. */
+/**
+ * 'diretor' -> 'Diretor (a)'.
+ *
+ * O grupo sem cargo não pode sumir do gráfico, senão os totais deixam de
+ * fechar. Mas ele não é falta de preenchimento: são cadastros feitos antes de
+ * o campo existir, e dizer isso evita que alguém vá cobrar um dado que a
+ * pessoa nunca teve como informar. O grupo encolhe sozinho conforme entram
+ * cadastros novos.
+ */
 function rotuloCargo(cargo: string): string {
-  if (cargo === 'nao_informado') return 'Não informado'
+  if (cargo === 'nao_informado') return 'Cadastro antes do campo cargo'
   return CARGO_LABELS[cargo as Cargo] ?? cargo
 }
 

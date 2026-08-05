@@ -228,18 +228,28 @@ export function AdminLeadsPage() {
                         </div>
                       </td>
 
+                      {/* Sem cargo, o perfil comercial sobe e ocupa a linha
+                          principal. Os cadastros anteriores ao campo cargo nao
+                          tem o que mostrar ali, e um "nao informado" em
+                          destaque so ocupa espaco dizendo que falta algo que a
+                          pessoa nunca teve como preencher. */}
                       <td className="px-4 py-3">
                         {lead.cargo ? (
-                          <Badge variant="secondary" className="font-normal">
-                            {CARGO_LABELS[lead.cargo as Cargo] ?? lead.cargo}
-                          </Badge>
+                          <>
+                            <Badge variant="secondary" className="font-normal">
+                              {CARGO_LABELS[lead.cargo as Cargo] ?? lead.cargo}
+                            </Badge>
+                            <div className="mt-1 text-xs text-muted-foreground">
+                              {COMMERCIAL_ROLE_LABELS[lead.perfil_comercial as CommercialRole] ??
+                                lead.perfil_comercial}
+                            </div>
+                          </>
                         ) : (
-                          <span className="text-xs text-muted-foreground">não informado</span>
+                          <span>
+                            {COMMERCIAL_ROLE_LABELS[lead.perfil_comercial as CommercialRole] ??
+                              lead.perfil_comercial}
+                          </span>
                         )}
-                        <div className="mt-1 text-xs text-muted-foreground">
-                          {COMMERCIAL_ROLE_LABELS[lead.perfil_comercial as CommercialRole] ??
-                            lead.perfil_comercial}
-                        </div>
                       </td>
 
                       <td className="px-4 py-3">
