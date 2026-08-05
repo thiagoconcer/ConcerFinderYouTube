@@ -96,7 +96,7 @@
       fica reservado para texto realmente secundário: legendas, rótulos,
       metadados. Usá-lo no corpo deixava a leitura lavada.
     */
-    --muted-foreground: #41506A;
+    --muted-foreground: #2C3A52;
     --muted-foreground-soft: #647189;  /* --txt-2-light */
 
     --accent: #E4ECFB;

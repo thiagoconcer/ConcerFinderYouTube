@@ -266,7 +266,7 @@ export function BuscaPage() {
                   </AlertDescription>
                 </Alert>
               ) : estado.plano ? (
-                <ActionPlan markdown={estado.plano} />
+                <ActionPlan markdown={estado.plano} segments={estado.busca.results} />
               ) : (
                 <p className="text-sm text-muted-foreground">Plano de ação indisponível.</p>
               )}

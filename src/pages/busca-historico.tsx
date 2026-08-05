@@ -202,7 +202,10 @@ export function BuscaHistoricoPage() {
                         {busca.action_plan && (
                           <div>
                             <h3 className="mb-3 text-sm font-semibold">Plano de ação</h3>
-                            <ActionPlan markdown={busca.action_plan} />
+                            <ActionPlan
+                              markdown={busca.action_plan}
+                              segments={resultados as SearchHit[] | undefined}
+                            />
                           </div>
                         )}
 

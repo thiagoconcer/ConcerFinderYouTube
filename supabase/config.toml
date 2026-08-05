@@ -12,8 +12,12 @@ verify_jwt = true
 [functions.search-pain]
 verify_jwt = true
 
+# A autenticação real acontece dentro da função (requireUser + dono da busca),
+# e ela também aceita X-Cron-Secret para reprocessar planos antigos depois de
+# uma mudança de prompt. O gateway barraria essa chamada interna antes de a
+# função rodar, então a validação fica toda do lado de dentro.
 [functions.generate-action-plan]
-verify_jwt = true
+verify_jwt = false
 
 # Etapas da esteira: chamadas pelo pg_cron, que não tem JWT. A autenticação
 # acontece dentro da função (requireStaffOrService): JWT de staff, service_role

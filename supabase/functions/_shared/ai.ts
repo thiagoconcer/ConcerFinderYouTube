@@ -142,16 +142,19 @@ Estes são os trechos das transcrições dos vídeos do canal que a busca semân
 
 ${contexto}
 
-Escreva um plano de ação em português brasileiro, exatamente nesta estrutura:
+Escreva um plano de ação em português brasileiro, exatamente nesta estrutura, com estes quatro títulos e nada além deles:
 
 ## O que está acontecendo
-Um parágrafo curto conectando a dor descrita ao que os trechos mostram.
+Um parágrafo curto (3 a 5 frases) conectando a dor descrita ao que os trechos mostram. Diga qual é a causa por trás do sintoma, não repita o sintoma.
 
 ## Plano de ação
-De 3 a 5 passos numerados. Cada passo precisa ser executável nesta semana e deve citar entre parênteses a minutagem do trecho que o embasa, no formato (Trecho N, min X:XX).
+De 4 a 5 passos numerados. Cada passo começa com um título curto em negrito, no formato "**Título do passo.**", seguido da explicação. Cada passo precisa ser executável nesta semana, dizer o que fazer concretamente (com quem, quando, com que frequência) e citar entre parênteses a minutagem do trecho que o embasa, no formato (Trecho N, min X:XX).
+
+## Erros que sabotam
+Dois ou três erros comuns que fazem esse plano falhar na prática. Um por item, começando com o erro em negrito e depois o porquê. Cite a minutagem quando o trecho apoiar.
 
 ## Como saber se funcionou
-Dois ou três sinais concretos e observáveis.`
+Três sinais concretos e observáveis, do tipo que a pessoa consegue verificar em uma ou duas semanas. Prefira o que dá para ouvir numa gravação, contar num relatório ou ver numa reunião.`
 
   // O fallback de servidor só existe em Opus 5 e Fable 5. Mandar o parâmetro
   // para outro modelo (Sonnet 5, por exemplo) devolve 400, então ele é
