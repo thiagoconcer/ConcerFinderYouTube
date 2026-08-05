@@ -118,9 +118,28 @@ Três jobs no `pg_cron`, já ativos:
 
 | Job | Horário (Brasília) | Etapa |
 |---|---|---|
-| `cron_scrape_channel` | 03:00 | busca vídeos novos do canal |
-| `cron_transcribe` | 03:30 | transcreve os pendentes |
-| `cron_index` | 04:00 | gera os embeddings |
+| `cron_scrape_channel` | 05:15 | busca vídeos novos do canal |
+| `cron_transcribe` | 05:45 | transcreve até 35 pendentes |
+| `cron_index` | 06:15 | gera os embeddings |
+
+> **Por que esse horário.** A cota da YouTube Data API zera à meia-noite do
+> Pacífico, que é 07:00 UTC no horário de verão e 08:00 UTC fora dele. Rodar a
+> partir das 08:15 UTC garante que a esteira sempre pegue a cota recém-renovada,
+> nos dois regimes.
+
+### Ritmo de ingestão
+
+Cada vídeo custa **250 unidades** da YouTube Data API (`captions.list` 50 +
+`captions.download` 200) contra uma cota diária de 10.000. Ou seja, **40 vídeos
+por dia** no plano gratuito. O cron processa 35 por dia, deixando folga para o
+scrape e para retentativas.
+
+Falha por cota **não** queima o vídeo: ele volta para `pending` e entra na fila
+do dia seguinte. A base de 500 vídeos se completa sozinha em cerca de duas
+semanas.
+
+Para acelerar, dá para pedir aumento de cota no Google Cloud (gratuito, via
+formulário). Com 100.000 unidades/dia a base fecharia em pouco mais de um dia.
 
 Conferir execuções:
 

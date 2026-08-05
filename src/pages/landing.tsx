@@ -5,22 +5,23 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { useAuth } from '@/hooks/use-auth'
 import { ROUTES } from '@/lib/routes'
 
+// O número vem do índice, renderizado em azul no card. Não repetir no título.
 const HOW_IT_WORKS = [
   {
     icon: Search,
-    title: '1. Descreva a dor',
+    title: 'Descreva a dor',
     description:
       'Escreva com as suas palavras o problema de vendas que você está enfrentando. Sem precisar adivinhar a palavra-chave certa.',
   },
   {
     icon: Sparkles,
-    title: '2. Busca por significado',
+    title: 'Busca por significado',
     description:
       'O ConcerFinder entende o sentido do que você escreveu e varre a transcrição de todos os vídeos do canal, não só os títulos.',
   },
   {
     icon: Clock,
-    title: '3. Vídeo, minuto e plano',
+    title: 'Vídeo, minuto e plano',
     description:
       'Você recebe quais vídeos assistir, o minuto exato onde está cada insight e um plano de ação para aplicar.',
   },
