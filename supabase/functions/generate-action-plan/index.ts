@@ -37,7 +37,7 @@ Deno.serve(handler(async (req) => {
 
   const { data: busca, error } = await db
     .from('searches')
-    .select('id, profile_id, query_text, action_plan')
+    .select('id, profile_id, query_text, action_plan, profiles(commercial_role)')
     .eq('id', body.search_id)
     .maybeSingle()
 
@@ -79,17 +79,32 @@ Deno.serve(handler(async (req) => {
       .filter((s) => s.segment_text.trim().length > 0)
   }
 
+  const perfil = (busca as Record<string, any>).profiles?.commercial_role as string | undefined
+
   const plano = await generateActionPlan(
     body.query_text?.trim() || busca.query_text,
     segmentos.slice(0, 8),
+    perfil,
   )
 
-  const { error: upErr } = await db
-    .from('searches')
-    .update({ action_plan: plano })
-    .eq('id', busca.id)
+  // Trava de concorrência: duas gerações simultâneas (duplo clique, duas
+  // abas) pagariam o LLM duas vezes e a última venceria. Fora do modo force,
+  // só grava se ainda não há plano; se outra chamada chegou antes, devolve o
+  // que ela gravou.
+  let query = db.from('searches').update({ action_plan: plano }).eq('id', busca.id)
+  if (!regerar) query = query.is('action_plan', null)
+  const { data: gravadas, error: upErr } = await query.select('id')
 
   if (upErr) throw new AppError(`Falha ao gravar o plano: ${upErr.message}`, 500)
+
+  if (!regerar && (gravadas ?? []).length === 0) {
+    const { data: existente } = await db
+      .from('searches')
+      .select('action_plan')
+      .eq('id', busca.id)
+      .maybeSingle()
+    return json({ search_id: busca.id, action_plan: existente?.action_plan ?? plano, cached: true })
+  }
 
   return json({ search_id: busca.id, action_plan: plano, cached: false, regenerated: regerar })
 }))

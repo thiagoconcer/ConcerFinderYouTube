@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { AlertCircle, Loader2, MailCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -21,6 +21,10 @@ type Mode = 'password' | 'magic-link'
 export function LoginPage() {
   const { isAuthenticated, loading, signInWithPassword, signInWithMagicLink } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  // Para onde a pessoa ia quando caiu no login (deep link de e-mail, por
+  // exemplo). Sem isso, o minuto exato prometido no e-mail evaporava aqui.
+  const destino = (location.state as { from?: string } | null)?.from ?? ROUTES.busca
 
   const [mode, setMode] = useState<Mode>('password')
   const [email, setEmail] = useState('')
@@ -30,7 +34,7 @@ export function LoginPage() {
   const [magicLinkSent, setMagicLinkSent] = useState(false)
 
   if (!loading && isAuthenticated) {
-    return <Navigate to={ROUTES.busca} replace />
+    return <Navigate to={destino} replace />
   }
 
   function switchMode(next: Mode) {
@@ -62,7 +66,7 @@ export function LoginPage() {
       }
 
       await signInWithPassword(email, password)
-      navigate(ROUTES.busca, { replace: true })
+      navigate(destino, { replace: true })
     } catch (error) {
       setFormError(friendlyAuthError(error))
     } finally {
@@ -79,7 +83,9 @@ export function LoginPage() {
     setSubmitting(true)
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}${ROUTES.login}`,
+        // Rota própria: cair no /login com sessão criada redirecionava para
+        // /busca e a pessoa nunca via a tela de digitar a senha nova.
+        redirectTo: `${window.location.origin}${ROUTES.redefinirSenha}`,
       })
       if (error) throw error
       toast.success('Enviamos um link de redefinição de senha para o seu e-mail.')
@@ -103,8 +109,20 @@ export function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => setMagicLinkSent(false)}>
-              Reenviar link
+            {/* Antes só voltava ao formulário: a pessoa achava que reenviou
+                e ficava olhando a caixa de entrada. */}
+            <Button
+              variant="outline"
+              disabled={submitting}
+              onClick={() => {
+                setSubmitting(true)
+                signInWithMagicLink(email)
+                  .then(() => toast.success('Link reenviado. Confira também o spam.'))
+                  .catch((error) => toast.error(friendlyAuthError(error)))
+                  .finally(() => setSubmitting(false))
+              }}
+            >
+              {submitting ? 'Reenviando...' : 'Reenviar link'}
             </Button>
             <Button variant="ghost" onClick={() => switchMode('password')}>
               Entrar com senha

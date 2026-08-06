@@ -78,6 +78,18 @@ export interface PlanSegment {
   title?: string
   segment_text: string
   start_seconds: number
+  /** Similaridade de cosseno (0 a 1). Deixa o modelo pesar cada trecho. */
+  similarity_score?: number
+}
+
+/** Como o plano se dirige a cada perfil: fala do que a PESSOA controla. */
+const CONTEXTO_PERFIL: Record<string, string> = {
+  vendedor:
+    'A pessoa é VENDEDORA: não tem time nem autoridade sobre processo. Escreva passos que ela executa sozinha, na própria rotina de ligações, propostas e follow-up. Nada de "treine seu time" ou "mude o processo da empresa".',
+  gestor_comercial:
+    'A pessoa é GESTORA COMERCIAL: lidera um time de vendedores. Escreva passos de gestão (reunião de segunda, role play, acompanhamento individual, rotina do time), não passos de vendedor individual.',
+  dono_empresa:
+    'A pessoa é DONA DA EMPRESA: olha o comercial como sistema, não executa venda no dia a dia. Escreva passos de estrutura (processo, indicador, cobrança do gestor, critério de contratação), que ela implanta ou delega em nível de dono.',
 }
 
 function formatarMinutagem(segundos: number): string {
@@ -106,6 +118,7 @@ function planoSemResultado(): string {
 export async function generateActionPlan(
   queryText: string,
   segmentos: PlanSegment[],
+  perfil?: string | null,
 ): Promise<string> {
   // Regra da doc: sem trechos relevantes, devolve orientação de refinar a dor.
   if (segmentos.length === 0) return planoSemResultado()
@@ -117,11 +130,16 @@ export async function generateActionPlan(
   const client = new Anthropic({ apiKey })
 
   const contexto = segmentos
-    .map(
-      (s, i) =>
-        `[Trecho ${i + 1}] Vídeo: ${s.title ?? 'sem título'} | Minutagem: ${formatarMinutagem(s.start_seconds)}\n${s.segment_text}`,
-    )
+    .map((s, i) => {
+      const relevancia =
+        typeof s.similarity_score === 'number'
+          ? ` | Relevância: ${Math.round(s.similarity_score * 100)}%`
+          : ''
+      return `[Trecho ${i + 1}] Vídeo: ${s.title ?? 'sem título'} | Minutagem: ${formatarMinutagem(s.start_seconds)}${relevancia}\n${s.segment_text}`
+    })
     .join('\n\n')
+
+  const quemE = perfil ? CONTEXTO_PERFIL[perfil] : undefined
 
   const system = `Você organiza os ensinamentos do Thiago Concer, a maior referência em vendas do Brasil, para vendedores, gestores comerciais e donos de empresa brasileiros.
 
@@ -129,6 +147,7 @@ Regras rígidas:
 - Baseie-se SOMENTE nos trechos fornecidos. Se eles não cobrem parte da dor, diga isso abertamente em vez de inventar.
 - Não cite estudos, números ou métodos que não estejam nos trechos.
 - Fale direto com a pessoa, em segunda pessoa, com o tom direto e prático do Concer.
+- Quando um trecho tiver relevância baixa (abaixo de 50%), use-o só se realmente ajudar; prefira os mais relevantes e não estique trecho fraco para preencher passo.
 - Não use travessão. Use vírgula, ponto, parênteses ou dois-pontos.
 - Entregue só o plano, sem introdução sobre você mesmo e sem repetir a dor inteira.
 - Seja objetivo: cada frase precisa mudar o que a pessoa vai fazer. Nada de preâmbulo, ressalva longa ou recapitulação.`
@@ -138,7 +157,7 @@ Regras rígidas:
 ${queryText}
 """
 
-Estes são os trechos das transcrições dos vídeos do canal que a busca semântica encontrou como mais relevantes. Eles são a sua única fonte.
+${quemE ? quemE + '\n\n' : ''}Estes são os trechos das transcrições dos vídeos do canal que a busca semântica encontrou como mais relevantes. Eles são a sua única fonte.
 
 ${contexto}
 
@@ -148,7 +167,7 @@ Escreva um plano de ação em português brasileiro, exatamente nesta estrutura,
 Um parágrafo curto (3 a 5 frases) conectando a dor descrita ao que os trechos mostram. Diga qual é a causa por trás do sintoma, não repita o sintoma.
 
 ## Plano de ação
-De 4 a 5 passos numerados. Cada passo começa com um título curto em negrito, no formato "**Título do passo.**", seguido da explicação. Cada passo precisa ser executável nesta semana, dizer o que fazer concretamente (com quem, quando, com que frequência) e citar entre parênteses a minutagem do trecho que o embasa, no formato (Trecho N, min X:XX).
+De 4 a 5 passos numerados. Cada passo começa com um título curto em negrito, no formato "**Título do passo.**", seguido da explicação. Cada passo precisa ser executável nesta semana e dizer o que fazer concretamente (com quem, quando, com que frequência). Quando um passo nasce de um trecho, cite entre parênteses a minutagem no formato (Trecho N, min X:XX); se nenhum trecho embasa o passo diretamente, não cite nada nele, citação decorativa é pior que passo sem citação.
 
 ## Erros que sabotam
 Dois ou três erros comuns que fazem esse plano falhar na prática. Um por item, começando com o erro em negrito e depois o porquê. Cite a minutagem quando o trecho apoiar.

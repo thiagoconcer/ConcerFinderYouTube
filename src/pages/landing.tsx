@@ -147,13 +147,18 @@ export function LandingPage() {
           <p className="mt-3 max-w-2xl text-[17px] text-muted-foreground">
             Escreva como você falaria com um colega. É assim que a busca funciona melhor.
           </p>
+          {/* Clicar na dor que é a sua é o gatilho de conversão mais forte
+              da página: cada uma leva ao cadastro (ou à busca, se logado) com
+              a dor já preenchida e pronta para rodar. */}
           <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {PAIN_EXAMPLES.map((pain) => (
-              <li
-                key={pain}
-                className="sombra-card rounded-lg border bg-card px-4 py-3.5 text-[15px] text-muted-foreground"
-              >
-                “{pain}”
+              <li key={pain}>
+                <Link
+                  to={`${isAuthenticated ? ROUTES.busca : ROUTES.cadastro}?q=${encodeURIComponent(pain)}`}
+                  className="sombra-card block rounded-lg border bg-card px-4 py-3.5 text-[15px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                >
+                  “{pain}”
+                </Link>
               </li>
             ))}
           </ul>

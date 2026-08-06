@@ -4,6 +4,7 @@ export const ROUTES = {
   cadastro: '/cadastro',
   login: '/login',
   busca: '/busca',
+  redefinirSenha: '/redefinir-senha',
   historico: '/busca/historico',
   video: (id = ':id') => `/video/${id}`,
   adminConteudo: '/admin/conteudo',

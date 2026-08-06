@@ -34,7 +34,10 @@ export function VideoDetailPage() {
   const [erro, setErro] = useState<string | null>(null)
   const [inicio, setInicio] = useState<number>(Number(params.get('t') ?? 0) || 0)
 
-  const segmentoDestacado = params.get('s')
+  // Trecho em foco. Começa no ?s= da URL, mas clicar em outro trecho troca
+  // o foco junto com o player: antes só o player mudava e o card destacado
+  // continuava descrevendo o trecho antigo, com a tela se contradizendo.
+  const [segmentoAtivo, setSegmentoAtivo] = useState<string | null>(params.get('s'))
 
   const carregar = useCallback(async () => {
     if (!id) return
@@ -113,7 +116,7 @@ export function VideoDetailPage() {
   }
 
   const { video, segments } = detalhe
-  const destacado = segments.find((s) => s.segment_id === segmentoDestacado) ?? segments[0]
+  const destacado = segments.find((s) => s.segment_id === segmentoAtivo) ?? segments[0]
   const outros = segments.filter((s) => s.segment_id !== destacado?.segment_id)
 
   return (
@@ -204,7 +207,25 @@ export function VideoDetailPage() {
               <li key={segmento.segment_id}>
                 <button
                   type="button"
-                  onClick={() => setInicio(segmento.start_seconds)}
+                  onClick={() => {
+                    setInicio(segmento.start_seconds)
+                    setSegmentoAtivo(segmento.segment_id)
+                    // Abrir outro trecho é outra visualização: sem isto, o
+                    // ranking de "mais assistidos" só via o primeiro clique.
+                    if (user?.id && id) {
+                      void supabase
+                        .from('video_views')
+                        .insert({
+                          profile_id: user.id,
+                          video_id: id,
+                          segment_id: segmento.segment_id,
+                          start_seconds: segmento.start_seconds,
+                        })
+                        .then(({ error }) => {
+                          if (error) console.warn('não foi possível registrar a visualização:', error.message)
+                        })
+                    }
+                  }}
                   className="w-full rounded-lg border p-4 text-left transition-colors hover:bg-accent/50"
                 >
                   <span className="mb-2 flex items-center gap-2">

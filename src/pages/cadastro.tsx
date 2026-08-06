@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { AlertCircle, Loader2, MailCheck } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -27,9 +27,26 @@ type FieldErrors = Partial<
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/** "(11) 98888-7777" enquanto digita; o envio normaliza para dígitos. */
+function mascaraWhatsapp(bruto: string): string {
+  const d = bruto.replace(/\D/g, '').slice(0, 11)
+  if (d.length <= 2) return d
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`
+}
+
 export function CadastroPage() {
   const { isAuthenticated, loading, signUp } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [params] = useSearchParams()
+  // De onde a pessoa veio (deep link de e-mail) ou a dor clicada na landing:
+  // depois do cadastro ela cai exatamente onde queria chegar.
+  const q = params.get('q')
+  const destino =
+    (location.state as { from?: string } | null)?.from ??
+    (q ? `${ROUTES.busca}?q=${encodeURIComponent(q)}` : ROUTES.busca)
 
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -43,7 +60,7 @@ export function CadastroPage() {
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
 
   if (!loading && isAuthenticated) {
-    return <Navigate to={ROUTES.busca} replace />
+    return <Navigate to={destino} replace />
   }
 
   function validate(): FieldErrors {
@@ -99,21 +116,27 @@ export function CadastroPage() {
       // Regra do PAGINAS.md: se a nutrição falhar, o usuário é liberado do
       // mesmo jeito (o lead fica com nurture_status='failed' para a equipe
       // reprocessar), então a falha aqui não bloqueia a busca.
+      const payloadLead = {
+        full_name: fullName.trim(),
+        email: email.trim(),
+        whatsapp: whatsapp.replace(/\D/g, ''),
+        cargo,
+      }
       try {
-        const { error } = await supabase.functions.invoke('register-lead', {
-          body: {
-            full_name: fullName.trim(),
-            email: email.trim(),
-            whatsapp: whatsapp.trim(),
-            cargo,
-          },
-        })
-        if (error) console.warn('register-lead falhou, cadastro segue liberado:', error)
+        const { error } = await supabase.functions.invoke('register-lead', { body: payloadLead })
+        if (error) throw error
       } catch (error) {
-        console.warn('register-lead indisponível, cadastro segue liberado:', error)
+        // O acesso segue liberado, mas o lead não pode se perder: fica
+        // marcado e a página de busca reprocessa (register-lead é idempotente).
+        console.warn('register-lead falhou, fica para reprocessar:', error)
+        try {
+          localStorage.setItem('concerfinder-lead-pendente', JSON.stringify(payloadLead))
+        } catch {
+          /* storage indisponível */
+        }
       }
 
-      navigate(ROUTES.busca, { replace: true })
+      navigate(destino, { replace: true })
     } catch (error) {
       setFormError(friendlyAuthError(error))
     } finally {
@@ -175,9 +198,10 @@ export function CadastroPage() {
                 onChange={(event) => setFullName(event.target.value)}
                 disabled={submitting}
                 aria-invalid={Boolean(fieldErrors.fullName)}
+                aria-describedby={fieldErrors.fullName ? 'erro-nome' : undefined}
               />
               {fieldErrors.fullName && (
-                <p className="text-sm text-destructive">{fieldErrors.fullName}</p>
+                <p id="erro-nome" role="alert" className="text-sm text-destructive">{fieldErrors.fullName}</p>
               )}
             </div>
 
@@ -193,8 +217,11 @@ export function CadastroPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 disabled={submitting}
                 aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? 'erro-email' : undefined}
               />
-              {fieldErrors.email && <p className="text-sm text-destructive">{fieldErrors.email}</p>}
+              {fieldErrors.email && (
+                <p id="erro-email" role="alert" className="text-sm text-destructive">{fieldErrors.email}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
@@ -207,12 +234,13 @@ export function CadastroPage() {
                 autoComplete="tel"
                 placeholder="(11) 98888-7777"
                 value={whatsapp}
-                onChange={(event) => setWhatsapp(event.target.value)}
+                onChange={(event) => setWhatsapp(mascaraWhatsapp(event.target.value))}
                 disabled={submitting}
                 aria-invalid={Boolean(fieldErrors.whatsapp)}
+                aria-describedby={fieldErrors.whatsapp ? 'erro-whatsapp' : undefined}
               />
               {fieldErrors.whatsapp && (
-                <p className="text-sm text-destructive">{fieldErrors.whatsapp}</p>
+                <p id="erro-whatsapp" role="alert" className="text-sm text-destructive">{fieldErrors.whatsapp}</p>
               )}
             </div>
 
@@ -234,7 +262,9 @@ export function CadastroPage() {
                   ))}
                 </SelectContent>
               </Select>
-              {fieldErrors.cargo && <p className="text-sm text-destructive">{fieldErrors.cargo}</p>}
+              {fieldErrors.cargo && (
+                <p id="erro-cargo" role="alert" className="text-sm text-destructive">{fieldErrors.cargo}</p>
+              )}
             </div>
 
             <div className="grid gap-2">
@@ -251,7 +281,7 @@ export function CadastroPage() {
                 aria-invalid={Boolean(fieldErrors.password)}
               />
               {fieldErrors.password && (
-                <p className="text-sm text-destructive">{fieldErrors.password}</p>
+                <p id="erro-senha" role="alert" className="text-sm text-destructive">{fieldErrors.password}</p>
               )}
             </div>
 

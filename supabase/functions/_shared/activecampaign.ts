@@ -252,7 +252,9 @@ export async function contatosPorTag(nomeDaTag: string): Promise<string[]> {
   // inesperada da API transformaria isto em laço infinito dentro da função.
   for (let pagina = 0; pagina < 50; pagina++) {
     const r = await ac('GET', `contacts?tagid=${id}&limit=100&offset=${offset}`)
-    const lote = (r.json?.contacts ?? []) as Array<{ email?: string }>
+    // O ac() deste arquivo devolve o corpo JÁ desembrulhado. Ler r.json aqui
+    // devolvia sempre undefined, e a régua aparecia vazia para todo mundo.
+    const lote = (r.contacts ?? []) as Array<{ email?: string }>
     for (const c of lote) if (c.email) emails.push(c.email.toLowerCase())
     if (lote.length < 100) break
     offset += 100

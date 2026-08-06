@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/contexts/theme-context'
 import { AdminAudienciaPage } from '@/pages/admin-audiencia'
 import { AdminLeadsPage } from '@/pages/admin-leads'
 import { AdminLeadPerfilPage } from '@/pages/admin-lead-perfil'
+import { RedefinirSenhaPage } from '@/pages/redefinir-senha'
 import { AdminConteudoPage } from '@/pages/admin-conteudo'
 import { BuscaHistoricoPage } from '@/pages/busca-historico'
 import { BuscaPage } from '@/pages/busca'
@@ -28,6 +29,7 @@ export default function App() {
               <Route path={ROUTES.landing} element={<LandingPage />} />
               <Route path={ROUTES.cadastro} element={<CadastroPage />} />
               <Route path={ROUTES.login} element={<LoginPage />} />
+              <Route path={ROUTES.redefinirSenha} element={<RedefinirSenhaPage />} />
 
               {/* Usuário cadastrado */}
               <Route element={<ProtectedRoute />}>

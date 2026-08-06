@@ -84,7 +84,11 @@ export async function requireStaffOrService(req: Request): Promise<CallerUser | 
     .eq('id', user.id)
     .maybeSingle()
 
-  if (error || !data || !['content_admin', 'audience_manager'].includes(data.role)) {
+  // Precisa espelhar is_concer_staff() no banco, que aceita os TRÊS papéis.
+  // Sem 'admin' aqui, quem tem o papel mais alto levava 403 no nurture-status
+  // e via "Régua indisponível" para sempre: o mesmo bug já corrigido no
+  // isStaff do frontend, vivo do lado do servidor.
+  if (error || !data || !['content_admin', 'audience_manager', 'admin'].includes(data.role)) {
     throw new AppError('Acesso restrito à equipe Concer.', 403, 'forbidden')
   }
   return user

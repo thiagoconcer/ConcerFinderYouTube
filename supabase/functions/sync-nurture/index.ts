@@ -1,4 +1,5 @@
 import { AppError, handler, json } from '../_shared/http.ts'
+import { rotuloDoTema } from '../_shared/topics.ts'
 import { isCronCall, isServiceRoleCall, requireUser, serviceClient } from '../_shared/supabase.ts'
 import {
   acConfigurado,
@@ -43,20 +44,6 @@ function minutagem(segundos: number): string {
   return h > 0 ? `${h}:${mm}:${ss}` : `${m}:${ss}`
 }
 
-const ROTULO_TEMA: Record<string, string> = {
-  'objecao-de-preco': 'Objeção de preço',
-  prospeccao: 'Prospecção',
-  'follow-up': 'Follow-up',
-  fechamento: 'Fechamento',
-  negociacao: 'Negociação',
-  'gestao-de-equipe': 'Gestão de equipe',
-  'metas-e-indicadores': 'Metas e indicadores',
-  'vendas-consultivas': 'Vendas consultivas',
-  'script-e-abordagem': 'Script e abordagem',
-  'funil-e-crm': 'Funil e CRM',
-}
-
-const legivel = (slug: string) => ROTULO_TEMA[slug] ?? slug.split('-').join(' ')
 
 Deno.serve(handler(async (req) => {
   const interno = isCronCall(req) || isServiceRoleCall(req)
@@ -117,7 +104,7 @@ Deno.serve(handler(async (req) => {
   // top recomendação da última busca: é o link que vai no primeiro e-mail
   if (ultima) {
     dados.dorPrincipal = ultima.query_text
-    dados.temas = (ultima.detected_topics ?? []).map(legivel)
+    dados.temas = (ultima.detected_topics ?? []).map(rotuloDoTema)
 
     const { data: topo } = await db
       .from('search_results')

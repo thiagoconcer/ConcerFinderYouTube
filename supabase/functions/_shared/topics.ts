@@ -91,3 +91,41 @@ export function topicLabel(slug: string): string {
     .join(' ')
     .replace(/^\w/, (c) => c.toUpperCase())
 }
+
+/**
+ * Rótulo legível de cada tema, o MESMO mapa de src/lib/format.ts. Vive aqui
+ * porque este arquivo já é o vocabulário canônico dos temas. O sync-nurture
+ * tinha uma cópia com só 10 dos 25 temas: os outros 15 chegavam ao e-mail
+ * como "pos venda e fidelizacao", sem acento e sem capitalização.
+ */
+const ROTULO_DO_TEMA: Record<string, string> = {
+  'objecao-de-preco': 'Objeção de preço',
+  prospeccao: 'Prospecção',
+  'cold-call': 'Cold call',
+  'follow-up': 'Follow-up',
+  fechamento: 'Fechamento',
+  negociacao: 'Negociação',
+  'proposta-comercial': 'Proposta comercial',
+  'qualificacao-de-leads': 'Qualificação de leads',
+  'funil-e-crm': 'Funil e CRM',
+  'script-e-abordagem': 'Script e abordagem',
+  'vendas-consultivas': 'Vendas consultivas',
+  'gestao-de-equipe': 'Gestão de equipe',
+  'metas-e-indicadores': 'Metas e indicadores',
+  comissionamento: 'Comissionamento',
+  'motivacao-e-produtividade': 'Motivação e produtividade',
+  'treinamento-e-onboarding': 'Treinamento e onboarding',
+  recrutamento: 'Recrutamento',
+  'vendas-no-whatsapp': 'Vendas no WhatsApp',
+  'inside-sales': 'Inside sales',
+  'pos-venda-e-fidelizacao': 'Pós-venda e fidelização',
+  'rapport-e-relacionamento': 'Rapport e relacionamento',
+  'atendimento-e-experiencia': 'Atendimento e experiência',
+  'marketing-e-geracao-de-demanda': 'Marketing e geração de demanda',
+  precificacao: 'Precificação',
+  'mentalidade-do-vendedor': 'Mentalidade do vendedor',
+}
+
+export function rotuloDoTema(slug: string): string {
+  return ROTULO_DO_TEMA[slug] ?? slug.split('-').join(' ')
+}

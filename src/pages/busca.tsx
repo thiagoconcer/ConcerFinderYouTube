@@ -23,11 +23,26 @@ const SUGESTOES = [
   'Minha equipe está desmotivada e não bate meta',
 ]
 
+/**
+ * A última busca sobrevive à navegação. Sem isso, "voltar aos resultados" do
+ * vídeo remontava a página vazia: plano e trechos sumiam e a pessoa precisava
+ * buscar de novo, gastando o próprio limite de buscas para rever o que já
+ * tinha. sessionStorage, não localStorage: morre com a aba, que é o escopo
+ * certo para "a sessão de estudo de agora".
+ */
+const CACHE_BUSCA = 'concerfinder-ultima-busca'
+
+/**
+ * Cadastro que falhou no register-lead deixa este marcador; a página de busca
+ * tenta de novo. Sem isso, uma falha de rede no submit fazia o lead nunca
+ * existir e ninguém reprocessava.
+ */
+const LEAD_PENDENTE = 'concerfinder-lead-pendente'
+
 type Estado =
   | { fase: 'inicial' }
   | { fase: 'buscando' }
   | { fase: 'pronto'; busca: SearchPainResponse; plano: string | null; gerandoPlano: boolean }
-  | { fase: 'erro'; mensagem: string }
 
 /** Mensagem de erro da Edge Function, que vem no corpo mesmo em status != 2xx. */
 async function mensagemDeErro(error: unknown, fallback: string): Promise<string> {
@@ -44,10 +59,27 @@ async function mensagemDeErro(error: unknown, fallback: string): Promise<string>
   return fallback
 }
 
+function lerCache(): { texto: string; busca: SearchPainResponse; plano: string | null } | null {
+  try {
+    const bruto = sessionStorage.getItem(CACHE_BUSCA)
+    if (!bruto) return null
+    const dado = JSON.parse(bruto)
+    if (!dado?.busca?.results) return null
+    return dado
+  } catch {
+    return null
+  }
+}
+
 export function BuscaPage() {
   const [params] = useSearchParams()
   const [texto, setTexto] = useState(params.get('q') ?? '')
   const [estado, setEstado] = useState<Estado>({ fase: 'inicial' })
+  const [erro, setErro] = useState<string | null>(null)
+
+  // Guarda o último resultado bom: se uma busca nova falhar, a tela volta
+  // para ele em vez de jogar fora o que a pessoa ainda estava lendo.
+  const ultimoPronto = useRef<Estado | null>(null)
 
   async function gerarPlano(searchId: string, queryText: string, resultados: SearchHit[]) {
     try {
@@ -61,32 +93,39 @@ export function BuscaPage() {
               title: r.title,
               segment_text: r.segment_text,
               start_seconds: r.start_seconds,
+              similarity_score: r.similarity_score,
             })),
           },
         },
       )
       if (error) throw error
 
+      // O plano só entra na busca que o pediu. Sem comparar o id, uma segunda
+      // busca disparada no meio recebia o plano da primeira, com citações
+      // apontando para trechos que não estão mais na tela.
       setEstado((atual) =>
-        atual.fase === 'pronto'
+        atual.fase === 'pronto' && atual.busca.search_id === searchId
           ? { ...atual, plano: data?.action_plan ?? null, gerandoPlano: false }
           : atual,
       )
     } catch (error) {
       const mensagem = await mensagemDeErro(error, 'Não foi possível gerar o plano de ação.')
       setEstado((atual) =>
-        atual.fase === 'pronto' ? { ...atual, plano: `_erro_:${mensagem}`, gerandoPlano: false } : atual,
+        atual.fase === 'pronto' && atual.busca.search_id === searchId
+          ? { ...atual, plano: `_erro_:${mensagem}`, gerandoPlano: false }
+          : atual,
       )
     }
   }
 
   const buscar = useCallback(async function buscar(consulta: string) {
     const query = consulta.trim()
+    setErro(null)
+
+    // Erro de validação é do campo, não da tela: não pode apagar os
+    // resultados que a pessoa ainda está lendo.
     if (query.length < 10) {
-      setEstado({
-        fase: 'erro',
-        mensagem: 'Descreva sua dor com um pouco mais de detalhe (mínimo de 10 caracteres).',
-      })
+      setErro('Descreva sua dor com um pouco mais de detalhe (mínimo de 10 caracteres).')
       return
     }
 
@@ -98,7 +137,9 @@ export function BuscaPage() {
       if (error) throw error
       if (!data) throw new Error('Resposta vazia da busca.')
 
-      setEstado({ fase: 'pronto', busca: data, plano: null, gerandoPlano: true })
+      const novo: Estado = { fase: 'pronto', busca: data, plano: null, gerandoPlano: true }
+      ultimoPronto.current = novo
+      setEstado(novo)
 
       if (data.search_id) {
         void gerarPlano(data.search_id, data.query_text, data.results)
@@ -106,24 +147,70 @@ export function BuscaPage() {
         setEstado((atual) => (atual.fase === 'pronto' ? { ...atual, gerandoPlano: false } : atual))
       }
     } catch (error) {
-      setEstado({
-        fase: 'erro',
-        mensagem: await mensagemDeErro(error, 'Não foi possível processar sua busca.'),
-      })
+      setErro(await mensagemDeErro(error, 'Não foi possível processar sua busca.'))
+      // A falha não destrói a leitura anterior
+      setEstado(ultimoPronto.current ?? { fase: 'inicial' })
     }
     // gerarPlano só usa setState, não precisa entrar nas dependências
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // "Repetir busca" no histórico chega como /busca?q=...
+  // "Repetir busca" no histórico chega como /busca?q=...; sem q, reidrata a
+  // última busca da sessão, para o "voltar" do vídeo não zerar a tela.
   const jaRodouDaUrl = useRef(false)
   useEffect(() => {
+    if (jaRodouDaUrl.current) return
+    jaRodouDaUrl.current = true
+
     const q = params.get('q')
-    if (q && !jaRodouDaUrl.current) {
-      jaRodouDaUrl.current = true
+    if (q) {
       void buscar(q)
+      return
+    }
+    const cache = lerCache()
+    if (cache) {
+      setTexto(cache.texto)
+      const restaurado: Estado = {
+        fase: 'pronto',
+        busca: cache.busca,
+        plano: cache.plano,
+        gerandoPlano: false,
+      }
+      ultimoPronto.current = restaurado
+      setEstado(restaurado)
     }
   }, [params, buscar])
+
+  // Persiste quando o plano termina (ou falha): é o momento em que a tela
+  // está completa e vale a pena voltar para ela.
+  useEffect(() => {
+    if (estado.fase !== 'pronto' || estado.gerandoPlano) return
+    try {
+      sessionStorage.setItem(
+        CACHE_BUSCA,
+        JSON.stringify({ texto: estado.busca.query_text, busca: estado.busca, plano: estado.plano }),
+      )
+    } catch {
+      // storage cheio ou bloqueado: perder o cache não pode quebrar a página
+    }
+  }, [estado])
+
+  // Reprocessa um register-lead que falhou no cadastro (rede móvel, cold
+  // start). A função é idempotente, então repetir é seguro.
+  useEffect(() => {
+    const pendente = localStorage.getItem(LEAD_PENDENTE)
+    if (!pendente) return
+    void (async () => {
+      try {
+        const { error } = await supabase.functions.invoke('register-lead', {
+          body: JSON.parse(pendente),
+        })
+        if (!error) localStorage.removeItem(LEAD_PENDENTE)
+      } catch {
+        // fica para a próxima visita
+      }
+    })()
+  }, [])
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -154,6 +241,8 @@ export function BuscaPage() {
           placeholder="Ex.: meu time trava quando o cliente fala que está caro e acaba dando desconto sem necessidade"
           className="w-full resize-y rounded-lg border bg-transparent px-4 py-3 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
           aria-label="Descreva sua dor de vendas"
+          aria-invalid={Boolean(erro)}
+          aria-describedby={erro ? 'erro-busca' : undefined}
         />
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit" size="lg" disabled={carregando}>
@@ -168,6 +257,14 @@ export function BuscaPage() {
           </Button>
         </div>
       </form>
+
+      {erro && (
+        <Alert variant="destructive" className="mt-6" id="erro-busca" role="alert">
+          <AlertCircle />
+          <AlertTitle>Não deu para buscar</AlertTitle>
+          <AlertDescription>{erro}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Sugestões: aparecem antes da primeira busca */}
       {estado.fase === 'inicial' && (
@@ -206,20 +303,6 @@ export function BuscaPage() {
             <Skeleton key={i} className="h-36 w-full" />
           ))}
         </section>
-      )}
-
-      {/* Erro */}
-      {estado.fase === 'erro' && (
-        <Alert variant="destructive" className="mt-10">
-          <AlertCircle />
-          <AlertTitle>Não foi possível processar sua busca</AlertTitle>
-          <AlertDescription>
-            {estado.mensagem}
-            <Button variant="outline" size="sm" onClick={() => void buscar(texto)}>
-              Tentar novamente
-            </Button>
-          </AlertDescription>
-        </Alert>
       )}
 
       {/* Resultados */}

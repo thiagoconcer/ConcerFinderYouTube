@@ -92,6 +92,9 @@ Deno.serve(handler(async (req) => {
     const { data: ultima } = await db
       .from('searches')
       .select('id')
+      // Sem este filtro, um staff (que a RLS deixa ler tudo) receberia a
+      // última busca DA BASE INTEIRA como se fosse dele.
+      .eq('profile_id', user.id)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -103,19 +106,21 @@ Deno.serve(handler(async (req) => {
     grava os campos personalizados e aplica a tag do perfil, que é o gatilho
     da automação no ActiveCampaign. Não bloqueia a resposta da busca.
   */
-  try {
-    await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/sync-nurture`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: req.headers.get('Authorization') ?? '',
-      },
-      body: JSON.stringify({ aplicar_gatilho: true }),
-      signal: AbortSignal.timeout(20_000),
-    })
-  } catch (error) {
-    console.warn('sync-nurture falhou apos a busca:', error)
-  }
+  // Sem await: o sync encadeia várias chamadas ao ActiveCampaign e segurava
+  // a resposta da busca em segundos, no momento central do produto. waitUntil
+  // mantém a instância viva até o sync terminar; se ela morrer antes, a
+  // próxima busca ressincroniza, porque o sync é idempotente.
+  const sincronizacao = fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/sync-nurture`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: req.headers.get('Authorization') ?? '',
+    },
+    body: JSON.stringify({ aplicar_gatilho: true }),
+    signal: AbortSignal.timeout(20_000),
+  }).catch((error) => console.warn('sync-nurture falhou apos a busca:', error))
+  // deno-lint-ignore no-explicit-any
+  ;(globalThis as any).EdgeRuntime?.waitUntil?.(sincronizacao)
 
   return json({
     search_id: searchId,

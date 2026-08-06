@@ -4,8 +4,20 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ROUTES } from '@/lib/routes'
-import { formatDuration, formatScore, formatTimeRange, formatTimestamp, thumbnailUrl } from '@/lib/format'
+import { formatDuration, formatScore, formatTimestamp, thumbnailUrl } from '@/lib/format'
 import type { SearchHit } from '@/types/search'
+
+/**
+ * Similaridade de cosseno em rótulo. "52% de relevância" fazia um resultado
+ * ótimo parecer meia-boca para quem não sabe que 0,5 de cosseno é alto; a
+ * régua vem da calibração do painel (>= 0,60 responde bem, >= 0,45 tangencia).
+ */
+function rotuloDeRelevancia(score: number): string {
+  if (score >= 0.6) return 'Muito relevante'
+  if (score >= 0.45) return 'Relevante'
+  return 'Relacionado'
+}
+
 
 /**
  * Card de recomendação: vídeo + minutagem exata + trecho do insight.
@@ -14,7 +26,6 @@ import type { SearchHit } from '@/types/search'
  */
 export function ResultCard({ hit }: { hit: SearchHit }) {
   const minuto = formatTimestamp(hit.start_seconds)
-  const faixa = formatTimeRange(hit.start_seconds, hit.end_seconds)
   const duracao = formatDuration(hit.start_seconds, hit.end_seconds)
   const destino = `${ROUTES.video(hit.video_id)}?t=${hit.start_seconds}&s=${hit.segment_id}`
 
@@ -26,7 +37,7 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
           className="relative aspect-video w-full shrink-0 overflow-hidden bg-muted sm:aspect-auto sm:h-auto sm:w-56"
           aria-label={
             duracao
-              ? `Abrir ${hit.title}: insight de ${faixa}, ${duracao} de vídeo`
+              ? `Abrir ${hit.title}: insight de ${formatTimestamp(hit.start_seconds)} até ${formatTimestamp(hit.end_seconds ?? hit.start_seconds)}, ${duracao} de vídeo`
               : `Abrir ${hit.title} no minuto ${minuto}`
           }
         >
@@ -55,7 +66,9 @@ export function ResultCard({ hit }: { hit: SearchHit }) {
                 ? `Insight de ${formatTimestamp(hit.start_seconds)} até ${formatTimestamp(hit.end_seconds)}`
                 : `Insight no minuto ${minuto}`}
             </Badge>
-            <Badge variant="outline">{formatScore(hit.similarity_score)} de relevância</Badge>
+            <Badge variant="outline" title={`${formatScore(hit.similarity_score)} de similaridade`}>
+              {rotuloDeRelevancia(hit.similarity_score)}
+            </Badge>
           </div>
 
           <h3 className="text-balance font-semibold leading-snug">

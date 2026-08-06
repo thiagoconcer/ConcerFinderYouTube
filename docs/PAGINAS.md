@@ -39,6 +39,7 @@
 
 **Estados:**
 - **Vazia:** formulário limpo com placeholders e o cargo sem seleção.
+- **[Extensão do doc]** O cadastro preserva o destino: quem chegou por deep link de e-mail (`?t=`/`?s=`) ou clicou numa dor da landing (`?q=`) cai, depois de criar a conta, exatamente onde ia, com a busca já rodando. O WhatsApp ganha máscara `(11) 98888-7777` e é normalizado para dígitos no envio.
 - **Carregando:** botão em estado de loading ("Criando conta...") durante o `register-lead`; campos desabilitados.
 - **Erro:** mensagens inline por campo (e-mail inválido, WhatsApp obrigatório, e-mail já cadastrado) e banner geral se o cadastro/lead falhar, com opção de tentar novamente. Se o disparo da nutrição falhar mas a conta for criada, o usuário ainda é liberado para a busca (a nutrição fica com `nurture_status='failed'` para reprocessamento pela equipe).
 
@@ -172,3 +173,8 @@
 - **Erro:** banner "Não foi possível carregar os insights de audiência" com botão de recarregar.
 
 **Permissões:** **staff-only — Gestor de audiência/comercial** (papel `audience_manager`). Administrador de conteúdo pode ter acesso de leitura conforme atribuição interna. Usuário cadastrado comum e Visitante não acessam — redirecionados para `/busca` (ou `/`). Dados sensíveis de leads só são expostos aqui, protegidos por RLS (`is_concer_staff()`).
+
+
+## `/redefinir-senha` **[Extensão do doc]**
+
+Destino do "esqueci minha senha". Precisa ser rota própria: o link do e-mail cria a sessão e, quando apontava para `/login`, a página detectava "autenticado" e mandava para `/busca`; a pessoa nunca via a tela de digitar a senha nova. Escuta `PASSWORD_RECOVERY`, valida mínimo de 8 caracteres e confirmação, e trata link expirado com caminho de volta ao login.

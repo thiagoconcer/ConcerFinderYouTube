@@ -199,7 +199,12 @@ Deno.serve(handler(async (req) => {
   // Cria o contato no ActiveCampaign com as tags de base. SEM gatilho: a
   // pessoa ainda não buscou nada, e a régua depende da dor real para o
   // primeiro e-mail fazer sentido. Quem dispara é o search-pain.
-  await sincronizarNoAc(req, profileId, false)
+  // Sem await: o clique de "criar conta" não deve esperar a cadeia de
+  // chamadas ao ActiveCampaign. Se a instância morrer antes de concluir, a
+  // primeira busca ressincroniza (o sync é idempotente).
+  const sincronizacao = sincronizarNoAc(req, profileId, false)
+  // deno-lint-ignore no-explicit-any
+  ;(globalThis as any).EdgeRuntime?.waitUntil?.(sincronizacao)
 
   return json({
     lead_id: lead.id,

@@ -25,7 +25,16 @@ export function ProtectedRoute({ staffOnly = false }: { staffOnly?: boolean }) {
   if (loading) return <AuthLoading />
 
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.cadastro} state={{ from: location.pathname }} replace />
+    // pathname + search: o deep link dos e-mails da régua carrega ?t= e ?s=
+    // (o minuto exato). Só o pathname jogava fora justamente a promessa
+    // que fez a pessoa clicar.
+    return (
+      <Navigate
+        to={ROUTES.cadastro}
+        state={{ from: location.pathname + location.search }}
+        replace
+      />
+    )
   }
 
   if (staffOnly && !isStaff) {
