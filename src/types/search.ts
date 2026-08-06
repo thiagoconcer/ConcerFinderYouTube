@@ -160,6 +160,26 @@ export interface EngagementInsights {
   recorrencia: Array<{ dias_ativos: number; pessoas: number }>
 }
 
+/** Retorno de `get_origem_insights`: de onde vêm os leads. */
+export interface OrigemInsights {
+  periodo: { de: string; ate: string }
+  total_leads: number
+  por_origem: Array<{
+    origem: string
+    leads: number
+    ativaram: number
+    taxa_ativacao: number | null
+  }>
+  por_campanha: Array<{
+    origem: string
+    meio: string
+    campanha: string
+    leads: number
+    ativaram: number
+  }>
+  serie: Array<{ dia: string; origem: string; leads: number }>
+}
+
 /**
  * Retorno de `get_cargo_insights`. O cargo é a granularidade fina do cadastro
  * (9 opções); o `commercial_role` que vem junto é a régua de nutrição para a

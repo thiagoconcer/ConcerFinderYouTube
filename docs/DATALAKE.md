@@ -68,6 +68,16 @@ deve sumir do lago na sincronização seguinte. Isso ainda não foi observado na
 prática, e é o que sustenta o direito de exclusão. Se a Nekt estiver acumulando
 em vez de substituir, o dado apagado sobrevive lá e isso precisa ser tratado.
 
+## Origem do lead
+
+`fato_leads` ganhou `origem`, `utm_source`, `utm_medium`, `utm_campaign`,
+`utm_content`, `utm_term`, `referrer` e `landing_page`. Como a stream está em
+`extract_all_fields`, as colunas entram sozinhas na próxima sincronização, sem
+mexer na fonte.
+
+`origem` já vem derivada pela mesma função que o painel usa, então o data lake
+e a tela contam a mesma história.
+
 ## Volume
 
 Hoje: 502 trechos vindos de 38 vídeos indexados (13,2 por vídeo). Com os 500

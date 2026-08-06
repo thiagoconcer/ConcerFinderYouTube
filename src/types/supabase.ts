@@ -58,10 +58,17 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          landing_page: string | null
           nurture_sent_at: string | null
           nurture_status: string
           profile_id: string
+          referrer: string | null
           updated_at: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
           whatsapp: string
         }
         Insert: {
@@ -71,10 +78,17 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          landing_page?: string | null
           nurture_sent_at?: string | null
           nurture_status?: string
           profile_id: string
+          referrer?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           whatsapp: string
         }
         Update: {
@@ -84,10 +98,17 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          landing_page?: string | null
           nurture_sent_at?: string | null
           nurture_status?: string
           profile_id?: string
+          referrer?: string | null
           updated_at?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           whatsapp?: string
         }
         Relationships: [
@@ -441,6 +462,10 @@ export type Database = {
         Args: { p_busca?: string; p_limit?: number; p_perfil?: string }
         Returns: Json
       }
+      get_origem_insights: {
+        Args: { from_date?: string; to_date?: string }
+        Returns: Json
+      }
       get_search_results: {
         Args: { p_search_id: string }
         Returns: {
@@ -465,6 +490,10 @@ export type Database = {
       is_concer_admin: { Args: never; Returns: boolean }
       is_concer_staff: { Args: never; Returns: boolean }
       limite_de_busca: { Args: never; Returns: Json }
+      origem_do_lead: {
+        Args: { p_referrer: string; p_utm_source: string }
+        Returns: string
+      }
       perfil_do_cargo: { Args: { p_cargo: string }; Returns: string }
       run_ingestion_step: { Args: { step: string }; Returns: number }
       search_videos: {

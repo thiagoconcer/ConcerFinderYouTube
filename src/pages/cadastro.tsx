@@ -18,6 +18,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { friendlyAuthError } from '@/lib/auth-errors'
 import { ROUTES } from '@/lib/routes'
 import { supabase } from '@/lib/supabase'
+import { lerOrigem } from '@/lib/origem'
 import { CARGO_LABELS, CARGO_PARA_PERFIL } from '@/types/database'
 import type { Cargo } from '@/types/database'
 
@@ -121,6 +122,8 @@ export function CadastroPage() {
         email: email.trim(),
         whatsapp: whatsapp.replace(/\D/g, ''),
         cargo,
+        // De onde a pessoa veio, capturado na primeira visita
+        ...lerOrigem(),
       }
       try {
         const { error } = await supabase.functions.invoke('register-lead', { body: payloadLead })

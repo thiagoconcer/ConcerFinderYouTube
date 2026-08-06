@@ -30,12 +30,43 @@ const CARGO_PARA_PERFIL: Record<string, (typeof PAPEIS)[number]> = {
   vendedor: 'vendedor',
 }
 
+/**
+ * Campos de origem aceitos do cliente. Lista fechada e com teto de tamanho:
+ * vem tudo da URL, que qualquer pessoa controla, então nada entra no banco
+ * sem passar por aqui.
+ */
+const CAMPOS_DE_ORIGEM = [
+  ['utm_source', 80],
+  ['utm_medium', 80],
+  ['utm_campaign', 120],
+  ['utm_content', 120],
+  ['utm_term', 120],
+  ['referrer', 200],
+  ['landing_page', 300],
+] as const
+
+function origemDoCorpo(body: Record<string, unknown>): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const [campo, max] of CAMPOS_DE_ORIGEM) {
+    const v = typeof body[campo] === 'string' ? (body[campo] as string).trim() : ''
+    if (v) out[campo] = v.slice(0, max)
+  }
+  return out
+}
+
 interface Body {
   profile_id?: string
   full_name?: string
   email?: string
   whatsapp?: string
   cargo?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+  referrer?: string
+  landing_page?: string
   /** Aceito só para não quebrar chamadas antigas; o cargo tem precedência. */
   commercial_role?: string
 }
@@ -144,6 +175,7 @@ Deno.serve(handler(async (req) => {
       whatsapp,
       commercial_role: commercialRole,
       ...(cargo ? { cargo } : {}),
+      ...origemDoCorpo(body as Record<string, unknown>),
       nurture_status: 'pending',
     })
     .select('id')

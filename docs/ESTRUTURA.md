@@ -52,6 +52,8 @@ Registro do lead gerado no cadastro e o estado de envio para a régua de nutriç
 | `nurture_status` | text | NOT NULL, default `'pending'`, CHECK IN ('pending','sent','failed') |
 | `nurture_sent_at` | timestamptz | NULL |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
+**Origem [Extensão do doc]:** `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `referrer` e `landing_page`, todas NULL. Capturadas na **primeira visita** (primeiro toque) e guardadas no navegador até o cadastro, porque a pessoa chega com o UTM na landing e se cadastra páginas depois, quando o parâmetro já saiu da URL. A leitura sai da função `origem_do_lead`, nunca do campo cru.
+
 **Índices:** PK; `idx_leads_profile_id` em `profile_id`; `idx_leads_nurture_status` em `nurture_status`; `idx_leads_commercial_role` em `commercial_role`; `idx_leads_cargo` em `cargo`.
 
 ### `videos`

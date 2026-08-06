@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Ativacao } from '@/components/admin/ativacao'
 import { Cargos } from '@/components/admin/cargos'
 import { Crescimento } from '@/components/admin/crescimento'
+import { Origem } from '@/components/admin/origem'
 import { QualidadeBusca } from '@/components/admin/qualidade-busca'
 import { GestaoEquipe } from '@/components/admin/gestao-equipe'
 import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
@@ -24,7 +25,12 @@ import { formatDateTime, topicLabel } from '@/lib/format'
 import { amostraPequena, larguraDaFatia } from '@/lib/grafico'
 import { COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { CommercialRole } from '@/types/database'
-import type { AudienceInsights, CargoInsights, EngagementInsights } from '@/types/search'
+import type {
+  AudienceInsights,
+  CargoInsights,
+  EngagementInsights,
+  OrigemInsights,
+} from '@/types/search'
 
 /**
  * /admin/audiencia
@@ -48,6 +54,7 @@ export function AdminAudienciaPage() {
   const [insights, setInsights] = useState<AudienceInsights | null>(null)
   const [cargos, setCargos] = useState<CargoInsights | null>(null)
   const [engajamento, setEngajamento] = useState<EngagementInsights | null>(null)
+  const [origem, setOrigem] = useState<OrigemInsights | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
 
@@ -56,16 +63,20 @@ export function AdminAudienciaPage() {
     setInsights(null)
     setCargos(null)
     setEngajamento(null)
+    setOrigem(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
     // O filtro vai para as TRÊS. Filtrar pela metade é pior que não filtrar:
     // a pessoa lê a tela inteira como se fosse do recorte escolhido.
     const filtro = perfil ? { filter_commercial_role: perfil } : {}
-    const [insightsRes, cargosRes, engajamentoRes] = await Promise.all([
+    const [insightsRes, cargosRes, engajamentoRes, origemRes] = await Promise.all([
       supabase.rpc('get_audience_insights', filtro),
       supabase.rpc('get_cargo_insights', filtro),
       supabase.rpc('get_engagement_insights', filtro),
+      // A origem não usa o filtro de perfil: a pergunta é de captação, e
+      // recortar por perfil esconderia justamente o canal que traz os outros.
+      supabase.rpc('get_origem_insights', {}),
     ])
 
     if (insightsRes.error) {
@@ -74,6 +85,7 @@ export function AdminAudienciaPage() {
     setInsights((insightsRes.data as unknown as AudienceInsights) ?? null)
     setCargos((cargosRes.data as unknown as CargoInsights) ?? null)
     setEngajamento((engajamentoRes.data as unknown as EngagementInsights) ?? null)
+    setOrigem((origemRes.data as unknown as OrigemInsights) ?? null)
   }, [filtroPerfil])
 
   useEffect(() => {
@@ -197,6 +209,9 @@ export function AdminAudienciaPage() {
 
           {/* Estamos crescendo? A pergunta que o painel não respondia. */}
           {engajamento && <Crescimento serie={engajamento.serie} />}
+
+          {/* De onde vieram, antes de falar do que fizeram */}
+          <Origem dados={origem} />
 
           {/* Cadastro que não vira busca é e-mail, não lead qualificado. */}
           {engajamento && (

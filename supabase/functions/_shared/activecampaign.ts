@@ -121,6 +121,10 @@ export interface DadosDoLead {
   perfil: PerfilComercial
   /** Slug do cargo. Ausente nos cadastros anteriores a esta mudança. */
   cargo?: string | null
+  /** De onde a pessoa veio. Derivada: utm_source, senão domínio do referrer. */
+  origem?: string | null
+  utmMedium?: string | null
+  utmCampaign?: string | null
   cadastradoEm: string
   /** Preenchidos a partir da primeira busca; ausentes no momento do cadastro. */
   dorPrincipal?: string
@@ -185,6 +189,11 @@ export async function sincronizarLead(
   // Alimenta o campo que a Concer já usava na newsletter, então o lead do
   // ConcerFinder fica no mesmo eixo do resto da base.
   põe('CARGO_NEWSLETTER', dados.cargo ? ROTULO_CARGO[dados.cargo] : undefined)
+  // Origem no CRM: permite segmentar campanha lá dentro sem depender de
+  // exportar o painel toda vez.
+  põe('CF_ORIGEM', dados.origem ?? undefined)
+  põe('CF_UTM_MEDIUM', dados.utmMedium ?? undefined)
+  põe('CF_UTM_CAMPANHA', dados.utmCampaign ?? undefined)
   põe('CF_DATA_CADASTRO_CONCERFINDER', dataAC(dados.cadastradoEm))
   põe('CF_DOR_PRINCIPAL', dados.dorPrincipal)
   põe('CF_TEMAS_BUSCADOS', dados.temas?.join(', '))

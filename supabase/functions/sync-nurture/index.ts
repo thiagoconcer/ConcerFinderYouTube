@@ -35,6 +35,23 @@ interface Body {
  */
 const APP_URL = Deno.env.get('APP_URL') ?? 'https://finder.thiagoconcer.com.br'
 
+/**
+ * Mesma regra da função `origem_do_lead` no banco: UTM quando existe, senão o
+ * domínio do referrer, senão "direto". Repetida aqui porque o CRM precisa do
+ * valor já pronto; o banco continua sendo a fonte para o relatório.
+ */
+function origemLegivel(utmSource?: string | null, referrer?: string | null): string {
+  const utm = (utmSource ?? '').trim()
+  if (utm) return utm.toLowerCase()
+  const ref = (referrer ?? '').trim()
+  if (!ref) return 'direto'
+  try {
+    return new URL(ref).host.replace(/^www\./, '')
+  } catch {
+    return ref.slice(0, 80)
+  }
+}
+
 function minutagem(segundos: number): string {
   const s = Math.max(0, Math.floor(segundos))
   const h = Math.floor(s / 3600)
@@ -85,6 +102,13 @@ Deno.serve(handler(async (req) => {
     .select('id', { count: 'exact', head: true })
     .eq('profile_id', profileId)
 
+  // A origem vive no lead, não no profile: é propriedade da captação.
+  const { data: lead } = await db
+    .from('leads')
+    .select('utm_source, utm_medium, utm_campaign, referrer')
+    .eq('profile_id', profileId)
+    .maybeSingle()
+
   const { count: totalAberturas } = await db
     .from('video_views')
     .select('id', { count: 'exact', head: true })
@@ -96,6 +120,9 @@ Deno.serve(handler(async (req) => {
     whatsapp: perfil.whatsapp,
     perfil: perfil.commercial_role as PerfilComercial,
     cargo: perfil.cargo,
+    origem: origemLegivel(lead?.utm_source, lead?.referrer),
+    utmMedium: lead?.utm_medium ?? null,
+    utmCampaign: lead?.utm_campaign ?? null,
     cadastradoEm: perfil.created_at,
     totalBuscas: totalBuscas ?? 0,
     abriuAlgumTrecho: (totalAberturas ?? 0) > 0,

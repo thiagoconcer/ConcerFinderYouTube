@@ -8,6 +8,11 @@ import { AdminAudienciaPage } from '@/pages/admin-audiencia'
 import { AdminLeadsPage } from '@/pages/admin-leads'
 import { AdminLeadPerfilPage } from '@/pages/admin-lead-perfil'
 import { RedefinirSenhaPage } from '@/pages/redefinir-senha'
+import { capturarOrigem } from '@/lib/origem'
+
+// Fora do componente, de proposito: precisa rodar antes da primeira
+// navegacao interna, que troca a URL e levaria os UTM junto.
+capturarOrigem()
 import { AdminConteudoPage } from '@/pages/admin-conteudo'
 import { BuscaHistoricoPage } from '@/pages/busca-historico'
 import { BuscaPage } from '@/pages/busca'
