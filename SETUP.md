@@ -139,6 +139,17 @@ Falha por cota **não** queima o vídeo: ele volta para `pending` e entra na fil
 do dia seguinte. A base de 500 vídeos se completa sozinha em cerca de duas
 semanas.
 
+A **indexação processa até 60 vídeos** por execução, de propósito acima do
+ritmo da transcrição. Era 20 contra 32 transcritos por dia, e os 12 excedentes
+empilhavam em `transcribed`: a fila do meio crescia todo dia e o prazo ia de 13
+para 21 dias. Se um dia a cota do YouTube aumentar, este teto precisa subir
+junto, senão o gargalo só muda de lugar.
+
+**Vídeo sem legenda não é falha da esteira.** Shorts muito curtos costumam não
+ter legenda automática no YouTube; nenhuma das quatro estratégias encontra
+texto e retentar não resolve. Eles aparecem no painel como "Sem legenda", em
+cinza, separados das falhas de verdade.
+
 Para acelerar, dá para pedir aumento de cota no Google Cloud (gratuito, via
 formulário). Com 100.000 unidades/dia a base fecharia em pouco mais de um dia.
 

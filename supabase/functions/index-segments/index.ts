@@ -25,9 +25,21 @@ Deno.serve(handler(async (req) => {
   const runId = await startRun(db, 'index')
 
   try {
-    // 1. vídeos elegíveis: já transcritos (ou um vídeo específico)
+    /*
+      1. vídeos elegíveis: já transcritos (ou um vídeo específico).
+
+      O teto precisa ser MAIOR que o ritmo da transcrição, senão a fila do
+      meio cresce todo dia. Era 20 contra 32 transcritos por dia: sobravam 12
+      diários empilhados em `transcribed`, e a base de 500 levaria 21 dias em
+      vez de 13. Com 60 a indexação sempre alcança o que a transcrição
+      produziu, e o custo é irrelevante (embedding é a etapa mais barata da
+      esteira; quem manda no ritmo é a cota do YouTube, na etapa anterior).
+    */
+    const TETO_VIDEOS_POR_EXECUCAO = 60
     let vq = db.from('videos').select('id, youtube_video_id')
-    vq = body.video_id ? vq.eq('id', body.video_id) : vq.eq('transcription_status', 'transcribed').limit(20)
+    vq = body.video_id
+      ? vq.eq('id', body.video_id)
+      : vq.eq('transcription_status', 'transcribed').limit(TETO_VIDEOS_POR_EXECUCAO)
 
     const { data: videos, error: vErr } = await vq
     if (vErr) throw new AppError(`Falha ao listar vídeos: ${vErr.message}`, 500)

@@ -25,6 +25,18 @@ const STATUS_LABEL: Record<string, string> = {
   failed: 'Falhou',
 }
 
+/**
+ * Separa "não há legenda para transcrever" de "a esteira quebrou".
+ *
+ * Os dois caem em `failed` no banco, mas significam coisas opostas: um é
+ * conteúdo (short curto que o YouTube não legenda) e o outro é problema para
+ * investigar. Sem essa distinção, três shorts ficam vermelhos para sempre no
+ * painel e escondem uma falha real quando ela aparecer.
+ */
+function semLegenda(video: { transcription_status: string; duration_seconds: number | null }): boolean {
+  return video.transcription_status === 'failed' && (video.duration_seconds ?? 0) <= 90
+}
+
 const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   indexed: 'default',
   transcribed: 'secondary',
@@ -194,9 +206,22 @@ export function AdminConteudoPage() {
                       {video.published_at ? formatDateTime(video.published_at) : 'sem data'}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={STATUS_VARIANT[video.transcription_status] ?? 'outline'}>
-                        {STATUS_LABEL[video.transcription_status] ?? video.transcription_status}
-                      </Badge>
+                      {/* Vídeo curto sem legenda no YouTube não é defeito da
+                          esteira: não existe o que transcrever, e retentar não
+                          muda nada. Marcar de vermelho como falha faz a equipe
+                          procurar um problema que não existe. */}
+                      {semLegenda(video) ? (
+                        <Badge
+                          variant="outline"
+                          title="O YouTube não tem legenda para este vídeo. Nenhuma das quatro estratégias encontrou texto, e repetir não resolve."
+                        >
+                          Sem legenda
+                        </Badge>
+                      ) : (
+                        <Badge variant={STATUS_VARIANT[video.transcription_status] ?? 'outline'}>
+                          {STATUS_LABEL[video.transcription_status] ?? video.transcription_status}
+                        </Badge>
+                      )}
                     </td>
                   </tr>
                 ))}
