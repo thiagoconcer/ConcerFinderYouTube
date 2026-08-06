@@ -105,7 +105,7 @@ Gatilho: tag `concerfinder - vendedor`
 
 "%CF_DOR_PRINCIPAL%"
 
-O Concer trata exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
+Eu trato exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
 
 Assista esse trecho: %CF_LINK_TRECHO%
 
@@ -119,7 +119,7 @@ resposta. Você descreve o problema, ele te leva ao ponto.
 Nos próximos dias eu mando mais alguns cortes sobre esse mesmo tema.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 
 PS: se aparecer outra dor no meio da semana, volta lá e descreve.
 É de graça e ilimitado: https://finder.thiagoconcer.com.br/busca
@@ -149,7 +149,7 @@ cinco conversas, conte quantas perguntas você faz antes de falar de preço, pro
 ou proposta. Anote o número. Se for menos de cinco, achamos o problema.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 3 (3 dias depois)
@@ -168,7 +168,7 @@ Treinar sozinho é mais simples do que parece:
 1. Grave suas próprias ligações (com aviso ao cliente) e escute uma por semana.
    Você vai odiar a primeira. É assim mesmo.
 2. Marque o momento exato em que a conversa virou contra você.
-3. Descreva esse momento no ConcerFinder e veja o que o Concer fala sobre ele.
+3. Descreva esse momento no ConcerFinder e veja o que eu falo sobre ele.
 4. Repita a resposta em voz alta até sair natural. Não basta entender, tem que sair.
 
 Esses quatro passos, toda semana, valem mais que qualquer curso que você comprar
@@ -177,7 +177,7 @@ este ano. E os três primeiros são de graça.
 Buscar minha próxima dor: https://finder.thiagoconcer.com.br/busca
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 4 (4 dias depois)
@@ -200,7 +200,7 @@ Você já fez %CF_TOTAL_BUSCAS% busca(s). Quem usa o ConcerFinder toda semana pa
 acumular dúvida e passa a acumular resposta, e a diferença aparece na comissão.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ---
@@ -218,7 +218,7 @@ Gatilho: tag `concerfinder - gestor`
 
 "%CF_DOR_PRINCIPAL%"
 
-O Concer trata exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
+Eu trato exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
 
 Assista esse trecho: %CF_LINK_TRECHO%
 
@@ -229,7 +229,7 @@ mais que treinamento de duas horas, porque todo mundo viu a mesma coisa.
 Nos próximos dias eu mando mais cortes sobre esse tema, sempre com a minutagem.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 
 PS: cada vendedor seu pode ter a conta dele e buscar as próprias dores.
 É de graça: https://finder.thiagoconcer.com.br
@@ -264,7 +264,7 @@ Vinte minutos por semana. Em um mês você tem quatro simulações e um time que
 ouviu a objeção antes de ouvi-la de um cliente de verdade.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 3 (3 dias depois)
@@ -282,7 +282,7 @@ Uma estrutura que funciona:
 
 1. Cinco minutos de número, e só. Sem discussão sobre o passado.
 2. Uma dor real da semana, trazida por um vendedor. Real, com nome de cliente.
-3. Um trecho do Concer sobre essa dor, com a minutagem, buscada no ConcerFinder.
+3. Um trecho meu sobre essa dor, com a minutagem, buscada no ConcerFinder.
 4. Role play em cima do trecho.
 5. Um combinado prático para a semana, escrito e visível.
 
@@ -293,7 +293,7 @@ estava, nem garimpar o canal na noite de domingo.
 Preparar minha próxima reunião: https://finder.thiagoconcer.com.br/busca
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 4 (4 dias depois)
@@ -316,7 +316,7 @@ Você já fez %CF_TOTAL_BUSCAS% busca(s). Gestor que leva um trecho novo toda se
 constrói repertório no time sem gastar um real de treinamento.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ---
@@ -334,7 +334,7 @@ Gatilho: tag `concerfinder - dono`
 
 "%CF_DOR_PRINCIPAL%"
 
-O Concer trata exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
+Eu trato exatamente disso em "%CF_VIDEO_RECOMENDADO%", no minuto %CF_MINUTAGEM%.
 
 Assista esse trecho: %CF_LINK_TRECHO%
 
@@ -345,7 +345,7 @@ por causa dele.
 Nos próximos dias eu mando mais alguns cortes sobre esse tema.
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 
 PS: o acesso é gratuito e ilimitado. Vale colocar seu time comercial inteiro lá:
 https://finder.thiagoconcer.com.br
@@ -372,7 +372,7 @@ Você procurou sobre %CF_TEMAS_BUSCADOS%. Vale rever o trecho com essa lente, ol
 para o processo e não para o indivíduo: %CF_LINK_TRECHO%
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 3 (3 dias depois)
@@ -397,12 +397,12 @@ Se você não sabe responder alguma delas, esse é o buraco. Não é o vendedor,
 preço, não é o mercado.
 
 E se souber responder a terceira, tem um atalho: descreve essa etapa no ConcerFinder
-e recebe o que o Concer fala especificamente sobre ela, com a minutagem.
+e recebe o que eu falo especificamente sobre ela, com a minutagem.
 
 https://finder.thiagoconcer.com.br/busca
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ### E-mail 4 (4 dias depois)
@@ -430,7 +430,7 @@ https://finder.thiagoconcer.com.br/busca
 Você já fez %CF_TOTAL_BUSCAS% busca(s).
 
 Abraço,
-Time do Thiago Concer
+**Thiago Concer**
 ```
 
 ---
