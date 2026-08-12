@@ -163,8 +163,12 @@ create table public.video_segments (
 );
 
 create index idx_video_segments_video_id on public.video_segments (video_id);
+-- HNSW, e não ivfflat: o ivfflat treina os centroides no momento da criação,
+-- e aqui o índice nasce com a tabela vazia. Em 12/08/2026 isso, somado ao
+-- `probes` padrão de 1, dava recall@10 de 16% na busca semântica. Ver a
+-- migration 20260812000001_busca_hnsw.sql.
 create index idx_video_segments_embedding on public.video_segments
-  using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+  using hnsw (embedding vector_cosine_ops);
 
 create trigger trg_video_segments_updated_at
   before update on public.video_segments

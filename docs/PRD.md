@@ -75,7 +75,7 @@ O conteúdo do canal do Concer está disperso em centenas de vídeos e, nas suas
 
 ## 6. Requisitos não-funcionais
 
-- **Performance:** cada busca semântica (embedding da query + recuperação vetorial + geração do plano de ação) deve retornar em ≤ 5 segundos para o volume típico; a busca vetorial usa índice `ivfflat`/`hnsw` (cosine) em pgvector.
+- **Performance:** cada busca semântica (embedding da query + recuperação vetorial + geração do plano de ação) deve retornar em ≤ 5 segundos para o volume típico; a busca vetorial usa índice `hnsw` (cosine) em pgvector.
 - **Escalabilidade:** a ingestão em massa (scraping/transcrição/indexação de centenas de vídeos) roda em Edge Functions com processamento em lote e cron, sem bloquear a experiência de busca; recomenda-se Supabase Pro para volume de edge invocations e pgvector em escala.
 - **Disponibilidade:** a busca deve permanecer disponível independentemente de execuções de ingestão em andamento; falhas de transcrição/indexação são registradas em `ingestion_runs` sem derrubar a plataforma.
 - **Segurança:** RLS ativado em todas as tabelas; segmentos e resultados só acessíveis via RPC `search_videos` (SECURITY DEFINER) para usuários autenticados; visitantes não veem recomendações; painéis internos protegidos por `is_concer_staff()`; chaves de APIs externas ficam apenas em Edge Functions, nunca no frontend.

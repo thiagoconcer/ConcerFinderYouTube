@@ -76,3 +76,8 @@ Trabalho que não estava no plano original e entrou por pedido, todo no ar:
 - **Régua de nutrição no ActiveCampaign**, disparada pela primeira busca e não pelo cadastro.
 - **Camada `analytics` e usuário `nekt_reader`** para o data lake. Ver [DATALAKE.md](DATALAKE.md).
 - **Domínio próprio**: finder.thiagoconcer.com.br.
+- **Teto de buscas por pessoa**, no banco e não só na tela, contra cópia do acervo e gasto de API.
+- **Revisão completa por dois revisores Fable**: quatro bugs de verdade (papel `admin` barrado no backend, régua vazia em silêncio, corrida do plano de ação, busca de outra pessoa no fallback), o funil remendado nas transições e o plano de ação escrito para o perfil de quem buscou.
+- **Esteira sem gargalo**: a indexação subiu de 20 para 60 vídeos por execução, acima do ritmo da transcrição, e o short sem legenda deixou de aparecer como falha.
+- **Origem do lead**: UTM, referrer e página de entrada capturados na primeira visita, com o relatório de captação medindo ativação e não só volume.
+- **A busca passou a enxergar o acervo inteiro**: o índice vetorial era um `ivfflat` criado com a tabela vazia e consultado com `probes=1`, entregando recall@10 de 16%. Trocado por HNSW em 12/08/2026, o recall foi a 100%.

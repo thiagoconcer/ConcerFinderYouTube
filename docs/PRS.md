@@ -124,7 +124,7 @@ O ConcerFinder é dividido em três camadas: **frontend React**, **backend Supab
 ## 3. Stack tecnológica
 
 **Backend — Supabase (não negociável):**
-- **PostgreSQL + pgvector** — dados relacionais e busca vetorial (`video_segments.embedding vector(1536)`, índice `ivfflat`/`hnsw` cosine).
+- **PostgreSQL + pgvector** — dados relacionais e busca vetorial (`video_segments.embedding vector(1536)`, índice `hnsw` cosine).
 - **Auth** — e-mail+senha e magic link (o magic link reduz atrito no cadastro, cujo objetivo primário é gerar lead).
 - **Storage** — reservado para artefatos de transcrição/áudio quando necessário.
 - **Edge Functions (Deno)** — toda lógica server-side e integrações externas (`register-lead`, `scrape-youtube-channel`, `transcribe-videos`, `index-segments`, `generate-action-plan`, `nurture-webhook-callback`).
@@ -171,7 +171,7 @@ App React (Vite) construído e mantido no **Claude Code**, com Tailwind e shadcn
 **Carga esperada:** o público-alvo é amplo (vendedores, gestores comerciais e donos de empresa interessados em vendas, atraídos pela audiência do Thiago Concer), mas o gargalo de escrita é a ingestão (centenas de vídeos do canal) e o de leitura é a busca por usuário. Buscas são ilimitadas por usuário cadastrado (regra de negócio), o que concentra a demanda de runtime nas RPCs vetoriais e no LLM de plano de ação.
 
 **Índices críticos:**
-- `idx_video_segments_embedding` (`ivfflat`/`hnsw`, cosine) — determinante para latência da busca semântica em escala.
+- `idx_video_segments_embedding` (`hnsw`, cosine) — determinante para a **qualidade** da busca semântica, não só para a latência: com o ivfflat anterior o recall@10 era de 16%.
 - `idx_videos_transcription_status` — filtra rápido os vídeos `pending` no pipeline de ingestão.
 - `idx_searches_detected_topics` (GIN) — agregações do painel de audiência.
 - FKs indexadas (`idx_search_results_search_id`, `idx_searches_profile_id`, `idx_leads_profile_id`) — joins de histórico e painéis.

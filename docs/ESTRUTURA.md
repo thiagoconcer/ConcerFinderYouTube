@@ -84,7 +84,7 @@ Trecho transcrito de um vídeo com janela de tempo, base da busca semântica e d
 | `topic_tags` | text[] | NULL |
 | `embedding` | vector(1536) | NULL (extensão `pgvector`) |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
-**Índices:** PK; `idx_video_segments_video_id` em `video_id`; índice vetorial `idx_video_segments_embedding` do tipo `ivfflat`/`hnsw` sobre `embedding` (cosine).
+**Índices:** PK; `idx_video_segments_video_id` em `video_id`; índice vetorial `idx_video_segments_embedding` do tipo `hnsw` sobre `embedding` (cosine). Era `ivfflat` e foi trocado em 12/08/2026: o ivfflat treina os centroides na criação, e o índice nascia com a tabela vazia.
 
 ### `searches`
 Cada busca de dor/tema feita por um usuário cadastrado — alimenta a segmentação de audiência.
