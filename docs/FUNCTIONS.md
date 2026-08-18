@@ -177,7 +177,8 @@
   - Valida que a `search` pertence ao usuário logado (`searches.profile_id = auth.uid()`) antes de gravar. **[Extensão do doc]**
   - Chama o LLM **Claude Opus 5** (contexto de 1M tokens, consolida vários trechos; alternativa custo-eficiente **Claude Sonnet 5** para pico de buscas, via secret `ANTHROPIC_MODEL`).
   - Trata `stop_reason: "refusal"` antes de ler o conteúdo e usa o fallback de servidor do Claude, que reexecuta a chamada em outro modelo em vez de devolver a recusa. **[Extensão do doc]**
-  - O plano é construído **apenas** a partir dos segmentos recuperados (Regra/Suposição: o plano deriva dos próprios insights dos vídeos relacionados à dor).
+  - O plano é construído **apenas** a partir dos segmentos recuperados (Regra/Suposição: o plano deriva dos próprios insights dos vídeos relacionados à dor). **Uma exceção declarada:** a quinta seção, `## Como a IA acelera isso`, tem fonte própria (`_shared/viverdeia.ts`) e não sai dos trechos.
+  - **Seção de parceiro [Extensão do doc]:** o modelo escolhe uma ou duas famílias de solução do Viver de IA de uma **lista fechada**, e não pode inventar produto, integração ou funcionalidade fora dela; sem a lista ele criaria uma solução plausível que o parceiro não tem, e a pessoa cairia no formulário procurando algo que ninguém vende. O prompt carrega junto a régua editorial da parceria: nada de contar quantas soluções existem (usa "dezenas de soluções prontas"), nada de preço, promessa de resultado ou "a IA substitui vendedor", e a IA nunca aparece criando processo ou disciplina que a empresa não tem. Quem escreve a chamada para ação é a tela, não o modelo.
   - Persiste o resultado em `searches.action_plan` (via `service_role`).
   - Se não houver segmentos relevantes (nenhum resultado), retorna um `action_plan` indicando que não foram encontrados trechos e sugere refinar a dor. **[Extensão do doc]**
 

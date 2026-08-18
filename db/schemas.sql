@@ -311,3 +311,33 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ============================================================
+-- TABELA: cta_clicks  [Extensão do doc]
+-- Cliques em CTA de parceiro dentro da plataforma. A UTM do link conta a
+-- história para o parceiro; esta tabela conta para a Concer, que precisa saber
+-- QUEM clicou e depois de qual dor.
+-- ============================================================
+create table public.cta_clicks (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references public.profiles (id) on delete cascade,
+  search_id uuid references public.searches (id) on delete set null,
+  destino text not null,
+  local text not null,
+  created_at timestamptz not null default now()
+);
+
+create index idx_cta_clicks_profile_id on public.cta_clicks (profile_id);
+create index idx_cta_clicks_created_at on public.cta_clicks (created_at);
+
+alter table public.cta_clicks enable row level security;
+
+-- Sem policy de UPDATE nem DELETE: log não se corrige, e clique apagado é
+-- número que mente.
+create policy "cta_clicks_insert_self" on public.cta_clicks
+  for insert to authenticated
+  with check (profile_id = auth.uid());
+
+create policy "cta_clicks_select_staff" on public.cta_clicks
+  for select to authenticated
+  using (public.is_concer_staff());

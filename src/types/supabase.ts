@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      cta_clicks: {
+        Row: {
+          created_at: string
+          destino: string
+          id: string
+          local: string
+          profile_id: string
+          search_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          destino: string
+          id?: string
+          local: string
+          profile_id: string
+          search_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          destino?: string
+          id?: string
+          local?: string
+          profile_id?: string
+          search_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cta_clicks_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cta_clicks_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ingestion_runs: {
         Row: {
           created_at: string
@@ -440,6 +482,7 @@ export type Database = {
         Args: { p_profile_id: string; p_role: string }
         Returns: Json
       }
+      faixa_do_score: { Args: { p_score: number }; Returns: string }
       get_audience_insights: {
         Args: {
           filter_commercial_role?: string
@@ -505,6 +548,8 @@ export type Database = {
       }
       perfil_do_cargo: { Args: { p_cargo: string }; Returns: string }
       run_ingestion_step: { Args: { step: string }; Returns: number }
+      score_do_lead: { Args: { p_profile_id: string }; Returns: number }
+      score_do_lead_detalhe: { Args: { p_profile_id: string }; Returns: Json }
       search_videos: {
         Args: {
           detected_topics?: string[]

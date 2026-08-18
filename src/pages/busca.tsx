@@ -349,7 +349,11 @@ export function BuscaPage() {
                   </AlertDescription>
                 </Alert>
               ) : estado.plano ? (
-                <ActionPlan markdown={estado.plano} segments={estado.busca.results} />
+                <ActionPlan
+                  markdown={estado.plano}
+                  segments={estado.busca.results}
+                  searchId={estado.busca.search_id}
+                />
               ) : (
                 <p className="text-sm text-muted-foreground">Plano de ação indisponível.</p>
               )}

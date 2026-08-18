@@ -162,6 +162,7 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 | `searches` | dono (`profile_id = auth.uid()`) ou staff | dono (`profile_id = auth.uid()`) | ninguém | ninguém |
 | `search_results` | dono da busca associada ou staff | `service_role`/RPC | ninguém | ninguém |
 | `ingestion_runs` | staff | `service_role` | `service_role` | ninguém |
+| `cta_clicks` | staff | dono (`profile_id = auth.uid()`) | ninguém | ninguém |
 | `video_views` | dono (`profile_id = auth.uid()`) ou staff | dono (`profile_id = auth.uid()`) | ninguém | ninguém |
 
 **Regra crítica de negócio refletida no RLS:** visitante sem cadastro não vê nenhuma recomendação — `videos`/`video_segments` só respondem a usuários autenticados, e os resultados chegam apenas pela RPC `search_videos`, que exige `auth.uid()` válido.

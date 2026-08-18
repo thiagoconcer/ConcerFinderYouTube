@@ -316,6 +316,7 @@ export function BuscaHistoricoPage() {
                             <ActionPlan
                               markdown={busca.action_plan}
                               segments={resultados as SearchHit[] | undefined}
+                              searchId={busca.id}
                             />
                           </div>
                         )}

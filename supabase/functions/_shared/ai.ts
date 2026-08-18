@@ -1,5 +1,6 @@
 import Anthropic from 'npm:@anthropic-ai/sdk@0.115.0'
 import { AppError, fetchJson, optionalSecret, requireSecret } from './http.ts'
+import { instrucaoDaSecaoIA } from './viverdeia.ts'
 
 /**
  * Integrações de IA do ConcerFinder.
@@ -144,7 +145,7 @@ export async function generateActionPlan(
   const system = `Você organiza os ensinamentos do Thiago Concer, a maior referência em vendas do Brasil, para vendedores, gestores comerciais e donos de empresa brasileiros.
 
 Regras rígidas:
-- Baseie-se SOMENTE nos trechos fornecidos. Se eles não cobrem parte da dor, diga isso abertamente em vez de inventar.
+- Baseie-se SOMENTE nos trechos fornecidos. Se eles não cobrem parte da dor, diga isso abertamente em vez de inventar. A única exceção é a última seção, "Como a IA acelera isso", que tem fonte própria declarada no pedido e não sai dos trechos.
 - Não cite estudos, números ou métodos que não estejam nos trechos.
 - Fale direto com a pessoa, em segunda pessoa, com o tom direto e prático do Concer.
 - Quando um trecho tiver relevância baixa (abaixo de 50%), use-o só se realmente ajudar; prefira os mais relevantes e não estique trecho fraco para preencher passo.
@@ -173,7 +174,9 @@ De 4 a 5 passos numerados. Cada passo começa com um título curto em negrito, n
 Dois ou três erros comuns que fazem esse plano falhar na prática. Um por item, começando com o erro em negrito e depois o porquê. Cite a minutagem quando o trecho apoiar.
 
 ## Como saber se funcionou
-Três sinais concretos e observáveis, do tipo que a pessoa consegue verificar em uma ou duas semanas. Prefira o que dá para ouvir numa gravação, contar num relatório ou ver numa reunião.`
+Três sinais concretos e observáveis, do tipo que a pessoa consegue verificar em uma ou duas semanas. Prefira o que dá para ouvir numa gravação, contar num relatório ou ver numa reunião.
+
+${instrucaoDaSecaoIA()}`
 
   // O fallback de servidor só existe em Opus 5 e Fable 5. Mandar o parâmetro
   // para outro modelo (Sonnet 5, por exemplo) devolve 400, então ele é

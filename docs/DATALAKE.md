@@ -91,6 +91,15 @@ funciona bem, mas significa que o lago guarda o score de hoje, não a série
 histórica. Se um dia interessar ver o score subindo ou caindo ao longo do tempo,
 vai precisar de uma tabela de snapshot: hoje esse histórico não existe.
 
+## Cliques no CTA de parceiro
+
+`analytics.fato_cliques_cta` traz cada clique com o perfil comercial, o cargo e
+a dor que a pessoa buscou antes de clicar. É o que permite responder se o CTA
+converte melhor para dono ou para gestor, e depois de qual tipo de dor.
+
+A tabela é append-only por RLS (sem UPDATE nem DELETE para ninguém), então o
+full refresh diário sempre traz a série inteira.
+
 ## Volume
 
 Hoje: 502 trechos vindos de 38 vídeos indexados (13,2 por vídeo). Com os 500

@@ -80,5 +80,6 @@ Trabalho que não estava no plano original e entrou por pedido, todo no ar:
 - **Revisão completa por dois revisores Fable**: quatro bugs de verdade (papel `admin` barrado no backend, régua vazia em silêncio, corrida do plano de ação, busca de outra pessoa no fallback), o funil remendado nas transições e o plano de ação escrito para o perfil de quem buscou.
 - **Esteira sem gargalo**: a indexação subiu de 20 para 60 vídeos por execução, acima do ritmo da transcrição, e o short sem legenda deixou de aparecer como falha.
 - **Origem do lead**: UTM, referrer e página de entrada capturados na primeira visita, com o relatório de captação medindo ativação e não só volume.
+- **CTA do Viver de IA dentro do plano de ação**, escrito pelo modelo a partir da dor e de uma lista fechada de soluções do parceiro, com o clique registrado em `cta_clicks`.
 - **Score do lead (0 a 100)** em `/admin/leads`, com as parcelas abertas na ficha individual e no data lake pela mesma função. Cargo vale 30, comportamento vale 70: quem se cadastra e não volta é frio, mesmo sendo dono de empresa.
 - **A busca passou a enxergar o acervo inteiro**: o índice vetorial era um `ivfflat` criado com a tabela vazia e consultado com `probes=1`, entregando recall@10 de 16%. Trocado por HNSW em 12/08/2026, o recall foi a 100%.

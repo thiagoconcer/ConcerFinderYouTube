@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { CircleAlert, CircleCheck, PlayCircle, Stethoscope, Target } from 'lucide-react'
+import { CircleAlert, CircleCheck, PlayCircle, Sparkles, Stethoscope, Target } from 'lucide-react'
+import { CtaViverDeIA } from '@/components/cta-viverdeia'
 import { ROUTES } from '@/lib/routes'
 import { formatTimestamp } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -175,14 +176,18 @@ function comNegrito(texto: string, semente: number): React.ReactNode[] {
 // Seções
 // ------------------------------------------------------------------
 
-type Estilo = 'diagnostico' | 'passos' | 'erros' | 'sinais' | 'generico'
+type Estilo = 'diagnostico' | 'passos' | 'erros' | 'sinais' | 'ia' | 'generico'
 
 function classificar(titulo: string | null): Estilo {
   const t = (titulo ?? '').toLowerCase()
   if (t.includes('acontecendo') || t.includes('diagn')) return 'diagnostico'
   if (t.includes('plano') || t.includes('passo')) return 'passos'
   if (t.includes('erro') || t.includes('sabot') || t.includes('evitar')) return 'erros'
-  if (t.includes('funcionou') || t.includes('sinais') || t.includes('saber')) return 'sinais'
+  if (t.includes('funcionou') || t.includes('sinais')) return 'sinais'
+  // Antes de 'saber': "Como saber se funcionou" e "Como a IA acelera isso" são
+  // as duas últimas seções e as duas começam com "Como".
+  if (t.includes(' ia ') || t.startsWith('ia ') || t.includes('inteligência artificial')) return 'ia'
+  if (t.includes('saber')) return 'sinais'
   return 'generico'
 }
 
@@ -191,6 +196,7 @@ const ICONE: Record<Estilo, typeof Target> = {
   passos: Target,
   erros: CircleAlert,
   sinais: CircleCheck,
+  ia: Sparkles,
   generico: Target,
 }
 
@@ -203,6 +209,7 @@ function TituloSecao({ titulo, estilo }: { titulo: string; estilo: Estilo }) {
           'size-4.5',
           estilo === 'sinais' && 'text-success',
           estilo === 'erros' && 'text-gold',
+          estilo === 'ia' && 'text-primary',
           (estilo === 'diagnostico' || estilo === 'passos' || estilo === 'generico') &&
             'text-primary',
         )}
@@ -216,10 +223,13 @@ function TituloSecao({ titulo, estilo }: { titulo: string; estilo: Estilo }) {
 export function ActionPlan({
   markdown,
   segments,
+  searchId,
 }: {
   markdown: string
   /** Trechos na mesma ordem enviada ao modelo: "Trecho N" = segments[N-1]. */
   segments?: SearchHit[]
+  /** Para o clique no CTA saber de qual dor a pessoa veio. */
+  searchId?: string | null
 }) {
   const secoes = useMemo(() => parse(markdown), [markdown])
 
@@ -229,7 +239,10 @@ export function ActionPlan({
         const estilo = classificar(secao.titulo)
 
         return (
-          <section key={s}>
+          <section
+            key={s}
+            className={cn(estilo === 'ia' && 'rounded-xl border bg-card p-5 sombra-card')}
+          >
             {secao.titulo && <TituloSecao titulo={secao.titulo} estilo={estilo} />}
 
             {secao.blocos.map((bloco, b) => {
@@ -318,6 +331,8 @@ export function ActionPlan({
                 </ul>
               )
             })}
+
+            {estilo === 'ia' && <CtaViverDeIA searchId={searchId} />}
           </section>
         )
       })}

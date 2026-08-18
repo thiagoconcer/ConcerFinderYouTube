@@ -126,6 +126,8 @@
 
 ---
 
+> **CTA de parceiro [Extensão do doc]:** o plano de ação termina com a seção **"Como a IA acelera isso"**, escrita pelo mesmo modelo que escreveu o plano, a partir da dor da pessoa e de uma lista fechada de famílias de solução do Viver de IA (`_shared/viverdeia.ts`). Fica **entre o plano e os trechos**, decisão da call de 18/08: CTA depois do conteúdo se lê como anúncio, dentro do plano é a continuação de "como eu executo isso sem braço". O **botão** só aparece para `dono_empresa` e `gestor_comercial`, porque o documento da parceria diz que o produto do parceiro é B2B e o vendedor não é alvo das peças que levam à oferta; o vendedor lê a seção inteira, sem botão. Cada clique vira linha em `cta_clicks`.
+
 ### `/admin/conteudo` — Admin Content (`admin-content`)
 
 **Propósito:** dar ao Administrador de conteúdo visão do status de scraping, transcrição e indexação de cada vídeo e das execuções de ingestão.
