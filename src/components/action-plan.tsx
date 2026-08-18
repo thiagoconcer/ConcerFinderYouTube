@@ -231,7 +231,19 @@ export function ActionPlan({
   /** Para o clique no CTA saber de qual dor a pessoa veio. */
   searchId?: string | null
 }) {
-  const secoes = useMemo(() => parse(markdown), [markdown])
+  // O modelo marca qual solução ele citou numa linha própria, que existe para
+  // a máquina e não para a pessoa: sai do texto e vira o convite lá embaixo,
+  // falando da MESMA solução do parágrafo. Sem o marcador (planos gerados
+  // antes disto), o convite cai na versão genérica sozinho.
+  const { limpo, solucao } = useMemo(() => {
+    const m = markdown.match(/^\s*\[\[\s*solucao:\s*([^\]]{1,60}?)\s*\]\]\s*$/im)
+    return {
+      limpo: m ? markdown.replace(m[0], '') : markdown,
+      solucao: m ? m[1].trim() : null,
+    }
+  }, [markdown])
+
+  const secoes = useMemo(() => parse(limpo), [limpo])
 
   return (
     <div className="space-y-8">
@@ -332,7 +344,7 @@ export function ActionPlan({
               )
             })}
 
-            {estilo === 'ia' && <CtaViverDeIA searchId={searchId} />}
+            {estilo === 'ia' && <CtaViverDeIA searchId={searchId} solucao={solucao} />}
           </section>
         )
       })}

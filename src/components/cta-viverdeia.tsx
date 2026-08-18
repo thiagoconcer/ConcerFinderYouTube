@@ -26,7 +26,14 @@ const PERFIS_COM_CTA = ['dono_empresa', 'gestor_comercial']
 const URL_VIVERDEIA =
   'https://type.viverdeia.ai/new?utm_source=embaixador&utm_medium=plano-de-acao&utm_campaign=concer-finder&utm_term=concer'
 
-export function CtaViverDeIA({ searchId }: { searchId?: string | null }) {
+export function CtaViverDeIA({
+  searchId,
+  solucao,
+}: {
+  searchId?: string | null
+  /** Solução que o modelo citou no texto. O convite fala dela, não de "isso". */
+  solucao?: string | null
+}) {
   const { profile } = useAuth()
   const [indo, setIndo] = useState(false)
 
@@ -58,25 +65,36 @@ export function CtaViverDeIA({ searchId }: { searchId?: string | null }) {
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg border bg-muted/40 p-4">
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium">Quer ver isso rodando na sua operação?</p>
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          O Thiago se juntou ao Viver de IA, que tem dezenas de soluções prontas para o
-          comercial. Em uma conversa eles apontam por onde começar no seu caso.
-        </p>
+    <div className="mt-5 rounded-lg border bg-muted/40 p-4">
+      <p className="text-sm font-medium">
+        {solucao
+          ? `Quer ${solucao} rodando na sua operação?`
+          : 'Quer ver isso rodando na sua operação?'}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {solucao ? `${solucao} é uma das dezenas de soluções prontas` : 'São dezenas de soluções prontas'}{' '}
+        do Viver de IA, com quem o Thiago se juntou. Na conversa eles olham a sua operação e
+        dizem por onde começar, e o que sustentar primeiro.
+      </p>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <Button asChild disabled={indo}>
+          <a
+            href={URL_VIVERDEIA}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => void registrar()}
+          >
+            Agendar uma conversa
+            <ArrowUpRight />
+          </a>
+        </Button>
+        {/* Dizer o que vem antes do horário evita a quebra de promessa que
+            todo botão de "agendar" que abre formulário produz. */}
+        <span className="text-xs text-muted-foreground">
+          Algumas perguntas rápidas antes de escolher o horário.
+        </span>
       </div>
-      <Button asChild disabled={indo}>
-        <a
-          href={URL_VIVERDEIA}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => void registrar()}
-        >
-          Falar com o Viver de IA
-          <ArrowUpRight />
-        </a>
-      </Button>
     </div>
   )
 }

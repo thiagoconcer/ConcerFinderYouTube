@@ -30,3 +30,5 @@ dist-ssr
 
 # temporários do Supabase CLI
 supabase/.temp/
+.vercel
+.env*
