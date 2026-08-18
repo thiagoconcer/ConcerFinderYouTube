@@ -78,6 +78,19 @@ mexer na fonte.
 `origem` já vem derivada pela mesma função que o painel usa, então o data lake
 e a tela contam a mesma história.
 
+## Score do lead
+
+`fato_leads` ganhou `score` (0 a 100) e `faixa` (quente / morno / frio),
+derivados pela mesma função que o painel usa, `score_do_lead_detalhe`. Como a
+stream está em `extract_all_fields`, as duas colunas entram sozinhas na próxima
+sincronização.
+
+É um score CALCULADO NA LEITURA, não uma foto: ele cai sozinho quando a pessoa
+para de voltar, porque recência é uma das parcelas. No full refresh diário isso
+funciona bem, mas significa que o lago guarda o score de hoje, não a série
+histórica. Se um dia interessar ver o score subindo ou caindo ao longo do tempo,
+vai precisar de uma tabela de snapshot: hoje esse histórico não existe.
+
 ## Volume
 
 Hoje: 502 trechos vindos de 38 vídeos indexados (13,2 por vídeo). Com os 500

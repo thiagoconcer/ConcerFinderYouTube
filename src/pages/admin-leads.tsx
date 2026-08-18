@@ -37,6 +37,26 @@ import type { LeadResumo, SituacaoNutricao } from '@/types/leads'
 
 const TODOS = 'todos'
 
+const FAIXA_VARIANT: Record<string, 'default' | 'secondary' | 'outline'> = {
+  quente: 'default',
+  morno: 'secondary',
+  frio: 'outline',
+}
+
+/**
+ * Explica a nota em uma frase, com as parcelas que o banco devolveu.
+ *
+ * Não recalcula nada: os pontos vêm de score_do_lead. Reimplementar a regra
+ * aqui daria dois números diferentes na primeira vez que um peso mudasse.
+ */
+function explicaScore(lead: LeadResumo): string {
+  return (
+    `${lead.score}/100. Cargo, atividade (${lead.total_buscas} busca(s), ` +
+    `${lead.trechos_abertos} trecho(s) aberto(s)), recência e foco de tema. ` +
+    'Comportamento pesa mais que cargo: quem se cadastra e não volta não passa de 30.'
+  )
+}
+
 const ROTULO_ETAPA: Record<string, string> = {
   d0: 'E-mail 1',
   d2: 'E-mail 2',
@@ -195,6 +215,9 @@ export function AdminLeadsPage() {
             <table className="w-full min-w-[980px] text-sm">
               <thead className="border-b bg-muted/40 text-left">
                 <tr>
+                  <th className="px-4 py-3 font-medium" title="Cargo (0-30), atividade (0-45), recência (0-15) e foco de tema (0-10). A lista vem ordenada por ele.">
+                    Score
+                  </th>
                   <th className="px-4 py-3 font-medium">Pessoa</th>
                   <th className="px-4 py-3 font-medium">Cargo</th>
                   <th className="px-4 py-3 font-medium">Régua</th>
@@ -209,6 +232,22 @@ export function AdminLeadsPage() {
                   const situacao = situacaoDe(lead.email)
                   return (
                     <tr key={lead.profile_id} className="border-b last:border-0 align-top">
+                      {/* Número primeiro, faixa embaixo. Quem varre a lista lê
+                          a cor; quem compara duas pessoas próximas lê o número.
+                          O title abre a composição para o score não ser um
+                          oráculo: sem isso ninguém confia nem contesta. */}
+                      <td className="px-4 py-3">
+                        <div className="text-lg font-semibold tabular-nums" title={explicaScore(lead)}>
+                          {lead.score}
+                        </div>
+                        <Badge
+                          variant={FAIXA_VARIANT[lead.faixa] ?? 'outline'}
+                          className="mt-1 font-normal"
+                        >
+                          {lead.faixa}
+                        </Badge>
+                      </td>
+
                       <td className="px-4 py-3">
                         <Link
                           to={ROUTES.adminLeadPerfil(lead.profile_id)}

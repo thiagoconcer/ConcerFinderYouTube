@@ -325,6 +325,22 @@ Falha do ActiveCampaign devolve `disponivel: false`, nunca 500: a lista de leads
 
 ---
 
+### `score_do_lead_detalhe(profile_id uuid)` e `score_do_lead(profile_id uuid)`
+- **Tipo:** funções `STABLE`, **sem** `SECURITY DEFINER`, de propósito. **[Extensão do doc]**
+- **Propósito:** responder "por quem eu começo?" com um número de 0 a 100. `score_do_lead_detalhe` guarda a regra e devolve as parcelas; `score_do_lead` é só a leitura do total, para não existirem dois cálculos.
+- **Composição:** cargo 0-30 (dono 30, gestor 22, vendedor 12, sem cargo 8) + atividade 0-45 (buscas até 20, dias distintos de volta até 15, trechos abertos até 10) + recência 0-15 (7 dias 15, 30 dias 10, 90 dias 5) + foco de tema 0-10 (tema dominante em 60%+ das buscas vale 10, disperso vale 4, menos de 2 buscas vale 0).
+- **Decisão:** comportamento vale 70 dos 100 pontos e cargo vale 30. Dono de empresa que se cadastra e não volta empaca em 30, e é frio. É a mesma régua do relatório de origem: quem traz volume e não ativa é tráfego, não audiência. Cargo é promessa, comportamento é prova.
+- **Por que não é `SECURITY DEFINER`:** chamada de dentro de `get_leads` (que já é definer e checa staff) enxerga tudo; chamada direta por um usuário comum com o id de outra pessoa esbarra na RLS e calcula sobre zero linha. O score não vira janela para o comportamento alheio.
+- **Consumidores:** `get_leads`, `get_lead_detail` e a view `analytics.fato_leads`. Uma regra só para painel e data lake, pelo mesmo motivo de `origem_do_lead`.
+
+---
+
+### `faixa_do_score(score int)`
+- **Tipo:** função `IMMUTABLE`. **[Extensão do doc]**
+- **Propósito:** traduzir o número em `quente` (70+), `morno` (40-69) ou `frio`. Existe para painel e data lake usarem o mesmo corte: dois "quente" diferentes seria a divergência que a função única evita.
+
+---
+
 ## Agendamentos pg_cron (orquestração da ingestão)
 
 Cadeia diária que garante a Regra "novos vídeos entram na base automaticamente":

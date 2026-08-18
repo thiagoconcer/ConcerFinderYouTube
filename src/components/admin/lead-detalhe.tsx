@@ -70,8 +70,48 @@ export function LeadDetalhe({
     return ETAPAS.findIndex((e) => e.chave === chave) <= ETAPAS.findIndex((e) => e.chave === situacao.etapa)
   }
 
+  const score = dados.score
+
   return (
     <div className="mt-4 space-y-6 border-t pt-4">
+      {/* O score com as parcelas abertas. Um número sozinho vira oráculo:
+          ninguém confia e ninguém contesta. Com a composição à vista, a equipe
+          vê que a pessoa pontuou por ter voltado três dias, e não por ser dono
+          de empresa, e pode discordar do peso em vez de ignorar o número. */}
+      <section className="rounded-lg border p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-semibold tabular-nums">{score.total}</span>
+            <span className="text-sm text-muted-foreground">de 100</span>
+          </div>
+          <Badge variant={score.total >= 70 ? 'default' : score.total >= 40 ? 'secondary' : 'outline'}>
+            {dados.faixa}
+          </Badge>
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm sm:grid-cols-4">
+          {[
+            { r: 'Cargo', v: score.cargo, de: 30 },
+            { r: 'Atividade', v: score.atividade, de: 45 },
+            { r: 'Recência', v: score.recencia, de: 15 },
+            { r: 'Foco de tema', v: score.foco, de: 10 },
+          ].map((c) => (
+            <div key={c.r} className="flex items-baseline justify-between gap-2">
+              <span className="text-muted-foreground">{c.r}</span>
+              <span className="tabular-nums">
+                {c.v}
+                <span className="text-xs text-muted-foreground">/{c.de}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-3 text-xs text-muted-foreground">
+          Comportamento pesa mais que cargo (70 dos 100 pontos): quem se cadastra e não
+          volta não passa de 30, mesmo sendo dono de empresa.
+        </p>
+      </section>
+
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { r: 'Buscas', v: dados.resumo.total_buscas },

@@ -12,6 +12,10 @@ export interface LeadResumo {
   lead_id: string | null
   status_nutricao: string | null
   nutricao_enviada_em: string | null
+  /** 0 a 100. Vem de score_do_lead no banco, nunca calculado aqui. */
+  score: number
+  /** 'quente' | 'morno' | 'frio', o mesmo corte que o data lake usa. */
+  faixa: string
   total_buscas: number
   trechos_abertos: number
   ultima_busca: string | null
@@ -44,6 +48,18 @@ export interface LeadDetalheDados {
     status_nutricao: string | null
     nutricao_enviada_em: string | null
   } | null
+  /** Composição do score, para a tela explicar o número sem recalculá-lo. */
+  score: {
+    total: number
+    cargo: number
+    atividade: number
+    recencia: number
+    foco: number
+    buscas: number
+    dias_ativos: number
+    trechos_abertos: number
+  }
+  faixa: string
   resumo: {
     total_buscas: number
     trechos_abertos: number
