@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AlertCircle, Database, Loader2, Play, RefreshCw } from 'lucide-react'
+import { AlertCircle, Database, Loader2, Play, RefreshCw, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -29,12 +29,16 @@ const STATUS_LABEL: Record<string, string> = {
  * Separa "não há legenda para transcrever" de "a esteira quebrou".
  *
  * Os dois caem em `failed` no banco, mas significam coisas opostas: um é
- * conteúdo (short curto que o YouTube não legenda) e o outro é problema para
- * investigar. Sem essa distinção, três shorts ficam vermelhos para sempre no
- * painel e escondem uma falha real quando ela aparecer.
+ * conteúdo que o YouTube não legenda e o outro é problema para investigar.
+ * Sem a distinção, vídeos vermelhos permanentes escondem a próxima falha real.
+ *
+ * O motivo agora vem gravado de quem tentou (`failure_reason`). Antes era
+ * adivinhado pela duração (<= 90s), e o chute errava dos dois lados: vídeo
+ * longo sem legenda aparecia como falha, e falha real num short era pintada de
+ * cinza. Nulo significa falha anterior à mudança, sem motivo registrado.
  */
-function semLegenda(video: { transcription_status: string; duration_seconds: number | null }): boolean {
-  return video.transcription_status === 'failed' && (video.duration_seconds ?? 0) <= 90
+function semLegenda(video: { transcription_status: string; failure_reason: string | null }): boolean {
+  return video.transcription_status === 'failed' && video.failure_reason === 'sem_legenda'
 }
 
 const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
@@ -53,6 +57,7 @@ export function AdminConteudoPage() {
   const [execucoes, setExecucoes] = useState<IngestionRun[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [rodando, setRodando] = useState<Etapa | null>(null)
+  const [reprocessando, setReprocessando] = useState<string | null>(null)
 
   const carregar = useCallback(async () => {
     setErro(null)
@@ -99,6 +104,36 @@ export function AdminConteudoPage() {
       }
     } finally {
       setRodando(null)
+      void carregar()
+    }
+  }
+
+  /**
+   * Reprocessa UM vídeo. A esteira diária só olha `pending`, então um vídeo em
+   * `failed` nunca mais é tentado: se a legenda for ligada no YouTube depois,
+   * ele continua fora da busca para sempre. Este é o caminho de volta.
+   *
+   * Custa 250 unidades da cota diária do YouTube (captions.list + download),
+   * por isso é um clique consciente por vídeo, e não uma varredura automática
+   * dos que falharam.
+   */
+  async function reprocessar(videoId: string) {
+    setReprocessando(videoId)
+    try {
+      const { data, error } = await supabase.functions.invoke('transcribe-videos', {
+        body: { video_id: videoId },
+      })
+      if (error) {
+        toast.error('Não foi possível reprocessar o vídeo.')
+      } else if ((data as { videos_transcribed?: number })?.videos_transcribed) {
+        toast.success('Transcrito. Rode "3. Indexar segmentos" para ele entrar na busca.')
+      } else if ((data as { videos_sem_legenda?: number })?.videos_sem_legenda) {
+        toast.info('O YouTube continua sem legenda para este vídeo.')
+      } else {
+        toast.error('Falhou de novo. Veja a mensagem na execução mais recente.')
+      }
+    } finally {
+      setReprocessando(null)
       void carregar()
     }
   }
@@ -210,18 +245,48 @@ export function AdminConteudoPage() {
                           esteira: não existe o que transcrever, e retentar não
                           muda nada. Marcar de vermelho como falha faz a equipe
                           procurar um problema que não existe. */}
-                      {semLegenda(video) ? (
-                        <Badge
-                          variant="outline"
-                          title="O YouTube não tem legenda para este vídeo. Nenhuma das quatro estratégias encontrou texto, e repetir não resolve."
-                        >
-                          Sem legenda
-                        </Badge>
-                      ) : (
-                        <Badge variant={STATUS_VARIANT[video.transcription_status] ?? 'outline'}>
-                          {STATUS_LABEL[video.transcription_status] ?? video.transcription_status}
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {semLegenda(video) ? (
+                          <Badge
+                            variant="outline"
+                            title="O YouTube não tem legenda para este vídeo. Nenhuma das quatro estratégias encontrou texto. Só volta a valer se a legenda for ligada no YouTube Studio."
+                          >
+                            Sem legenda
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant={STATUS_VARIANT[video.transcription_status] ?? 'outline'}
+                            title={
+                              video.transcription_status === 'failed' && !video.failure_reason
+                                ? 'Falha registrada antes de o motivo passar a ser gravado. Tente de novo para saber se é falta de legenda ou problema na esteira.'
+                                : undefined
+                            }
+                          >
+                            {STATUS_LABEL[video.transcription_status] ?? video.transcription_status}
+                          </Badge>
+                        )}
+
+                        {/* Único caminho de volta para um vídeo em `failed`: a
+                            esteira só pega `pending`, então sem isto ele fica
+                            fora do acervo para sempre, mesmo depois de a
+                            legenda ser ligada no YouTube. */}
+                        {video.transcription_status === 'failed' && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs"
+                            disabled={reprocessando === video.id}
+                            onClick={() => void reprocessar(video.id)}
+                          >
+                            {reprocessando === video.id ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              <RotateCcw />
+                            )}
+                            Tentar de novo
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -274,8 +339,20 @@ export function AdminConteudoPage() {
                       >
                         {run.status}
                       </Badge>
+                      {/* Aviso e problema deixam de ter a mesma cor. Uma
+                          execução que transcreveu 33 vídeos e esbarrou num
+                          vídeo sem legenda não é uma execução vermelha: o
+                          borrão de 900 caracteres em vermelho fazia a equipe
+                          ler defeito onde havia recado. */}
                       {run.error_message && (
-                        <p className="mt-1.5 max-w-md text-xs text-destructive">
+                        <p
+                          className={`mt-1.5 line-clamp-3 max-w-md text-xs ${
+                            run.videos_failed > 0 || run.status === 'failed'
+                              ? 'text-destructive'
+                              : 'text-muted-foreground'
+                          }`}
+                          title={run.error_message}
+                        >
                           {run.error_message}
                         </p>
                       )}

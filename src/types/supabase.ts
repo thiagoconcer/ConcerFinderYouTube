@@ -24,7 +24,9 @@ export type Database = {
           started_at: string
           status: string
           updated_at: string
+          videos_failed: number
           videos_processed: number
+          videos_sem_legenda: number
         }
         Insert: {
           created_at?: string
@@ -35,7 +37,9 @@ export type Database = {
           started_at?: string
           status?: string
           updated_at?: string
+          videos_failed?: number
           videos_processed?: number
+          videos_sem_legenda?: number
         }
         Update: {
           created_at?: string
@@ -46,7 +50,9 @@ export type Database = {
           started_at?: string
           status?: string
           updated_at?: string
+          videos_failed?: number
           videos_processed?: number
+          videos_sem_legenda?: number
         }
         Relationships: []
       }
@@ -385,6 +391,7 @@ export type Database = {
           created_at: string
           description: string | null
           duration_seconds: number | null
+          failure_reason: string | null
           id: string
           indexed_at: string | null
           published_at: string | null
@@ -398,6 +405,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
+          failure_reason?: string | null
           id?: string
           indexed_at?: string | null
           published_at?: string | null
@@ -411,6 +419,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           duration_seconds?: number | null
+          failure_reason?: string | null
           id?: string
           indexed_at?: string | null
           published_at?: string | null

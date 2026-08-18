@@ -291,6 +291,8 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptCue[]>
   ]
 
   const falhas: string[] = []
+  let houveErroReal = false
+
   for (const [nome, executar] of estrategias) {
     try {
       const cues = await executar()
@@ -300,17 +302,33 @@ export async function fetchTranscript(videoId: string): Promise<TranscriptCue[]>
       // Cota estourada não é "essa estratégia não serve": nenhuma das outras
       // vai resolver, e insistir só gera um log gigante. Aborta a cadeia.
       if (error instanceof AppError && error.code === 'youtube_quota') throw error
+      houveErroReal = true
       falhas.push(`${nome}: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 
+  // Duas saídas diferentes, e a diferença é o que o painel mostra à equipe.
+  //
+  // Nenhuma estratégia ACHOU texto, mas nenhuma QUEBROU: o vídeo simplesmente
+  // não tem legenda no YouTube. É conteúdo, não defeito, e retentar hoje ou
+  // daqui a um mês dá no mesmo (só volta a valer se alguém ligar a legenda lá).
+  if (!houveErroReal) {
+    throw new AppError(
+      `O YouTube não tem legenda para ${videoId}: nenhuma das quatro estratégias encontrou texto.`,
+      422,
+      'no_transcript',
+    )
+  }
+
+  // Alguma estratégia estourou de verdade (credencial, rede, serviço fora).
+  // Isso é para investigar, e aqui a dica de configuração vale a pena.
   throw new AppError(
-    `Nenhuma transcrição disponível para ${videoId}. Tentativas: ${falhas.join(' | ')}. ` +
+    `Não foi possível obter a transcrição de ${videoId}. Tentativas: ${falhas.join(' | ')}. ` +
       'O YouTube bloqueia acesso anônimo a legendas vindo de datacenter, então o caminho ' +
-      'principal é o OAuth do dono do canal: configure YOUTUBE_OAUTH_CLIENT_ID, ' +
+      'principal é o OAuth do dono do canal: confira YOUTUBE_OAUTH_CLIENT_ID, ' +
       'YOUTUBE_OAUTH_CLIENT_SECRET e YOUTUBE_OAUTH_REFRESH_TOKEN. Alternativa paga: APIFY_TOKEN.',
-    422,
-    'no_transcript',
+    502,
+    'transcript_failed',
   )
 }
 

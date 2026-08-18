@@ -122,6 +122,10 @@ create table public.videos (
   duration_seconds int,
   published_at timestamptz,
   transcription_status text not null default 'pending' check (transcription_status in ('pending','transcribing','transcribed','indexed','failed')),
+  -- Motivo da falha, gravado por quem tentou. Sem isto o painel adivinhava
+  -- pela duração do vídeo, e errava dos dois lados: vídeo longo sem legenda
+  -- virava alarme falso e falha real em short era escondida.
+  failure_reason text check (failure_reason in ('sem_legenda', 'erro')),
   indexed_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -259,6 +263,8 @@ create table public.ingestion_runs (
   run_type text not null check (run_type in ('scrape','transcribe','index')),
   status text not null default 'running' check (status in ('running','completed','failed')),
   videos_processed int not null default 0,
+  videos_failed int not null default 0,
+  videos_sem_legenda int not null default 0,
   error_message text,
   started_at timestamptz not null default now(),
   finished_at timestamptz,

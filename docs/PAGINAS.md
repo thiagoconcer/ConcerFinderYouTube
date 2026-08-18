@@ -132,8 +132,8 @@
 
 **Seções da tela:**
 - Painel de **status geral da base** (total de vídeos, quantos indexados, pendentes, falhas).
-- **Tabela de vídeos** com título, `youtube_video_id`, data de publicação e `transcription_status` (pending / transcribing / transcribed / indexed / failed).
-- **Log de `ingestion_runs`** por tipo (scrape / transcribe / index), status, quantidade processada, erro e tempos.
+- **Tabela de vídeos** com título, `youtube_video_id`, data de publicação e `transcription_status` (pending / transcribing / transcribed / indexed / failed). Falha por falta de legenda aparece como **"Sem legenda"**, em cinza, lendo `videos.failure_reason`. Todo vídeo em `failed` tem **"Tentar de novo"**, único caminho de volta: a esteira diária só olha `pending`, então sem esse botão um vídeo que falhou fica fora do acervo para sempre, mesmo depois de a legenda ser ligada no YouTube.
+- **Log de `ingestion_runs`** por tipo (scrape / transcribe / index), status, quantidade processada, erro e tempos. A mensagem só é vermelha quando `videos_failed > 0`: execução que transcreveu tudo e esbarrou num vídeo sem legenda mostra o recado em cinza.
 - Botão **"Rodar scraping agora"** (dispara `scrape-youtube-channel` manualmente, além do cron diário).
 - Ação de **sinalizar vídeo/trecho para revisão** quando a minutagem estiver imprecisa.
 

@@ -53,7 +53,12 @@ Deno.serve(handler(async (req) => {
     let transcritos = 0
     let segmentosCriados = 0
     let cotaEsgotada = false
-    const falhas: string[] = []
+    // Duas listas, porque significam coisas opostas: `semLegenda` é conteúdo
+    // que o YouTube não legenda (nada a fazer, e nada a alarmar) e `errosReais`
+    // é esteira quebrada. Juntar as duas num log só foi o que fazia a execução
+    // aparecer em vermelho no painel mesmo tendo transcrito 33 vídeos.
+    const semLegenda: string[] = []
+    const errosReais: string[] = []
 
     for (const video of videos) {
       try {
@@ -82,14 +87,13 @@ Deno.serve(handler(async (req) => {
 
         await db
           .from('videos')
-          .update({ transcription_status: 'transcribed' })
+          .update({ transcription_status: 'transcribed', failure_reason: null })
           .eq('id', video.id)
 
         transcritos++
         segmentosCriados += linhas.length
       } catch (error) {
         const mensagem = error instanceof Error ? error.message : String(error)
-        falhas.push(`${video.youtube_video_id}: ${mensagem}`)
 
         // Cota da YouTube Data API e rate limit são falhas TEMPORÁRIAS: o vídeo
         // volta para `pending` para o cron tentar amanhã, em vez de ficar preso
@@ -98,9 +102,26 @@ Deno.serve(handler(async (req) => {
         const temporaria =
           (error instanceof AppError && error.code === 'youtube_quota') || ehErroDeCota(mensagem)
 
+        // `no_transcript` = as quatro estratégias devolveram vazio sem quebrar.
+        // O motivo fica gravado no vídeo para o painel parar de adivinhar pela
+        // duração, que errava com vídeo longo sem legenda e escondia falha real
+        // em vídeo curto.
+        const naoTemLegenda = error instanceof AppError && error.code === 'no_transcript'
+
+        if (temporaria) {
+          errosReais.push(`${video.youtube_video_id}: ${mensagem}`)
+        } else if (naoTemLegenda) {
+          semLegenda.push(video.youtube_video_id)
+        } else {
+          errosReais.push(`${video.youtube_video_id}: ${mensagem}`)
+        }
+
         await db
           .from('videos')
-          .update({ transcription_status: temporaria ? 'pending' : 'failed' })
+          .update({
+            transcription_status: temporaria ? 'pending' : 'failed',
+            failure_reason: temporaria ? null : naoTemLegenda ? 'sem_legenda' : 'erro',
+          })
           .eq('id', video.id)
 
         if (temporaria) {
@@ -120,19 +141,34 @@ Deno.serve(handler(async (req) => {
         .eq('transcription_status', 'transcribing')
     }
 
-    const status = transcritos === 0 && falhas.length > 0 ? 'failed' : 'completed'
+    // A execução só é `failed` quando NADA saiu e houve erro de verdade. Vídeo
+    // sem legenda não reprova a execução: ela fez o que tinha para fazer.
+    const status = transcritos === 0 && errosReais.length > 0 ? 'failed' : 'completed'
+
+    // O log guarda os erros reais na íntegra e resume os sem legenda numa
+    // linha. Antes, uma mensagem de 900 caracteres por vídeo estourava o teto
+    // de 1000 e apagava as falhas seguintes do próprio log.
+    const partes = [...errosReais]
+    if (semLegenda.length > 0) {
+      partes.push(
+        `${semLegenda.length} vídeo(s) sem legenda no YouTube: ${semLegenda.join(', ')}`,
+      )
+    }
 
     await finishRun(db, runId, {
       status,
       videos_processed: transcritos,
-      error_message: falhas.length > 0 ? falhas.join(' | ').slice(0, 1000) : undefined,
+      videos_failed: errosReais.length,
+      videos_sem_legenda: semLegenda.length,
+      error_message: partes.length > 0 ? partes.join(' | ').slice(0, 1000) : undefined,
     })
 
     return json({
       run_id: runId,
       videos_transcribed: transcritos,
       segments_created: segmentosCriados,
-      videos_failed: falhas.length,
+      videos_failed: errosReais.length,
+      videos_sem_legenda: semLegenda.length,
       quota_exhausted: cotaEsgotada,
       status,
     })

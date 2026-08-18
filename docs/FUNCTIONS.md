@@ -86,6 +86,8 @@
     "run_id": "uuid",
     "videos_transcribed": 0,
     "segments_created": 0,
+    "videos_failed": 0,
+    "videos_sem_legenda": 0,
     "status": "completed | failed"
   }
   ```

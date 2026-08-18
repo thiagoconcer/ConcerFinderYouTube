@@ -68,6 +68,7 @@ Um registro por vídeo do canal do Concer capturado via scraping.
 | `duration_seconds` | int | NULL |
 | `published_at` | timestamptz | NULL |
 | `transcription_status` | text | NOT NULL, default `'pending'`, CHECK IN ('pending','transcribing','transcribed','indexed','failed') |
+| `failure_reason` | text | CHECK IN ('sem_legenda','erro'), nulo fora de `failed`. Gravado por `transcribe-videos`: `sem_legenda` = o YouTube não tem legenda (retentar não resolve), `erro` = a esteira quebrou (investigar). Antes o painel adivinhava isso pela duração do vídeo. |
 | `indexed_at` | timestamptz | NULL |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
 **Índices:** PK; UNIQUE em `youtube_video_id`; `idx_videos_transcription_status` em `transcription_status`; `idx_videos_published_at` em `published_at`.
@@ -133,7 +134,9 @@ Log de cada execução de scraping/transcrição/indexação (monitoramento pelo
 | `run_type` | text | NOT NULL, CHECK IN ('scrape','transcribe','index') |
 | `status` | text | NOT NULL, default `'running'`, CHECK IN ('running','completed','failed') |
 | `videos_processed` | int | NOT NULL, default `0` |
-| `error_message` | text | NULL |
+| `videos_failed` | int | NOT NULL, default `0`. Falhas de verdade. É o que decide se o painel pinta a mensagem de vermelho. |
+| `videos_sem_legenda` | int | NOT NULL, default `0`. Vídeos que o YouTube não legenda: recado, não falha. |
+| `error_message` | text | NULL. Erros reais na íntegra; os sem legenda entram resumidos numa linha, para não estourar o teto de 1000 caracteres e apagar as falhas seguintes. |
 | `started_at` | timestamptz | NOT NULL, default `now()` |
 | `finished_at` | timestamptz | NULL |
 **Índices:** PK; `idx_ingestion_runs_status` em `status`; `idx_ingestion_runs_started_at` em `started_at`.

@@ -112,7 +112,13 @@ export async function startRun(db: SupabaseClient, runType: RunType): Promise<st
 export async function finishRun(
   db: SupabaseClient,
   runId: string,
-  patch: { status: 'completed' | 'failed'; videos_processed?: number; error_message?: string },
+  patch: {
+    status: 'completed' | 'failed'
+    videos_processed?: number
+    videos_failed?: number
+    videos_sem_legenda?: number
+    error_message?: string
+  },
 ): Promise<void> {
   await db
     .from('ingestion_runs')
