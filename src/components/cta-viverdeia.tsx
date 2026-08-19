@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import { supabase } from '@/lib/supabase'
@@ -74,16 +74,32 @@ export function CtaViverDeIA({
     <div className="mt-5 rounded-lg border border-primary/25 bg-primary/[0.04] p-4 sm:p-5">
       <p className="text-[15px] font-semibold text-foreground">
         {solucao
-          ? `Quer ${solucao} rodando na sua operação?`
-          : 'Quer ver isso rodando na sua operação?'}
+          ? `${solucao} não é para você construir. Já existe pronto.`
+          : 'Isso não é para você construir. Já existe pronto.'}
       </p>
 
       <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-        {solucao
-          ? `${solucao} é uma das dezenas de soluções prontas do Viver de IA, com quem o Thiago se juntou.`
-          : 'O Viver de IA, com quem o Thiago se juntou, tem dezenas de soluções prontas para o comercial.'}{' '}
-        Na conversa eles olham a sua operação e dizem por onde começar.
+        {solucao ? `${solucao} é uma das mais de 150 soluções` : 'São mais de 150 soluções'}{' '}
+        prontas do Viver de IA, a plataforma de IA que Thiago Concer indica para quem
+        precisa executar e não só entender.
       </p>
+
+      {/* Três provas, e não uma frase de efeito. A pessoa acabou de ler um
+          plano que exige trabalho diário; o que convence aqui é mostrar que o
+          trabalho já está construído, que ela customiza e que não fica sozinha
+          se travar. Um exemplo só não sustenta isso. */}
+      <ul className="mt-3.5 space-y-2">
+        {[
+          'Vendedora de IA que atende no WhatsApp a qualquer hora, treino do time com as calls reais, análise de reunião, CRM, relatório diário de vendas e prospecção ativa.',
+          'Você não desenvolve nada: o projeto é transferido pronto para a sua conta em um clique, e a partir daí é seu para editar.',
+          'Mentoria ao vivo com especialista todo dia útil, das 9h às 19h, para destravar a implementação.',
+        ].map((linha) => (
+          <li key={linha} className="flex gap-2 text-sm leading-relaxed text-muted-foreground">
+            <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+            <span>{linha}</span>
+          </li>
+        ))}
+      </ul>
 
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <Button asChild disabled={indo} className="w-full sm:w-auto">
@@ -100,7 +116,7 @@ export function CtaViverDeIA({
         {/* Botão de "agendar" que abre formulário quebra promessa. Dizer o que
             vem antes do horário custa uma linha e evita a frustração. */}
         <span className="text-xs leading-snug text-muted-foreground">
-          Algumas perguntas rápidas antes de escolher o horário.
+          Algumas perguntas rápidas sobre a sua operação e você escolhe o horário.
         </span>
       </div>
     </div>

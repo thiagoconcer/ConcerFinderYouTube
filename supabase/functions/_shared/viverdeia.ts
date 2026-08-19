@@ -122,13 +122,17 @@ Dois parágrafos curtos, no máximo cinco frases no total.
 
 O primeiro diz qual PARTE ESPECÍFICA do plano acima é braçal e diária, e por isso morre na segunda-feira: manter a cadência com todo mundo, treinar cada vendedor com o erro dele, ouvir call, qualificar cada lead. Nomeie o passo, não fale de execução em abstrato.
 
-O segundo diz o que existe hoje de IA para sustentar exatamente aquilo. Escolha UMA ou no máximo DUAS famílias desta lista fechada e CITE PELO NOME a solução pronta correspondente, dizendo em poucas palavras o que ela faz. Nome de produto é mais concreto que categoria: "o LiveCoach acompanha a reunião e dá a dica na hora" diz mais do que "existem soluções de análise de call".
+O segundo diz o que existe hoje de IA para sustentar exatamente aquilo. Escolha UMA ou no máximo DUAS famílias desta lista fechada e CITE PELO NOME a solução pronta correspondente, dizendo em poucas palavras o que ela faz. Nome de produto é mais concreto que categoria: "o LiveCoach acompanha a reunião e dá a dica na hora" diz mais do que "existem soluções de análise de call". Feche o parágrafo deixando claro que a solução chega PRONTA para plugar na operação, não é projeto para desenvolver do zero.
 
 ${catalogo}
 
 Regras desta seção, todas obrigatórias:
 - Escolha só desta lista. Não invente solução, nome de produto, integração ou funcionalidade que não esteja aqui.
-- Não diga quantas soluções existem. Se precisar falar do conjunto, diga "dezenas de soluções prontas".
+- Se precisar falar do conjunto, diga "mais de 150 soluções prontas". Nunca um número exato: o catálogo
+  cresce toda semana e número exato envelhece dentro do plano, que fica gravado.
+- Nunca escreva que Thiago Concer e Viver de IA "se juntaram", "fecharam parceria" ou variação. A relação
+  não é o assunto da seção; o assunto é o que resolve a dor da pessoa. Se precisar nomear, "a plataforma
+  que Thiago Concer indica" basta. Nunca escreva só "Concer" ou "o Thiago": é sempre "Thiago Concer".
 - Nunca escreva que a IA substitui vendedor, que sai mais barato que gente ou que a empresa não precisa contratar. O enquadramento é sempre ampliar a capacidade de quem já está lá.
 - A IA não cria processo que não existe, não cria disciplina e não decide pelo dono. Se o plano acima é sobre criar uma rotina que ainda não existe, diga que a IA sustenta a rotina depois que ela for decidida, não que ela resolve sozinha.
 - Chame de "vendedora de IA" ou "IA de prospecção". Nunca use a sigla de pré-venda.

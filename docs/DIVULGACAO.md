@@ -10,19 +10,21 @@
 
 Antes da copy, o argumento. Toda peça deste lançamento conta a mesma história, cada canal com a porta de entrada dele.
 
-**O fato.** O Thiago passou 20 anos ensinando vendas e gravou tudo. São cerca de 500 vídeos públicos e gratuitos no YouTube: abordagem, objeção, fechamento, follow-up, gestão de time, prospecção.
+**O fato.** Thiago Concer passou 20 anos ensinando vendas e gravou tudo. São cerca de 500 vídeos públicos e gratuitos no YouTube: abordagem, objeção, fechamento, follow-up, gestão de time, prospecção.
 
 **O problema real.** Esse conhecimento existe e ninguém acha. O YouTube busca por título, e a resposta que o vendedor precisa hoje está no minuto 14 de um vídeo com outro nome. Então a pessoa assiste três vídeos inteiros para achar um insight, ou desiste e vai improvisar na frente do cliente. O conhecimento nunca foi o gargalo. Achar na hora certa é.
 
-**A virada.** O ConcerFinder inverte a busca. Em vez de procurar por título, a pessoa descreve a dor do jeito que ela falaria com um colega: "cliente sumiu depois da proposta", "meu time trava quando ouve que tá caro". A ferramenta devolve os trechos exatos onde o Concer resolve aquilo, com o minuto certo para assistir, e monta um plano de ação para a semana, diferente para vendedor, gestor e dono.
+**A virada.** O ConcerFinder inverte a busca. Em vez de procurar por título, a pessoa descreve a dor do jeito que ela falaria com um colega: "cliente sumiu depois da proposta", "meu time trava quando ouve que tá caro". A ferramenta devolve os trechos exatos onde Thiago Concer resolve aquilo, com o minuto certo para assistir, e monta um plano de ação para a semana, diferente para vendedor, gestor e dono.
 
-**Por que isso é coerente com o Thiago.** A tese dele de 20 anos é que venda não é dom, é método. O ConcerFinder é essa tese em forma de ferramenta: o método continua sendo o mesmo, o que mudou foi o atalho até ele. É o acervo de uma vida inteira respondendo em segundos.
+**Por que isso é coerente com Thiago Concer.** A tese dele de 20 anos é que venda não é dom, é método. O ConcerFinder é essa tese em forma de ferramenta: o método continua sendo o mesmo, o que mudou foi o atalho até ele. É o acervo de uma vida inteira respondendo em segundos.
 
 **As duas frases que resumem (usar à vontade):**
 - Você não precisa de mais um vídeo de vendas. Precisa do minuto certo do vídeo certo.
 - 20 anos de vendas viraram uma caixa de busca. Descreve a tua dor e vê.
 
 **O que este lançamento NÃO faz.** Não vende nada e não fala de Viver de IA. A ferramenta é gratuita e a copy diz isso com orgulho. O convite ao parceiro já mora dentro do plano de ação, embutido e no contexto certo; falar dele na divulgação estragaria os dois. Decisão da call de 18/08.
+
+**Como o nome aparece.** Sempre **Thiago Concer**, por extenso, em qualquer peça. Nunca só "Concer" e nunca "o Thiago". E nenhuma peça diz que Thiago Concer e Viver de IA "se juntaram": a relação não é o assunto, o assunto é a dor de quem está lendo.
 
 **Números permitidos nesta campanha** (regra do dado): 20 anos de carreira, cerca de 500 vídeos, minuto exato, plano de ação, grátis. Nenhum número de resultado, case ou promessa. Se alguém quiser citar volume de trechos, a base fecha esta semana com o canal inteiro indexado; conferir o painel antes de citar número vivo.
 
@@ -54,7 +56,7 @@ Formato da casa: asterisco simples para negrito, sem linha divisória, sem hasht
 ```
 Deixa eu te fazer uma pergunta.
 
-Quantas vezes você já pensou "o Concer tem um vídeo sobre isso" e não achou o vídeo?
+Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não achou o vídeo?
 
 São quase *500 vídeos* no canal. A resposta que você precisa hoje tá lá, no meio de algum deles. E ninguém tem tempo de assistir tudo de novo pra achar.
 
@@ -90,7 +92,7 @@ https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_ca
 Mais curto que a versão de grupo: disparo é conversa 1 a 1, não post. Se a base tiver nome, abrir com ele.
 
 ```
-{{nome}}, o Concer aqui.
+{{nome}}, Thiago Concer aqui.
 
 Passei 20 anos gravando tudo que sei de vendas. Deu quase 500 vídeos no YouTube. E eu sei que ninguém acha nada lá quando mais precisa.
 
@@ -241,3 +243,24 @@ O ConcerFinder está aqui, gratuito: https://finder.thiagoconcer.com.br/?utm_sou
 Leitura em `/admin/audiencia`, relatório "De onde vêm os leads": a coluna que decide não é volume de cadastro, é **quantos ativaram** (fizeram a primeira busca). Canal que traz cadastro sem busca é tráfego, não audiência; canal com ativação alta merece a segunda dose. O relatório do convite do parceiro mostra, na mesma tela, quem levantou a mão depois do plano.
 
 Duas semanas depois do lançamento, a pauta de conteúdo sai de lá também: as dores mais buscadas são os próximos roteiros do canal, e "quem procura o quê" diz qual tema falar com qual público.
+
+---
+
+## 10. O que o lead encontra dentro (para a equipe saber responder)
+
+Nenhuma peça da campanha fala de Viver de IA, mas a equipe vai ser perguntada. A resposta curta: **o parceiro só aparece depois que a pessoa já recebeu valor**, no fim do plano de ação.
+
+O plano termina com a seção **"Como a IA acelera isso"**, escrita pelo mesmo modelo que escreveu o plano, a partir da mesma dor. Ela faz duas coisas: aponta qual passo específico do plano é braçal e diário (é o passo que morre na segunda-feira) e diz o que existe pronto para sustentar aquilo, citando a solução pelo nome.
+
+Abaixo dela vem o convite, que argumenta a plataforma inteira e não uma ferramenta só:
+
+- Mais de 150 soluções prontas, e não um produto único: vendedora de IA no WhatsApp, treino do time com as calls reais, análise de reunião, CRM, relatório diário de vendas, prospecção ativa.
+- A pessoa não desenvolve nada: o projeto é transferido pronto para a conta dela em um clique, e a partir daí é dela para editar.
+- Mentoria ao vivo com especialista todo dia útil, das 9h às 19h, para destravar a implementação.
+- Botão "Agendar uma conversa", que leva a um formulário curto e termina na escolha do horário.
+
+**Quem vê o botão:** apenas dono de empresa e gestor comercial. Vendedor lê a seção inteira, que é conteúdo útil sobre IA no dia a dia dele, e não recebe o convite, porque o produto do parceiro é vendido para empresa.
+
+**O que a equipe não deve dizer em nenhum canal:** preço do parceiro, que a IA substitui vendedor, "curso" (é formação), a sigla de pré-venda para a vendedora de IA, e que Thiago Concer e Viver de IA "se juntaram". Se precisar nomear a relação, "a plataforma de IA que Thiago Concer indica" resolve.
+
+**Medição:** cada clique no convite vira linha em `cta_clicks` e aparece no dashboard em "Convite do Viver de IA", com a taxa de quem viu, a quebra por perfil e a dor que precedeu o clique.
