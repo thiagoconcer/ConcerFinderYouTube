@@ -10,17 +10,23 @@
 
 Antes da copy, o argumento. Toda peça deste lançamento conta a mesma história, cada canal com a porta de entrada dele.
 
-**O fato.** Thiago Concer passou 20 anos ensinando vendas e gravou tudo. São cerca de 500 vídeos públicos e gratuitos no YouTube: abordagem, objeção, fechamento, follow-up, gestão de time, prospecção.
+**O fato.** Thiago Concer passou 20 anos ensinando vendas e gravou tudo. São cerca de 500 vídeos públicos e gratuitos no YouTube: abordagem, objeção, fechamento, follow-up, gestão de time, prospecção. É um acervo que quase ninguém no mercado tem.
 
-**O problema real.** Esse conhecimento existe e ninguém acha. O YouTube busca por título, e a resposta que o vendedor precisa hoje está no minuto 14 de um vídeo com outro nome. Então a pessoa assiste três vídeos inteiros para achar um insight, ou desiste e vai improvisar na frente do cliente. O conhecimento nunca foi o gargalo. Achar na hora certa é.
+**O que faltava.** Thiago Concer sabe onde cada resposta está, porque foi ele que gravou. O que não dá é responder um a um: a mesma pergunta chega de muita gente ao mesmo tempo, e quando a resposta sai, a reunião em que a pessoa precisava daquilo já passou. O ConcerFinder é ele respondendo na hora, para todo mundo ao mesmo tempo.
 
-**A virada.** O ConcerFinder inverte a busca. Em vez de procurar por título, a pessoa descreve a dor do jeito que ela falaria com um colega: "cliente sumiu depois da proposta", "meu time trava quando ouve que tá caro". A ferramenta devolve os trechos exatos onde Thiago Concer resolve aquilo, com o minuto certo para assistir, e monta um plano de ação para a semana, diferente para vendedor, gestor e dono.
+**A virada.** O ConcerFinder é o índice do canal. A pessoa descreve a dor do jeito que falaria com um colega, e a ferramenta aponta em quais vídeos Thiago Concer trata daquilo e em qual minuto. Ela clica, o vídeo abre naquele ponto e ela assiste. Junto vem um plano de ação para a semana, diferente para vendedor, gestor e dono, dizendo o que fazer com o que acabou de ver.
 
-**Por que isso é coerente com Thiago Concer.** A tese dele de 20 anos é que venda não é dom, é método. O ConcerFinder é essa tese em forma de ferramenta: o método continua sendo o mesmo, o que mudou foi o atalho até ele. É o acervo de uma vida inteira respondendo em segundos.
+**Duas regras de posicionamento, e as duas são inegociáveis.**
+
+**Primeira: o ConcerFinder não substitui assistir, ele leva a pessoa a assistir.** O vídeo é o produto; a ferramenta é a porta de entrada. Quem usa assiste mais, e assiste o que interessa. Nenhuma peça pode sugerir que dá para pular o conteúdo, que assistir é perda de tempo ou que o canal é difícil demais. O trecho toca no próprio player do YouTube, então a visualização é do canal.
+
+**Segunda: Thiago Concer sabe o que gravou.** Nenhuma peça pode dizer que ele não acha, não lembra ou não sabe de cabeça o próprio conteúdo. Isso invalida o motivo de ele gravar e derruba a autoridade dele. O que não escala é a disponibilidade dele, não a memória: ele é um só e a pergunta chega de mil pessoas. A ferramenta resolve escala, não bagunça.
+
+**Por que isso é coerente com Thiago Concer.** A tese dele de 20 anos é que venda não é dom, é método. O ConcerFinder é essa tese ganhando um sumário: o método continua o mesmo e o conteúdo continua no mesmo lugar, o que mudou foi conseguir chegar nele na hora da dor.
 
 **As duas frases que resumem (usar à vontade):**
-- Você não precisa de mais um vídeo de vendas. Precisa do minuto certo do vídeo certo.
-- 20 anos de vendas viraram uma caixa de busca. Descreve a tua dor e vê.
+- A resposta pra tua dor já está gravada. O ConcerFinder te diz em qual minuto.
+- 20 anos de vendas, agora com índice. Descreve a tua dor e vê onde começar.
 
 **O que este lançamento NÃO faz.** Não vende nada e não fala de Viver de IA. A ferramenta é gratuita e a copy diz isso com orgulho. O convite ao parceiro já mora dentro do plano de ação, embutido e no contexto certo; falar dele na divulgação estragaria os dois. Decisão da call de 18/08.
 
@@ -56,17 +62,17 @@ Formato da casa: asterisco simples para negrito, sem linha divisória, sem hasht
 ```
 Deixa eu te fazer uma pergunta.
 
-Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não achou o vídeo?
+Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não soube em qual?
 
-São quase *500 vídeos* no canal. A resposta que você precisa hoje tá lá, no meio de algum deles. E ninguém tem tempo de assistir tudo de novo pra achar.
+Eu sei em qual. São 20 anos de vendas gravados, quase *500 vídeos*, e fui eu que gravei cada um. O problema é que eu sou um só e não consigo te responder na hora em que você precisa.
 
-A gente resolveu isso.
+Por isso a gente montou uma coisa.
 
-*ConcerFinder*: você escreve a tua dor do teu jeito, tipo "cliente diz que tá caro e eu congelo", e ele te devolve o *minuto exato* dos vídeos em que eu resolvo isso. Com plano de ação pra tua semana junto.
+*ConcerFinder*: você escreve a tua dor do teu jeito, tipo "cliente diz que tá caro e eu congelo", e ele te mostra em quais vídeos eu resolvo isso e em qual *minuto exato*. Você clica e assiste dali. Com plano de ação pra tua semana junto.
 
 É *grátis*. Leva 2 minutos do cadastro à primeira resposta.
 
-Testa com a tua maior dor de agora e me conta o que ele te devolveu:
+Testa com a tua maior dor de agora e me conta qual vídeo ele te mandou assistir:
 https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder
 ```
 
@@ -75,13 +81,13 @@ https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_ca
 ```
 Uma coisa que eu repito há 20 anos: venda não é dom, é método.
 
-O problema é que o método tá espalhado em *500 vídeos* no meu canal. Seu vendedor não vai assistir 5 vídeos de 15 minutos com o mês correndo. E a dúvida dele é agora, antes da próxima ligação.
+Todo esse método tá gravado no meu canal, de graça, em quase *500 vídeos*. Só que o teu vendedor precisa da resposta AGORA, antes da próxima ligação, e eu não tô do lado dele pra apontar o vídeo.
 
-Lançamos o *ConcerFinder*: seu time descreve a dor em uma frase ("meu vendedor não faz follow-up", "a proposta some depois do envio") e recebe o *minuto exato* em que eu trato aquilo, mais um *plano de ação* pra semana, diferente pra quem vende e pra quem gerencia.
+Lançamos o *ConcerFinder*: seu time descreve a dor em uma frase ("meu vendedor não faz follow-up", "a proposta some depois do envio") e recebe o vídeo certo, no *minuto exato* em que eu trato aquilo, mais um *plano de ação* pra semana, diferente pra quem vende e pra quem gerencia.
 
 De graça, pro seu time inteiro usar.
 
-Manda pro seu time testar, e testa você primeiro com a dor que mais te tira sono:
+Manda pro seu time, e testa você primeiro com a dor que mais te tira sono:
 https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder
 ```
 
@@ -94,9 +100,11 @@ Mais curto que a versão de grupo: disparo é conversa 1 a 1, não post. Se a ba
 ```
 {{nome}}, Thiago Concer aqui.
 
-Passei 20 anos gravando tudo que sei de vendas. Deu quase 500 vídeos no YouTube. E eu sei que ninguém acha nada lá quando mais precisa.
+São 20 anos de vendas gravados no meu canal, quase *500 vídeos*, tudo de graça. A resposta pra dor que você tem hoje tá em algum deles, e eu sei em qual.
 
-Então a gente construiu o *ConcerFinder*: você escreve a tua dor do teu jeito e ele te aponta o *minuto exato* dos vídeos em que eu resolvo aquilo, com plano de ação junto.
+O que eu não consigo é te responder um por um, na hora que você precisa.
+
+Foi pra isso que a gente montou o *ConcerFinder*: você escreve a tua dor do teu jeito e ele te diz o vídeo e o *minuto exato* em que eu trato daquilo, com plano de ação junto.
 
 Grátis, 2 minutos.
 
@@ -113,27 +121,27 @@ Nota para o fluxo: quem responder a mensagem com a dor em texto (em vez de clica
 Primeira pessoa, como a régua. Sem imagem pesada: texto direto ganha em entregabilidade e combina com a mensagem.
 
 **Assunto (testar A/B):**
-- A: `500 vídeos. 1 pergunta.`
+- A: `Em qual vídeo eu falo daquilo?`
 - B: `Qual é a sua dor de vendas?`
 
-**Preheader:** `Descreve do teu jeito. Eu te mostro o minuto exato em que resolvo.`
+**Preheader:** `Você pergunta, eu te digo o vídeo e o minuto.`
 
 **Corpo:**
 
 ```
-%FIRSTNAME%, deixa eu te contar um problema que era meu.
+%FIRSTNAME%, deixa eu te contar de uma pergunta que eu recebo toda semana.
 
-Passei 20 anos ensinando vendas. Gravei tudo: abordagem, objeção de preço, follow-up, fechamento, gestão de time. Deu quase 500 vídeos, todos de graça no YouTube.
+"Thiago, em qual vídeo você fala de cliente que some depois da proposta?"
 
-E aí você me manda a pergunta: "Thiago, qual vídeo fala de cliente que some depois da proposta?"
+Eu sei responder. Sei o vídeo e sei o trecho, porque fui eu que gravei. São 20 anos de vendas no meu canal, quase 500 vídeos, tudo de graça.
 
-Eu não sei de cabeça. Ninguém sabe. A resposta existe, tá no minuto 14 de algum vídeo, e nem eu acho ela rápido.
+O problema é que eu sou um só. Essa pergunta chega de muita gente ao mesmo tempo, e quando eu consigo te responder, a reunião em que você precisava daquilo já passou.
 
-Isso me incomodava demais, porque conhecimento parado não muda venda nenhuma.
+Então a gente construiu o ConcerFinder pra responder por mim, na hora.
 
-Então a gente construiu o ConcerFinder.
+Funciona assim: você escreve a tua dor do jeito que falaria com um colega. "Meu time trava quando o cliente pede desconto." "Não consigo fazer o vendedor novo prospectar." O ConcerFinder acha em quais vídeos eu trato daquilo, abre o vídeo no minuto certo e monta um plano de ação pra tua semana. Você assiste o trecho, entende o método e sai sabendo o que fazer na segunda.
 
-Funciona assim: você escreve a tua dor do jeito que você falaria com um colega. "Meu time trava quando o cliente pede desconto." "Não consigo fazer o vendedor novo prospectar." O ConcerFinder encontra os trechos exatos em que eu resolvo aquilo, te aponta o minuto certo de cada vídeo e monta um plano de ação pra tua semana. Se você é vendedor, o plano é de vendedor. Se gerencia time, é de gestor.
+Se você é vendedor, o plano é de vendedor. Se gerencia time, é de gestor.
 
 É grátis. Do cadastro à primeira resposta são 2 minutos.
 
@@ -142,7 +150,7 @@ Faz o teste agora com a dor mais urgente do teu mês:
 [BOTÃO] Descrever minha dor de vendas
 https://finder.thiagoconcer.com.br/?utm_source=email&utm_medium=broadcast&utm_campaign=lancamento-concerfinder
 
-Vinte anos de método, uma caixa de busca. Me conta o que ele te devolveu.
+Vinte anos de método, respondendo na hora em que você precisa. Me conta qual vídeo ele te mandou assistir.
 
 Thiago Concer
 ```
@@ -151,50 +159,50 @@ Thiago Concer
 
 ## 6. Instagram Stories (sequência de 6)
 
-O ângulo sentimental da Bárbara: como se buscava conhecimento antes contra como se busca agora. Câmera na mão, tom de conversa, o Thiago falando. Texto de apoio na tela em poucas palavras. Link nos frames 5 e 6.
+O ângulo sentimental da Bárbara: como se buscava conhecimento antes contra como se busca agora. Câmera na mão, tom de conversa, Thiago Concer falando. Texto de apoio na tela em poucas palavras. Link nos frames 5 e 6.
 
-| # | Cena | O Thiago fala | Texto na tela |
+| # | Cena | O que ele fala | Texto na tela |
 |---|---|---|---|
-| 1 | Gancho | "Eu passei 20 anos gravando tudo que eu sei de vendas. Tá tudo de graça no YouTube. E eu vou te falar uma verdade: nem eu acho as coisas lá." | 500 vídeos. E ninguém acha nada. |
-| 2 | A dor | "Você tá com um problema HOJE. Cliente sumiu depois da proposta. A resposta existe, tá no minuto 14 de um vídeo de 2 anos atrás. Como é que você ia achar?" | A resposta tá no minuto 14. |
+| 1 | Gancho | "Eu passei 20 anos gravando tudo que eu sei de vendas. São quase 500 vídeos, tudo de graça no YouTube. E eu sei onde tá cada resposta, porque fui eu que gravei." | 500 vídeos. 20 anos. |
+| 2 | A dor | "O que eu não consigo é responder um por um. Você tá com o problema HOJE, cliente sumiu depois da proposta, e quando eu te respondo a reunião já passou." | Eu sou um só. |
 | 3 | Nostalgia | "Quando eu comecei, aprender vendas era comprar livro, pagar curso caro, errar na frente do cliente. A nova geração não busca assim. Ela pergunta e recebe." | Antes: semanas. Agora: segundos. |
-| 4 | A virada | "Agora você escreve a tua dor DO TEU JEITO no ConcerFinder. 'Meu cliente pediu desconto e eu travei.' Ele te devolve o minuto exato em que eu resolvo isso. Com plano de ação junto." | Escreve a dor. Recebe o minuto exato. |
-| 5 | Demo | Print/screen recording da busca real devolvendo trechos e plano | É grátis. 2 minutos. [LINK] |
-| 6 | CTA | "Testa com a tua maior dor de agora e me marca contando o que ele te devolveu. É de graça, monstro." | Arrasta pra cima e descreve a tua dor. [LINK] |
+| 4 | A virada | "Agora você escreve a tua dor DO TEU JEITO no ConcerFinder. 'Meu cliente pediu desconto e eu travei.' Ele te fala qual vídeo assistir e já abre no minuto em que eu resolvo. Com plano de ação junto." | Escreve a dor. Assiste o minuto certo. |
+| 5 | Demo | Gravação de tela: a busca devolvendo os trechos e o vídeo abrindo no minuto | É grátis. 2 minutos. [LINK] |
+| 6 | CTA | "Testa com a tua maior dor de agora e me marca contando qual vídeo ele te mandou assistir. É de graça, monstro." | Arrasta pra cima e descreve a tua dor. [LINK] |
 
 Link dos frames: `https://finder.thiagoconcer.com.br/?utm_source=instagram&utm_medium=stories&utm_campaign=lancamento-concerfinder`
 
-Nota: o frame 3 fala da experiência de época em termos genéricos (livro, curso, errar na frente do cliente), sem cena biográfica específica inventada. Se o Thiago tiver uma história real dele para esse frame, melhor ainda: gravar com ela.
+Nota: o frame 3 fala da experiência de época em termos genéricos (livro, curso, errar na frente do cliente), sem cena biográfica específica inventada. Se Thiago Concer tiver uma história real dele para esse frame, melhor ainda: gravar com ela.
 
 ---
 
 ## 7. Instagram Feed (carrossel, 8 cards)
 
-Pilar: identidade #OSV + educativo. Provocação contra o mercado e o comodismo, nunca contra o seguidor.
+Pilar: identidade #OSV + educativo. Provocação contra o mercado e o comodismo, nunca contra o seguidor e nunca contra o próprio conteúdo.
 
 | Card | Texto |
 |---|---|
-| 1 | Você não precisa de mais um vídeo de vendas. |
-| 2 | Precisa do minuto certo do vídeo certo. Na hora em que a dor aperta. |
+| 1 | A resposta que você precisa hoje já está gravada. |
+| 2 | Eu sei em qual vídeo e em qual minuto. O que eu não consigo é te responder um por um. |
 | 3 | São quase 500 vídeos no canal. Abordagem, objeção, follow-up, fechamento, gestão. 20 anos de método, tudo de graça. |
-| 4 | O problema: o YouTube busca por título. A tua dor não tem título. Ela tem cara de "cliente sumiu depois da proposta". |
-| 5 | O ConcerFinder busca por dor. Você escreve do teu jeito, ele acha o trecho exato e te aponta o minuto certo. |
-| 6 | E monta um plano de ação pra tua semana. De vendedor pra vendedor, de gestor pra gestor. |
+| 4 | Só que o YouTube organiza por título. E a tua dor não tem título. Ela tem cara de "cliente sumiu depois da proposta". |
+| 5 | O ConcerFinder responde por mim. Você escreve a dor do teu jeito, ele acha o trecho e abre o vídeo no minuto certo. |
+| 6 | Você assiste, entende o método, e o plano de ação diz o que fazer com aquilo na tua semana. |
 | 7 | Grátis. 2 minutos do cadastro à primeira resposta. |
-| 8 | Link na bio. Descreve a tua maior dor de hoje e me conta nos comentários o que ele te devolveu. #OSV |
+| 8 | Link na bio. Descreve a tua maior dor de hoje e me conta nos comentários qual vídeo ele te mandou assistir. #OSV |
 
 **Legenda:**
 
 ```
-A pergunta que eu mais recebo não é sobre técnica. É "Thiago, qual vídeo fala daquilo?".
+A pergunta que eu mais recebo não é sobre técnica. É "Thiago, em qual vídeo você fala daquilo?".
 
-E a resposta honesta é: eu não sei de cabeça. São quase 500 vídeos em 20 anos. A solução da tua dor de hoje existe, gravada, de graça. O problema nunca foi o conteúdo, foi achar o pedaço certo na hora certa.
+E eu sei responder. Foram 20 anos gravando, quase 500 vídeos, tudo de graça. O que eu não consigo é responder cada um de vocês na hora exata em que a dor aperta.
 
-O ConcerFinder acabou com isso. Você descreve a dor do teu jeito, como contaria pra um colega, e ele te devolve o minuto exato dos vídeos em que eu resolvo. Com plano de ação pra semana junto.
+O ConcerFinder responde por mim. Você descreve a dor do teu jeito, como contaria pra um colega, e ele te diz qual vídeo assistir e em qual minuto começar. Com plano de ação pra semana junto.
 
 De graça, pra sempre que você precisar.
 
-Link na bio. Testa com a dor mais urgente do teu mês e volta aqui pra me contar o que ele te entregou.
+Link na bio. Testa com a dor mais urgente do teu mês e volta aqui pra me contar qual vídeo ele te entregou.
 
 #OSV #vendas #vendedor #gestaocomercial
 ```
@@ -206,17 +214,17 @@ Link na bio. Testa com a dor mais urgente do teu mês e volta aqui pra me contar
 Público do canal: gestor e dono. Tom consultivo-provocador. Narrativo, sem lista. Link no primeiro comentário, nunca no corpo.
 
 ```
-Vinte anos de conteúdo gratuito no YouTube e eu preciso admitir uma coisa: ele resolvia menos do que deveria.
+Vinte anos publicando conteúdo de vendas de graça no YouTube, e o pedido que mais recebo não é por conteúdo novo. É por endereço: em qual vídeo eu falo daquilo.
 
-Não por falta de método. Por excesso de acervo. São quase 500 vídeos, e o gestor que precisa arrumar o follow-up do time hoje não vai assistir cinco vídeos de quinze minutos para achar os quatro minutos que importam. O mês dele está correndo. A dúvida do vendedor dele é antes da próxima ligação, não no fim de semana.
+E eu sei o endereço. Foram vinte anos gravando, quase 500 vídeos, sei o que tem em cada um. O que eu não consigo é responder um a um, na hora em que cada gestor precisa. Quando eu respondo, a reunião dele já aconteceu.
 
-Sempre defendi que venda não é dom, é método. E método espalhado em 500 títulos é método que não entra na operação de ninguém.
+Sempre defendi que venda não é dom, é método. Só que método que chega depois da reunião não vira resultado.
 
-Por isso construímos o ConcerFinder. A pessoa descreve a dor com as palavras dela, "meu time trava na objeção de preço", "a proposta some depois do envio", e a ferramenta devolve os trechos exatos do acervo em que eu trato aquilo, com a minutagem certa e um plano de ação para a semana. O plano muda conforme quem pergunta: vendedor recebe rotina de vendedor, gestor recebe rotina de gestão.
+Por isso construímos o ConcerFinder, que responde por mim. A pessoa descreve a dor com as palavras dela, "meu time trava na objeção de preço", "a proposta some depois do envio", e a ferramenta aponta em quais vídeos eu trato daquilo e em qual minuto. Ela assiste o trecho e recebe um plano de ação para a semana, que muda conforme quem pergunta: vendedor recebe rotina de vendedor, gestor recebe rotina de gestão.
 
-Gratuito. Dois minutos entre o cadastro e a primeira resposta.
+O conteúdo é o mesmo de sempre, no mesmo lugar de sempre, e continua gratuito. O que mudou é que agora dá para chegar nele na hora da dor.
 
-Fica a provocação para quem lidera time comercial: qual é a dor que o seu time repete há três meses? Escreve ela lá, do seu jeito, e olha o que volta. Depois me conta aqui nos comentários se o plano bateu com o diagnóstico que você tinha.
+Fica a provocação para quem lidera time comercial: qual é a dor que o seu time repete há três meses? Escreve ela lá, do seu jeito, e olha o que volta. Depois me conta aqui nos comentários se o plano bateu com o diagnóstico que você já tinha.
 
 Link no primeiro comentário.
 
@@ -238,9 +246,11 @@ O ConcerFinder está aqui, gratuito: https://finder.thiagoconcer.com.br/?utm_sou
 | 19/08 tarde | WhatsApp grupos (versões A e B) |
 | 20/08 quinta | E-mail broadcast 3 a 4 mil leads |
 | 20 ou 21/08 | Disparo API teste (500 a 1.000), fluxo do Tráfego |
-| Sequência | Stories (gravar com o Thiago), depois Feed, depois LinkedIn |
+| Sequência | Stories (gravar com Thiago Concer), depois Feed, depois LinkedIn |
 
 Leitura em `/admin/audiencia`, relatório "De onde vêm os leads": a coluna que decide não é volume de cadastro, é **quantos ativaram** (fizeram a primeira busca). Canal que traz cadastro sem busca é tráfego, não audiência; canal com ativação alta merece a segunda dose. O relatório do convite do parceiro mostra, na mesma tela, quem levantou a mão depois do plano.
+
+Vale acompanhar junto o outro lado do argumento: **trechos abertos por pessoa**, que é a métrica de quem foi assistir de verdade. Se ela subir junto com os cadastros, a tese está provada: o índice está gerando audiência para o canal, e não desviando dela.
 
 Duas semanas depois do lançamento, a pauta de conteúdo sai de lá também: as dores mais buscadas são os próximos roteiros do canal, e "quem procura o quê" diz qual tema falar com qual público.
 
