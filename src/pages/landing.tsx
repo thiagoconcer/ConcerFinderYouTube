@@ -23,7 +23,7 @@ const HOW_IT_WORKS = [
     icon: Clock,
     title: 'Vídeo, minuto e plano',
     description:
-      'Você recebe quais vídeos assistir, o minuto exato onde está cada insight e um plano de ação para aplicar.',
+      'Você recebe quais vídeos assistir, o vídeo abre no minuto exato do insight e vem um plano de ação para a sua semana.',
   },
 ]
 
@@ -56,12 +56,12 @@ export function LandingPage() {
             <span className="eyebrow mb-6">Acervo do canal do Thiago Concer</span>
             <h1 className="text-[clamp(32px,4.6vw,58px)] font-semibold text-white">
               Descreva sua dor de vendas e receba o vídeo e o{' '}
-              <span className="text-primary">minuto exato</span> onde o Concer resolve.
+              <span className="text-primary">minuto exato</span> onde Thiago Concer resolve.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-[#C6D2E6]">
-              São centenas de vídeos sobre vendas. O ConcerFinder encontra, dentro deles, o
-              trecho que responde exatamente ao seu problema, e ainda monta um plano de ação
-              para você aplicar hoje.
+              São 20 anos de vendas gravados, cerca de 500 vídeos no canal. O ConcerFinder acha o
+              trecho que responde ao seu problema, abre o vídeo naquele minuto e monta um plano
+              de ação para você aplicar esta semana.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -92,20 +92,21 @@ export function LandingPage() {
       <section className="border-b bg-muted/30">
         <div className="mx-auto grid w-full max-w-[1180px] gap-8 px-5 py-[clamp(64px,8vw,116px)] sm:px-8 lg:grid-cols-2 lg:gap-16">
           <div>
-            <span className="eyebrow mb-4">O problema</span>
+            <span className="eyebrow mb-4">Por que existe</span>
             <h2 className="text-[clamp(25px,3.4vw,42px)] font-semibold">
-              O insight que você precisa está lá. No meio de um vídeo de 40 minutos.
+              A resposta já está gravada. O que faltava era chegar nela na hora certa.
             </h2>
           </div>
           <div className="space-y-4 text-muted-foreground">
             <p>
-              A busca do YouTube funciona por palavra-chave: ela olha título e descrição. Se o
-              Concer destrinchou a sua objeção no minuto 27 de um vídeo com outro nome, você
-              nunca vai achar.
+              Thiago Concer sabe onde cada resposta está, porque foi ele que gravou. O que não dá
+              é responder um a um: a mesma pergunta chega de muita gente ao mesmo tempo, e quando
+              a resposta sai, a sua reunião já passou.
             </p>
             <p>
-              O ConcerFinder transcreve o canal inteiro e indexa cada trecho por significado. Você
-              descreve a situação real do seu dia a dia comercial e ele te leva direto ao ponto.
+              O ConcerFinder responde por ele, na hora. O canal inteiro está transcrito e indexado
+              por significado, então você descreve a situação real do seu dia a dia comercial e ele
+              te leva direto ao trecho, com o vídeo abrindo no minuto certo.
             </p>
           </div>
         </div>
@@ -170,12 +171,13 @@ export function LandingPage() {
         <div className="mx-auto w-full max-w-[1180px] px-5 py-[clamp(64px,8vw,116px)] sm:px-8">
           <ListChecks className="size-6 text-primary" aria-hidden="true" />
           <h2 className="mt-4 max-w-3xl text-[clamp(25px,3.4vw,42px)] font-semibold text-white">
-            Todo o conteúdo do maior nome de vendas do Brasil, pesquisável por dor.
+            20 anos de vendas, respondendo na hora em que você precisa.
           </h2>
           <p className="mt-4 max-w-2xl text-[17px] text-[#C6D2E6]">
-            Thiago Concer é a maior referência em vendas do Brasil. O ConcerFinder organiza esse
-            acervo para vendedores, gestores comerciais e donos de empresa acharem resposta em
-            segundos. O cadastro é gratuito e libera a busca na hora.
+            Thiago Concer é a maior referência em vendas do Brasil e gravou cerca de 500 vídeos,
+            todos gratuitos. O ConcerFinder é como você chega no trecho certo no momento em que a
+            dor aperta, seja você vendedor, gestor comercial ou dono de empresa. O cadastro é
+            gratuito e libera a busca na hora.
           </p>
           <Button asChild size="lg" className="mt-8">
             <Link to={primaryCta.to}>

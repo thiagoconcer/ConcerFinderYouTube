@@ -64,7 +64,7 @@ Deixa eu te fazer uma pergunta.
 
 Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não soube em qual?
 
-Eu sei em qual. São 20 anos de vendas gravados, quase *500 vídeos*, e fui eu que gravei cada um. O problema é que eu sou um só e não consigo te responder na hora em que você precisa.
+Eu sei em qual. São 20 anos de vendas gravados, cerca de *500 vídeos*, e fui eu que gravei cada um. O problema é que eu sou um só e não consigo te responder na hora em que você precisa.
 
 Por isso a gente montou uma coisa.
 
@@ -81,7 +81,7 @@ https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_ca
 ```
 Uma coisa que eu repito há 20 anos: venda não é dom, é método.
 
-Todo esse método tá gravado no meu canal, de graça, em quase *500 vídeos*. Só que o teu vendedor precisa da resposta AGORA, antes da próxima ligação, e eu não tô do lado dele pra apontar o vídeo.
+Todo esse método tá gravado no meu canal, de graça, em cerca de *500 vídeos*. Só que o teu vendedor precisa da resposta AGORA, antes da próxima ligação, e eu não tô do lado dele pra apontar o vídeo.
 
 Lançamos o *ConcerFinder*: seu time descreve a dor em uma frase ("meu vendedor não faz follow-up", "a proposta some depois do envio") e recebe o vídeo certo, no *minuto exato* em que eu trato aquilo, mais um *plano de ação* pra semana, diferente pra quem vende e pra quem gerencia.
 
@@ -100,7 +100,7 @@ Mais curto que a versão de grupo: disparo é conversa 1 a 1, não post. Se a ba
 ```
 {{nome}}, Thiago Concer aqui.
 
-São 20 anos de vendas gravados no meu canal, quase *500 vídeos*, tudo de graça. A resposta pra dor que você tem hoje tá em algum deles, e eu sei em qual.
+São 20 anos de vendas gravados no meu canal, cerca de *500 vídeos*, tudo de graça. A resposta pra dor que você tem hoje tá em algum deles, e eu sei em qual.
 
 O que eu não consigo é te responder um por um, na hora que você precisa.
 
@@ -133,7 +133,7 @@ Primeira pessoa, como a régua. Sem imagem pesada: texto direto ganha em entrega
 
 "Thiago, em qual vídeo você fala de cliente que some depois da proposta?"
 
-Eu sei responder. Sei o vídeo e sei o trecho, porque fui eu que gravei. São 20 anos de vendas no meu canal, quase 500 vídeos, tudo de graça.
+Eu sei responder. Sei o vídeo e sei o trecho, porque fui eu que gravei. São 20 anos de vendas no meu canal, cerca de 500 vídeos, tudo de graça.
 
 O problema é que eu sou um só. Essa pergunta chega de muita gente ao mesmo tempo, e quando eu consigo te responder, a reunião em que você precisava daquilo já passou.
 
@@ -163,7 +163,7 @@ O ângulo sentimental da Bárbara: como se buscava conhecimento antes contra com
 
 | # | Cena | O que ele fala | Texto na tela |
 |---|---|---|---|
-| 1 | Gancho | "Eu passei 20 anos gravando tudo que eu sei de vendas. São quase 500 vídeos, tudo de graça no YouTube. E eu sei onde tá cada resposta, porque fui eu que gravei." | 500 vídeos. 20 anos. |
+| 1 | Gancho | "Eu passei 20 anos gravando tudo que eu sei de vendas. São cerca de 500 vídeos, tudo de graça no YouTube. E eu sei onde tá cada resposta, porque fui eu que gravei." | 500 vídeos. 20 anos. |
 | 2 | A dor | "O que eu não consigo é responder um por um. Você tá com o problema HOJE, cliente sumiu depois da proposta, e quando eu te respondo a reunião já passou." | Eu sou um só. |
 | 3 | Nostalgia | "Quando eu comecei, aprender vendas era comprar livro, pagar curso caro, errar na frente do cliente. A nova geração não busca assim. Ela pergunta e recebe." | Antes: semanas. Agora: segundos. |
 | 4 | A virada | "Agora você escreve a tua dor DO TEU JEITO no ConcerFinder. 'Meu cliente pediu desconto e eu travei.' Ele te fala qual vídeo assistir e já abre no minuto em que eu resolvo. Com plano de ação junto." | Escreve a dor. Assiste o minuto certo. |
@@ -184,7 +184,7 @@ Pilar: identidade #OSV + educativo. Provocação contra o mercado e o comodismo,
 |---|---|
 | 1 | A resposta que você precisa hoje já está gravada. |
 | 2 | Eu sei em qual vídeo e em qual minuto. O que eu não consigo é te responder um por um. |
-| 3 | São quase 500 vídeos no canal. Abordagem, objeção, follow-up, fechamento, gestão. 20 anos de método, tudo de graça. |
+| 3 | São cerca de 500 vídeos no canal. Abordagem, objeção, follow-up, fechamento, gestão. 20 anos de método, tudo de graça. |
 | 4 | Só que o YouTube organiza por título. E a tua dor não tem título. Ela tem cara de "cliente sumiu depois da proposta". |
 | 5 | O ConcerFinder responde por mim. Você escreve a dor do teu jeito, ele acha o trecho e abre o vídeo no minuto certo. |
 | 6 | Você assiste, entende o método, e o plano de ação diz o que fazer com aquilo na tua semana. |
@@ -196,7 +196,7 @@ Pilar: identidade #OSV + educativo. Provocação contra o mercado e o comodismo,
 ```
 A pergunta que eu mais recebo não é sobre técnica. É "Thiago, em qual vídeo você fala daquilo?".
 
-E eu sei responder. Foram 20 anos gravando, quase 500 vídeos, tudo de graça. O que eu não consigo é responder cada um de vocês na hora exata em que a dor aperta.
+E eu sei responder. Foram 20 anos gravando, cerca de 500 vídeos, tudo de graça. O que eu não consigo é responder cada um de vocês na hora exata em que a dor aperta.
 
 O ConcerFinder responde por mim. Você descreve a dor do teu jeito, como contaria pra um colega, e ele te diz qual vídeo assistir e em qual minuto começar. Com plano de ação pra semana junto.
 
@@ -216,7 +216,7 @@ Público do canal: gestor e dono. Tom consultivo-provocador. Narrativo, sem list
 ```
 Vinte anos publicando conteúdo de vendas de graça no YouTube, e o pedido que mais recebo não é por conteúdo novo. É por endereço: em qual vídeo eu falo daquilo.
 
-E eu sei o endereço. Foram vinte anos gravando, quase 500 vídeos, sei o que tem em cada um. O que eu não consigo é responder um a um, na hora em que cada gestor precisa. Quando eu respondo, a reunião dele já aconteceu.
+E eu sei o endereço. Foram vinte anos gravando, cerca de 500 vídeos, sei o que tem em cada um. O que eu não consigo é responder um a um, na hora em que cada gestor precisa. Quando eu respondo, a reunião dele já aconteceu.
 
 Sempre defendi que venda não é dom, é método. Só que método que chega depois da reunião não vira resultado.
 
