@@ -16,11 +16,13 @@ Antes da copy, o argumento. Toda peça deste lançamento conta a mesma história
 
 **A virada.** O ConcerFinder é o índice do canal. A pessoa descreve a dor do jeito que falaria com um colega, e a ferramenta aponta em quais vídeos Thiago Concer trata daquilo e em qual minuto. Ela clica, o vídeo abre naquele ponto e ela assiste. Junto vem um plano de ação para a semana, diferente para vendedor, gestor e dono, dizendo o que fazer com o que acabou de ver.
 
-**Três regras de posicionamento, e as três são inegociáveis.**
+**Quatro regras de posicionamento, e as quatro são inegociáveis.**
 
 **Primeira: o ConcerFinder não substitui assistir, ele leva a pessoa a assistir.** O vídeo é o produto; a ferramenta é a porta de entrada. Quem usa assiste mais, e assiste o que interessa. Nenhuma peça pode sugerir que dá para pular o conteúdo, que assistir é perda de tempo ou que o canal é difícil demais. O trecho toca no próprio player do YouTube, então a visualização é do canal.
 
 **Segunda: Thiago Concer sabe o que gravou.** Nenhuma peça pode dizer que ele não acha, não lembra ou não sabe de cabeça o próprio conteúdo. Isso invalida o motivo de ele gravar e derruba a autoridade dele. E não é preciso explicar por que a ferramenta existe do ponto de vista dele: a peça fala do problema de quem lê, não da agenda de quem gravou. Nada de "eu sou um só" ou "não consigo responder todo mundo".
+
+**Quarta: peça de gestor fala com o gestor, não pede para ele repassar.** O vendedor já recebe a peça dele. Se a peça de gestão virar "manda pro seu time usar", o gestor não encontra nada ali para ele e a mensagem morre. A dor dele é outra: descobrir onde a venda morre, treino que não pega, reunião de segunda que vira reunião de desculpa, cobrar sem virar o chato da sala. É dessa dor que a peça fala.
 
 **Terceira: 20 anos e cerca de 500 vídeos nunca aparecem na mesma peça.** Sozinho, cada um é forte: 20 anos é autoridade, 500 vídeos é o tamanho do acervo que justifica precisar de ajuda para navegar. Juntos, o leitor divide e chega em 25 vídeos por ano, o que enfraquece os dois. Escolha um por peça, conforme o argumento daquela peça.
 
@@ -82,15 +84,17 @@ https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_ca
 ### Versão B, grupos de gestores e donos
 
 ```
-Uma coisa que eu repito desde que comecei: venda não é dom, é método.
+Uma coisa que eu repito desde que comecei: meta não se bate no grito, se bate no funil.
 
-Esse método tá todo gravado no meu canal, de graça, em cerca de *500 vídeos*. E agora o teu time consegue chegar no pedaço certo na hora em que precisa.
+Só que no meio do mês ninguém para pra diagnosticar. Cobra-se mais, o time corre mais, e continua sem saber qual etapa tá furando.
 
-Lançamos o *ConcerFinder*: seu vendedor descreve a dor em uma frase ("o cliente sumiu depois da proposta", "não sei contornar preço") e recebe o vídeo certo, no *minuto exato* em que eu trato aquilo, mais um *plano de ação* pra semana, diferente pra quem vende e pra quem gerencia.
+Lançamos o *ConcerFinder* pra isso.
 
-De graça, pro seu time inteiro usar.
+Você escreve a tua dor de gestão do jeito que falaria com outro gestor, tipo "meu time não faz follow-up e eu só descubro no fim do mês", e ele te mostra em quais dos meus vídeos eu trato disso, no *minuto exato*, com um *plano de ação de gestão* pra semana: a rotina, o que cobrar e o que olhar na reunião de segunda.
 
-Manda pro seu time, e testa você primeiro com a dor que mais te tira sono:
+São cerca de *500 vídeos* de vendas no canal, de graça.
+
+Escreve a dor que o teu time repete há três meses e vê o que volta:
 https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder
 ```
 
@@ -160,31 +164,33 @@ Thiago Concer
 
 ### 5.2 Versão gestor e dono
 
-**Assunto (testar A/B):**
-- A: `O que o seu time faz quando trava?`
-- B: `Método na mão do time, na hora certa`
+Fala com a dor **de gestão**, não pede para repassar ao time. O vendedor já recebe a peça dele; se esta virar "manda pro seu time usar", o gestor não encontra nada aqui para ele.
 
-**Preheader:** `Seu vendedor descreve a dor e recebe o vídeo, o minuto e o que fazer.`
+**Assunto (testar A/B):**
+- A: `O que você faz quando o time não bate?`
+- B: `Diagnóstico de meta, não bronca`
+
+**Preheader:** `Descreve a dor da sua gestão e recebe o vídeo, o minuto e a rotina da semana.`
 
 ```
-%FIRSTNAME%, uma coisa que eu repito desde que comecei: venda não é dom, é método.
+%FIRSTNAME%, uma coisa que eu repito desde que comecei: meta não se bate no grito, se bate no funil.
 
-E método só vira resultado quando chega na mão do vendedor na hora em que ele precisa. Não no treinamento do trimestre passado, não no fim de semana. Antes da próxima ligação.
+Só que quando o mês aperta, ninguém para pra diagnosticar. Cobra-se mais, o time corre mais, e continua sem saber qual etapa tá furando.
 
-Esse método tá todo gravado no meu canal, de graça, em cerca de 500 vídeos. O que faltava era o seu time conseguir chegar no pedaço certo, na hora.
+Eu já tratei isso no meu canal. Como achar onde a venda morre, como montar a reunião de segunda, como treinar o vendedor com o erro dele e não com tema genérico, como cobrar sem virar o chato da sala. Tá tudo lá, de graça, em cerca de 500 vídeos.
 
-É pra isso que serve o ConcerFinder.
+O ConcerFinder te leva direto ao pedaço que resolve o seu caso.
 
-O vendedor descreve a dor em uma frase, "o cliente sumiu depois da proposta", "não sei contornar preço", e recebe os vídeos em que eu trato daquilo, já no minuto exato, mais um plano de ação pra semana. Se quem pergunta gerencia time, o plano vem de gestão: rotina, cobrança e o que olhar na reunião de segunda.
+Você escreve a sua dor de gestão do jeito que falaria com outro gestor. "Meu time não faz follow-up e eu só descubro no fim do mês." "Treinei fechamento e em duas semanas voltaram ao que faziam antes." Ele acha os vídeos em que eu trato daquilo, abre no minuto certo e monta um plano de ação de gestão pra tua semana: a rotina, o que cobrar e o que olhar na próxima reunião.
 
-É grátis, pro seu time inteiro usar. Do cadastro à primeira resposta são 2 minutos.
+É grátis. Do cadastro à primeira resposta são 2 minutos.
 
-Testa você primeiro, com a dor que o seu time repete há três meses:
+Escreve a dor que o teu time repete há três meses:
 
-[BOTÃO] Descrever a dor do meu time
+[BOTÃO] Descrever a dor da minha gestão
 https://finder.thiagoconcer.com.br/?utm_source=email&utm_medium=broadcast&utm_campaign=lancamento-concerfinder&utm_content=gestor
 
-Depois manda pro time.
+Me conta se o plano bateu com o diagnóstico que você já tinha.
 
 Thiago Concer
 ```

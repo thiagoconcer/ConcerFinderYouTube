@@ -50,20 +50,21 @@ export function LandingPage() {
         temas de propósito: é a "foto de palco" da LP, o ponto onde a marca se
         apresenta. O ritmo vertical vem da alternância com as bandas claras.
       */}
-      <section className="banda-navy relative overflow-hidden border-b border-white/10">
-        <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-20 lg:py-28">
-          {/* No desktop o texto cede a direita para a foto; no mobile ocupa tudo
-              e a foto vira faixa embaixo. */}
-          <div className="max-w-3xl lg:max-w-[620px]">
+      <section className="banda-navy relative overflow-hidden border-b border-white/10 lg:min-h-[660px]">
+        <div className="mx-auto grid w-full max-w-[1180px] items-center gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:min-h-[660px] lg:grid-cols-[minmax(0,540px)_minmax(0,1fr)] lg:gap-12 lg:py-24">
+          {/* No desktop texto e foto dividem a mesma coluna de 1180: o texto na
+              esquerda, a foto na direita, dentro da grade. No mobile empilha e a
+              foto vira faixa embaixo. */}
+          <div className="max-w-3xl lg:max-w-[540px]">
             <span className="eyebrow mb-6">Acervo do canal do Thiago Concer</span>
             <h1 className="text-[clamp(32px,4.6vw,58px)] font-semibold text-white">
               Descreva sua dor de vendas e receba o vídeo e o{' '}
               <span className="text-primary">minuto exato</span> onde Thiago Concer resolve.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-[#C6D2E6]">
-              São cerca de 500 vídeos sobre vendas no canal. O ConcerFinder acha o trecho que
-              responde ao seu problema, abre o vídeo naquele minuto e monta um plano de ação para
-              você aplicar esta semana.
+              O ConcerFinder varre o canal inteiro, acha o trecho que responde ao seu problema,
+              abre o vídeo naquele minuto e monta um plano de ação para você aplicar esta
+              semana.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -87,33 +88,36 @@ export function LandingPage() {
               Cadastro gratuito. Libera a busca na hora.
             </p>
           </div>
-        </div>
 
-        {/*
-          Uma imagem só, dois lugares.
-          No mobile ela fica no fluxo, logo abaixo do texto, como fecho da
-          faixa. No desktop passa a absoluta na direita, colada na borda. O
-          olhar dele aponta para a esquerda, então puxa a leitura de volta para
-          o título em vez de jogar para fora da tela.
+          {/*
+            Uma imagem só, dois lugares.
+            No mobile ela fica no fluxo, logo abaixo do texto, como fecho da
+            faixa. No desktop ocupa a coluna da direita da grade, alinhada com o
+            texto e sem sangrar até a borda da tela: assim ela fica dentro do
+            bloco de conteúdo em vez de fugir para o canto. O olhar dele aponta
+            para a esquerda, então puxa a leitura de volta para o título.
 
-          O degradê existe porque o fundo da foto é navy, mas não exatamente o
-          #0A1628 da faixa: sem ele a emenda aparece como um retângulo.
-        */}
-        <div
-          className="relative h-[340px] w-full sm:h-[400px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[46%] lg:max-w-[560px]"
-          aria-hidden="true"
-        >
-          <picture>
-            <source media="(min-width: 1024px)" srcSet="/thiago-concer-palco.webp" />
-            <img
-              src="/thiago-concer-palco-mobile.webp"
-              alt=""
-              className="size-full object-cover object-[60%_6%] lg:object-[center_top]"
-            />
-          </picture>
-          {/* Mobile: desmancha em cima e embaixo. Desktop: desmancha à esquerda,
-              onde encosta no texto. */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#0A1628_0%,rgba(10,22,40,0)_22%,rgba(10,22,40,0)_58%,#0A1628_100%)] lg:bg-[linear-gradient(to_right,#0A1628_0%,rgba(10,22,40,0.55)_30%,rgba(10,22,40,0)_68%)]" />
+            Os degradês existem porque o fundo da foto é navy, mas não exatamente
+            o #0A1628 da faixa: sem eles a emenda aparece como um retângulo.
+          */}
+          <div
+            className="relative mx-auto h-[340px] w-full max-w-[440px] sm:h-[400px] lg:h-[560px] lg:max-w-[480px]"
+            aria-hidden="true"
+          >
+            <picture>
+              <source media="(min-width: 1024px)" srcSet="/thiago-concer-palco.webp" />
+              <img
+                src="/thiago-concer-palco-mobile.webp"
+                alt=""
+                className="size-full object-cover object-[60%_6%] lg:object-[50%_top]"
+              />
+            </picture>
+            {/* Mobile: desmancha em cima e embaixo. Desktop: desmancha no pé,
+                onde o corte no tronco apareceria. */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#0A1628_0%,rgba(10,22,40,0)_22%,rgba(10,22,40,0)_58%,#0A1628_100%)] lg:bg-[linear-gradient(to_bottom,rgba(10,22,40,0)_52%,rgba(10,22,40,0.82)_86%,#0A1628_100%)]" />
+            {/* Desktop: vinheta que dissolve as laterais e o topo na faixa. */}
+            <div className="absolute inset-0 hidden lg:block lg:bg-[radial-gradient(74%_66%_at_50%_36%,rgba(10,22,40,0)_60%,#0A1628_100%)]" />
+          </div>
         </div>
       </section>
 
