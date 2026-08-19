@@ -59,9 +59,9 @@ export function LandingPage() {
               <span className="text-primary">minuto exato</span> onde Thiago Concer resolve.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-[#C6D2E6]">
-              São 20 anos de vendas gravados, cerca de 500 vídeos no canal. O ConcerFinder acha o
-              trecho que responde ao seu problema, abre o vídeo naquele minuto e monta um plano
-              de ação para você aplicar esta semana.
+              São cerca de 500 vídeos sobre vendas no canal. O ConcerFinder acha o trecho que
+              responde ao seu problema, abre o vídeo naquele minuto e monta um plano de ação para
+              você aplicar esta semana.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -99,14 +99,13 @@ export function LandingPage() {
           </div>
           <div className="space-y-4 text-muted-foreground">
             <p>
-              Thiago Concer sabe onde cada resposta está, porque foi ele que gravou. O que não dá
-              é responder um a um: a mesma pergunta chega de muita gente ao mesmo tempo, e quando
-              a resposta sai, a sua reunião já passou.
+              Você descreve a situação real do seu dia a dia comercial, com as suas palavras, sem
+              precisar adivinhar a palavra-chave que alguém usou num título.
             </p>
             <p>
-              O ConcerFinder responde por ele, na hora. O canal inteiro está transcrito e indexado
-              por significado, então você descreve a situação real do seu dia a dia comercial e ele
-              te leva direto ao trecho, com o vídeo abrindo no minuto certo.
+              O canal inteiro está transcrito e indexado por significado. O ConcerFinder acha o
+              trecho que trata do seu caso, abre o vídeo naquele minuto e monta um plano de ação
+              para a sua semana.
             </p>
           </div>
         </div>
@@ -174,10 +173,10 @@ export function LandingPage() {
             20 anos de vendas, respondendo na hora em que você precisa.
           </h2>
           <p className="mt-4 max-w-2xl text-[17px] text-[#C6D2E6]">
-            Thiago Concer é a maior referência em vendas do Brasil e gravou cerca de 500 vídeos,
-            todos gratuitos. O ConcerFinder é como você chega no trecho certo no momento em que a
-            dor aperta, seja você vendedor, gestor comercial ou dono de empresa. O cadastro é
-            gratuito e libera a busca na hora.
+            Thiago Concer é a maior referência em vendas do Brasil, e o canal dele sempre foi
+            aberto. O ConcerFinder é como você chega no trecho certo no momento em que a dor
+            aperta, seja você vendedor, gestor comercial ou dono de empresa. O cadastro é gratuito
+            e libera a busca na hora.
           </p>
           <Button asChild size="lg" className="mt-8">
             <Link to={primaryCta.to}>
