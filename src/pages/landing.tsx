@@ -50,9 +50,11 @@ export function LandingPage() {
         temas de propósito: é a "foto de palco" da LP, o ponto onde a marca se
         apresenta. O ritmo vertical vem da alternância com as bandas claras.
       */}
-      <section className="banda-navy border-b border-white/10">
-        <div className="mx-auto w-full max-w-[1180px] px-5 py-20 sm:px-8 lg:py-28">
-          <div className="max-w-3xl">
+      <section className="banda-navy relative overflow-hidden border-b border-white/10">
+        <div className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 sm:py-20 lg:py-28">
+          {/* No desktop o texto cede a direita para a foto; no mobile ocupa tudo
+              e a foto vira faixa embaixo. */}
+          <div className="max-w-3xl lg:max-w-[620px]">
             <span className="eyebrow mb-6">Acervo do canal do Thiago Concer</span>
             <h1 className="text-[clamp(32px,4.6vw,58px)] font-semibold text-white">
               Descreva sua dor de vendas e receba o vídeo e o{' '}
@@ -85,6 +87,33 @@ export function LandingPage() {
               Cadastro gratuito. Libera a busca na hora.
             </p>
           </div>
+        </div>
+
+        {/*
+          Uma imagem só, dois lugares.
+          No mobile ela fica no fluxo, logo abaixo do texto, como fecho da
+          faixa. No desktop passa a absoluta na direita, colada na borda. O
+          olhar dele aponta para a esquerda, então puxa a leitura de volta para
+          o título em vez de jogar para fora da tela.
+
+          O degradê existe porque o fundo da foto é navy, mas não exatamente o
+          #0A1628 da faixa: sem ele a emenda aparece como um retângulo.
+        */}
+        <div
+          className="relative h-[340px] w-full sm:h-[400px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[46%] lg:max-w-[560px]"
+          aria-hidden="true"
+        >
+          <picture>
+            <source media="(min-width: 1024px)" srcSet="/thiago-concer-palco.webp" />
+            <img
+              src="/thiago-concer-palco-mobile.webp"
+              alt=""
+              className="size-full object-cover object-[60%_6%] lg:object-[center_top]"
+            />
+          </picture>
+          {/* Mobile: desmancha em cima e embaixo. Desktop: desmancha à esquerda,
+              onde encosta no texto. */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#0A1628_0%,rgba(10,22,40,0)_22%,rgba(10,22,40,0)_58%,#0A1628_100%)] lg:bg-[linear-gradient(to_right,#0A1628_0%,rgba(10,22,40,0.55)_30%,rgba(10,22,40,0)_68%)]" />
         </div>
       </section>
 
