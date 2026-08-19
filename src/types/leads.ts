@@ -58,6 +58,7 @@ export interface LeadDetalheDados {
     buscas: number
     dias_ativos: number
     trechos_abertos: number
+    cliques_cta: number
   }
   faixa: string
   resumo: {
@@ -65,6 +66,7 @@ export interface LeadDetalheDados {
     trechos_abertos: number
     dias_ativos: number
     recomendacoes_recebidas: number
+    cliques_cta: number
   }
   buscas: Array<{
     busca_id: string

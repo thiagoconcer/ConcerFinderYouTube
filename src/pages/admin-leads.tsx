@@ -52,8 +52,8 @@ const FAIXA_VARIANT: Record<string, 'default' | 'secondary' | 'outline'> = {
 function explicaScore(lead: LeadResumo): string {
   return (
     `${lead.score}/100. Cargo, atividade (${lead.total_buscas} busca(s), ` +
-    `${lead.trechos_abertos} trecho(s) aberto(s)), recência e foco de tema. ` +
-    'Comportamento pesa mais que cargo: quem se cadastra e não volta não passa de 30.'
+    `${lead.trechos_abertos} trecho(s) aberto(s), clique no convite do parceiro), ` +
+    'recência e foco de tema. Comportamento pesa mais que cargo: quem se cadastra e não volta não passa de 30.'
   )
 }
 

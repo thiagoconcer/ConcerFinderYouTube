@@ -65,20 +65,28 @@ export function CtaViverDeIA({
   }
 
   return (
-    <div className="mt-5 rounded-lg border bg-muted/40 p-4">
-      <p className="text-sm font-medium">
+    /* Empilhado, nunca lado a lado.
+       A versão anterior punha texto e botão na mesma linha flex. O botão tem
+       largura fixa, então no celular sobrava uma coluna do tamanho da maior
+       palavra e o convite saía com uma palavra por linha. Aqui o texto ocupa a
+       largura inteira e o botão vem embaixo, que é o comportamento correto em
+       qualquer tela. */
+    <div className="mt-5 rounded-lg border border-primary/25 bg-primary/[0.04] p-4 sm:p-5">
+      <p className="text-[15px] font-semibold text-foreground">
         {solucao
           ? `Quer ${solucao} rodando na sua operação?`
           : 'Quer ver isso rodando na sua operação?'}
       </p>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {solucao ? `${solucao} é uma das dezenas de soluções prontas` : 'São dezenas de soluções prontas'}{' '}
-        do Viver de IA, com quem o Thiago se juntou. Na conversa eles olham a sua operação e
-        dizem por onde começar, e o que sustentar primeiro.
+
+      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+        {solucao
+          ? `${solucao} é uma das dezenas de soluções prontas do Viver de IA, com quem o Thiago se juntou.`
+          : 'O Viver de IA, com quem o Thiago se juntou, tem dezenas de soluções prontas para o comercial.'}{' '}
+        Na conversa eles olham a sua operação e dizem por onde começar.
       </p>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Button asChild disabled={indo}>
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+        <Button asChild disabled={indo} className="w-full sm:w-auto">
           <a
             href={URL_VIVERDEIA}
             target="_blank"
@@ -89,9 +97,9 @@ export function CtaViverDeIA({
             <ArrowUpRight />
           </a>
         </Button>
-        {/* Dizer o que vem antes do horário evita a quebra de promessa que
-            todo botão de "agendar" que abre formulário produz. */}
-        <span className="text-xs text-muted-foreground">
+        {/* Botão de "agendar" que abre formulário quebra promessa. Dizer o que
+            vem antes do horário custa uma linha e evita a frustração. */}
+        <span className="text-xs leading-snug text-muted-foreground">
           Algumas perguntas rápidas antes de escolher o horário.
         </span>
       </div>

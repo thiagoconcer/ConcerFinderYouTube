@@ -180,6 +180,27 @@ export interface OrigemInsights {
   serie: Array<{ dia: string; origem: string; leads: number }>
 }
 
+/** Retorno de `get_cta_insights`: o convite do parceiro no plano de ação. */
+export interface CtaInsights {
+  periodo: { de: string; ate: string }
+  planos_com_convite: number
+  pessoas_que_viram: number
+  cliques: number
+  pessoas_que_clicaram: number
+  taxa: number | null
+  por_perfil: Array<{ perfil: string; viram: number; clicaram: number }>
+  por_tema: Array<{ tema: string; cliques: number }>
+  ultimos: Array<{
+    profile_id: string
+    nome: string
+    cargo: string | null
+    perfil: string
+    dor: string | null
+    clicado_em: string
+  }>
+  serie: Array<{ dia: string; cliques: number }>
+}
+
 /**
  * Retorno de `get_cargo_insights`. O cargo é a granularidade fina do cadastro
  * (9 opções); o `commercial_role` que vem junto é a régua de nutrição para a

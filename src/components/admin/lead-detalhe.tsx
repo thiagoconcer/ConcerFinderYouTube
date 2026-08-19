@@ -112,12 +112,15 @@ export function LeadDetalhe({
         </p>
       </section>
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <section className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
           { r: 'Buscas', v: dados.resumo.total_buscas },
           { r: 'Dias ativos', v: dados.resumo.dias_ativos },
           { r: 'Recebeu', v: `${dados.resumo.recomendacoes_recebidas} trechos` },
           { r: 'Abriu', v: `${dados.resumo.trechos_abertos} trechos` },
+          // Sinal de intenção mais forte da ferramenta: levantou a mão para o
+          // parceiro. Zero também informa, por isso o tile é fixo.
+          { r: 'Convite do parceiro', v: `${dados.resumo.cliques_cta ?? 0} clique(s)` },
         ].map((m) => (
           <div key={m.r} className="rounded-lg bg-muted/40 p-3">
             <p className="text-xs text-muted-foreground">{m.r}</p>

@@ -500,6 +500,10 @@ export type Database = {
         Returns: Json
       }
       get_content_dashboard: { Args: never; Returns: Json }
+      get_cta_insights: {
+        Args: { from_date?: string; to_date?: string }
+        Returns: Json
+      }
       get_engagement_insights: {
         Args: {
           filter_commercial_role?: string

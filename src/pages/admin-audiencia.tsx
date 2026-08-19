@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Ativacao } from '@/components/admin/ativacao'
 import { Cargos } from '@/components/admin/cargos'
 import { Crescimento } from '@/components/admin/crescimento'
+import { Cta } from '@/components/admin/cta'
 import { Origem } from '@/components/admin/origem'
 import { QualidadeBusca } from '@/components/admin/qualidade-busca'
 import { GestaoEquipe } from '@/components/admin/gestao-equipe'
@@ -29,6 +30,7 @@ import type {
   AudienceInsights,
   CargoInsights,
   EngagementInsights,
+  CtaInsights,
   OrigemInsights,
 } from '@/types/search'
 
@@ -55,6 +57,7 @@ export function AdminAudienciaPage() {
   const [cargos, setCargos] = useState<CargoInsights | null>(null)
   const [engajamento, setEngajamento] = useState<EngagementInsights | null>(null)
   const [origem, setOrigem] = useState<OrigemInsights | null>(null)
+  const [cta, setCta] = useState<CtaInsights | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
 
@@ -64,19 +67,23 @@ export function AdminAudienciaPage() {
     setCargos(null)
     setEngajamento(null)
     setOrigem(null)
+    setCta(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
     // O filtro vai para as TRÊS. Filtrar pela metade é pior que não filtrar:
     // a pessoa lê a tela inteira como se fosse do recorte escolhido.
     const filtro = perfil ? { filter_commercial_role: perfil } : {}
-    const [insightsRes, cargosRes, engajamentoRes, origemRes] = await Promise.all([
+    const [insightsRes, cargosRes, engajamentoRes, origemRes, ctaRes] = await Promise.all([
       supabase.rpc('get_audience_insights', filtro),
       supabase.rpc('get_cargo_insights', filtro),
       supabase.rpc('get_engagement_insights', filtro),
       // A origem não usa o filtro de perfil: a pergunta é de captação, e
       // recortar por perfil esconderia justamente o canal que traz os outros.
       supabase.rpc('get_origem_insights', {}),
+      // O CTA também não: o relatório já separa dono e gestor por dentro, e o
+      // recorte "vendedor" zeraria a seção (vendedor não recebe o botão).
+      supabase.rpc('get_cta_insights', {}),
     ])
 
     if (insightsRes.error) {
@@ -86,6 +93,7 @@ export function AdminAudienciaPage() {
     setCargos((cargosRes.data as unknown as CargoInsights) ?? null)
     setEngajamento((engajamentoRes.data as unknown as EngagementInsights) ?? null)
     setOrigem((origemRes.data as unknown as OrigemInsights) ?? null)
+    setCta((ctaRes.data as unknown as CtaInsights) ?? null)
   }, [filtroPerfil])
 
   useEffect(() => {
@@ -212,6 +220,9 @@ export function AdminAudienciaPage() {
 
           {/* De onde vieram, antes de falar do que fizeram */}
           <Origem dados={origem} />
+
+          {/* O convite do parceiro: taxa de clique de quem viu, e a dor que precede */}
+          <Cta dados={cta} />
 
           {/* Cadastro que não vira busca é e-mail, não lead qualificado. */}
           {engajamento && (
