@@ -34,6 +34,8 @@ Antes da copy, o argumento. Toda peça deste lançamento conta a mesma história
 
 **O que este lançamento NÃO faz.** Não vende nada e não fala de Viver de IA. A ferramenta é gratuita e a copy diz isso com orgulho. O convite ao parceiro já mora dentro do plano de ação, embutido e no contexto certo; falar dele na divulgação estragaria os dois. Decisão da call de 18/08.
 
+> **Exceção aberta em 20/08, e só ela.** A régua de nutrição de **gestor e dono** passa a levar o convite do parceiro **a partir do E2**, como nota curta no fim do e-mail, depois que a pessoa já recebeu conteúdo. A régua de vendedor não leva: o produto do parceiro é vendido para empresa. As peças de divulgação (WhatsApp, e-mail de lançamento, Stories, Feed, LinkedIn) continuam sem nenhuma menção. A copy está em `docs/nutricao/PROMPT-COWORK.md`, seção de 20/08, com UTM próprio (`utm_medium=email-regua`) para o relatório separar esse convite do que já existe dentro do plano.
+
 **Como o nome aparece.** Sempre **Thiago Concer**, por extenso, em qualquer peça. Nunca só "Concer" e nunca "o Thiago". E nenhuma peça diz que Thiago Concer e Viver de IA "se juntaram": a relação não é o assunto, o assunto é a dor de quem está lendo.
 
 **Números permitidos nesta campanha** (regra do dado): 20 anos de carreira **ou** cerca de 500 vídeos, nunca os dois na mesma peça, mais minuto exato, plano de ação e grátis. Nenhum número de resultado, case ou promessa. Conferido no painel em 19/08: 501 vídeos no canal e 489 pesquisáveis, e os 12 de diferença são os que não têm legenda no YouTube. Por isso "cerca de 500", que é honesto para as duas leituras.

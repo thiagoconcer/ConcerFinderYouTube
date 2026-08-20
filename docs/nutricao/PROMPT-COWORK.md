@@ -492,3 +492,87 @@ fechar a integração e para conferir se a régua está recebendo gente.
 
 **Se algo não for possível** exatamente como descrito, não invente solução silenciosa:
 faça o mais próximo, e descreva em `decisoes_que_precisei_tomar` o que mudou e por quê.
+
+---
+
+# ATUALIZAÇÃO DE 20/08/2026: contexto da dor e convite do parceiro
+
+Duas mudanças pedidas pelo Bruno depois que o produto ganhou a pergunta de contexto. **A copy abaixo substitui os blocos correspondentes nas campanhas do ActiveCampaign.**
+
+## 1. O PS do E1 das três réguas
+
+O produto mudou: depois de entregar os trechos, o ConcerFinder faz uma pergunta sobre a situação da pessoa e reescreve o plano em cima da resposta dela. O E1 descrevia o mecanismo antigo, e essa mudança é motivo concreto de voltar, que é o que a régua quer.
+
+**Vendedor, E1:**
+```
+PS: mudou uma coisa lá dentro. Depois dos trechos ele te faz uma pergunta sobre a tua situação e reescreve o plano em cima da tua resposta, com o que fazer na próxima ligação. Se aparecer outra dor no meio da semana, volta lá e descreve. É de graça e ilimitado: https://finder.thiagoconcer.com.br/busca
+```
+
+**Gestor, E1:**
+```
+PS: mudou uma coisa lá dentro. Depois dos trechos ele te pergunta como o teu time trabalha hoje e reescreve o plano em cima da tua resposta: a rotina, o que cobrar e o que olhar na reunião de segunda. Cada vendedor seu também pode ter a conta dele, de graça: https://finder.thiagoconcer.com.br
+```
+
+**Dono, E1:**
+```
+PS: mudou uma coisa lá dentro. Depois dos trechos ele te pergunta como o teu comercial funciona hoje e reescreve o plano em cima da tua resposta. Volta lá quando a dor mudar, é de graça e ilimitado: https://finder.thiagoconcer.com.br/busca
+```
+
+## 2. Convite do Viver de IA nas réguas de gestor e dono, a partir do E2
+
+**Decisão do Bruno em 20/08.** Muda a regra anterior, que mantinha o parceiro só dentro do plano de ação. O convite entra **apenas nas réguas de gestor e dono** e **apenas do E2 em diante**, ou seja, depois que a pessoa já recebeu conteúdo. A régua de vendedor não leva convite: o produto do parceiro é vendido para empresa, e mandar vendedor para o formulário seria mandá-lo para algo que não é dele.
+
+Formato: um bloco curto no fim do e-mail, depois da assinatura, separado por linha, em corpo menor e cinza. Ele é uma nota, não a chamada principal do e-mail, porque a chamada principal continua sendo voltar ao ConcerFinder.
+
+Regras da parceria valem inteiras: nada de preço, nada de "a IA substitui vendedor", "formação" e nunca "curso", nunca dizer que Thiago Concer e Viver de IA "se juntaram", e a expressão é **"a plataforma de IA que eu indico"**. Quantidade sempre como "dezenas de soluções prontas", nunca o número exato.
+
+Link (UTM próprio, para separar do convite que já existe dentro do plano):
+`https://type.viverdeia.ai/new?utm_source=embaixador&utm_medium=email-regua&utm_campaign=concer-finder&utm_term=concer`
+
+**Gestor E2** (tema: treino e role play)
+```
+Uma nota prática: o passo que mais morre é o que depende de alguém repetindo a mesma coisa toda semana, e treino é o caso clássico. Hoje a IA já ouve as calls do time e devolve o que cada vendedor errou, sem você assistir a todas.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu time: [LINK]
+```
+
+**Gestor E3** (tema: reunião de segunda)
+```
+Uma nota prática: a reunião boa depende de dado atualizado, e é aí que ela emperra, porque preencher CRM é a tarefa que ninguém faz na sexta. A IA sustenta essa parte: o funil atualizado e o relatório pronto na segunda de manhã, sem você cobrar preenchimento.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa na sua rotina: [LINK]
+```
+
+**Gestor E4** (tema: o que travou o time)
+```
+Uma nota prática: quando a mesma trava aparece toda semana, o problema deixou de ser diagnóstico e virou execução diária. A IA segura o que é repetitivo, o follow-up que ninguém faz, o cliente que esfria, o registro que não acontece, e devolve o seu tempo para o que exige gente.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu time: [LINK]
+```
+
+**Dono E2** (tema: comercial é sistema)
+```
+Uma nota prática, já que estamos falando de sistema: o passo que mais morre na segunda-feira é sempre o que depende de alguém repetindo a mesma tarefa todo dia, registrar, cobrar retorno, olhar o funil. É aí que a IA sustenta a rotina que a empresa não sustenta na mão.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas para isso, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu comercial: [LINK]
+```
+
+**Dono E3** (tema: previsibilidade)
+```
+Uma nota prática: aquelas três perguntas só têm resposta se alguém registrar tudo, todo dia, e é exatamente aí que a empresa passa a depender de uma disciplina que ela não tem. A IA fecha esse buraco: funil atualizado e número na sua mão sem depender de cobrança.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu comercial: [LINK]
+```
+
+**Dono E4** (tema: o dinheiro que fica na mesa)
+```
+Uma nota prática: boa parte desse dinheiro some em tarefa simples e repetida, a proposta que não teve retorno, o cliente que ninguém lembrou de chamar. É o tipo de coisa que a IA faz sem esquecer e sem cansar.
+
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver o que dá para automatizar primeiro: [LINK]
+```
+
+## 3. Nota de execução: o conector não grava corpo de e-mail
+
+Tentado em 20/08 pelo conector do ActiveCampaign (`update_campaign_message`), nas mensagens 606 (E1 vendedor, já enviada) e 619 (E2 dono, nunca enviada): a chamada volta sem erro, mas **nada é gravado**. Conferido lendo de volta as duas: `mdate` não muda e o HTML continua o antigo. O mesmo teste com `subject` também não alterou `mdate`.
+
+Então a aplicação desta copy é manual no editor do ActiveCampaign, ou por uma função com as credenciais que o produto já usa (as mesmas do `sync-nurture`). Não repetir a tentativa pelo conector esperando resultado diferente.
