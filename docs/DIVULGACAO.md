@@ -65,34 +65,33 @@ O app captura UTM, referrer e página de entrada sozinho, na primeira visita, e 
 
 Formato da casa: asterisco simples para negrito, sem linha divisória, sem hashtag, chamada distribuída. Duas versões porque os grupos têm públicos diferentes.
 
-As duas seguem a mesma estrutura, e ela existe por um motivo: em grupo a pessoa decide em três segundos se aquilo é sobre ela. Por isso vem primeiro um bloco de dores escritas como ela fala (é ali que ela se reconhece e já sabe o que vai digitar), e só depois o que a ferramenta devolve, em três itens: os vídeos, o minuto e o plano de ação. Mensagem que só anuncia o lançamento não passa desse teste.
+As duas seguem a mesma estrutura, e cada parte dela tem função. Título em negrito para a pessoa se localizar na rolagem. O link já na terceira linha, porque quem se convence no gancho não deve ter que ler o resto para achar onde clicar, e ele volta no fim para quem leu tudo. Um bloco curto dizendo o que a ferramenta é, já que "escreve a tua dor" sozinho não explica nada: o canal inteiro transcrito e uma busca que lê o que ele fala dentro do vídeo, não o título. Depois o bloco de dores escritas como o público fala, que é onde a pessoa se reconhece e já sabe o que vai digitar. Só então o que volta, em três itens: os vídeos, o minuto e o plano de ação.
 
 ### Versão A, grupos de vendedores
 
 ```
-Deixa eu te fazer uma pergunta.
+*Deixa eu te fazer uma pergunta.*
 
 Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não soube em qual?
 
-Agora dá pra saber.
+Agora dá pra saber. Descobre aqui: https://thiagoconcer.com.br/go/cf-wpp
 
-Pensa na tua semana. Alguma dessas é tua?
+*O que é o ConcerFinder*
+É o índice do meu canal. Cerca de *500 vídeos* de vendas transcritos do começo ao fim, e a busca lê o que eu FALO lá dentro, não o título. Você conta a situação e ela acha o trecho em que eu trato exatamente daquilo.
 
+*Pensa na tua semana. Alguma dessas é tua?*
 "O cliente diz que tá caro e eu congelo."
 "Mandei a proposta e ele sumiu."
 "Faço follow-up e sinto que tô incomodando."
 "Chego no fechamento e enrolo na hora de pedir o pedido."
 "O cara diz que vai pensar e eu aceito e desligo."
 
-Escreve uma dessas no *ConcerFinder*, com as tuas palavras, e ele te devolve:
-
+Escreve uma dessas com as tuas palavras, do jeito que contaria pro colega do lado, e ele te devolve:
 1. em quais dos meus vídeos eu resolvo aquilo
 2. o *minuto exato* onde começa a resposta, com o vídeo abrindo nesse ponto
 3. um *plano de ação* pra tua semana, com o que fazer na próxima ligação
 
-Sem adivinhar palavra-chave nem garimpar título: descreve como contaria pro colega do lado.
-
-São cerca de *500 vídeos* de vendas no canal. É *grátis*, e leva 2 minutos do cadastro à primeira resposta.
+É *grátis*, e leva 2 minutos do cadastro à primeira resposta.
 
 Testa com a tua maior dor de agora e me conta qual vídeo ele te mandou assistir:
 https://thiagoconcer.com.br/go/cf-wpp
@@ -101,14 +100,16 @@ https://thiagoconcer.com.br/go/cf-wpp
 ### Versão B, grupos de gestores e donos
 
 ```
-Uma coisa que eu repito desde que comecei: meta não se bate no grito, se bate no funil.
+*Meta não se bate no grito, se bate no funil.*
 
-Só que no meio do mês ninguém para pra diagnosticar. Cobra-se mais, o time corre mais, e continua sem saber qual etapa tá furando.
+É o que eu repito desde que comecei. Só que no meio do mês ninguém para pra diagnosticar: cobra-se mais, o time corre mais, e continua sem saber qual etapa tá furando.
 
-Lançamos o *ConcerFinder* pra isso.
+Lançamos o *ConcerFinder* pra isso. Olha aqui: https://thiagoconcer.com.br/go/cf-wppg
 
-Escreve a tua dor de gestão do jeito que falaria com outro gestor:
+*O que é o ConcerFinder*
+É o índice do meu canal. Cerca de *500 vídeos* de vendas transcritos do começo ao fim, e a busca lê o que eu FALO lá dentro, não o título. Você descreve a situação do teu time e ela acha o trecho em que eu trato daquilo.
 
+*Escreve a tua dor de gestão como falaria com outro gestor:*
 "Meu time não faz follow-up e eu só descubro no fim do mês."
 "Treinei fechamento e em duas semanas voltaram a vender do jeito antigo."
 "A reunião de segunda virou reunião de desculpa."
@@ -116,14 +117,11 @@ Escreve a tua dor de gestão do jeito que falaria com outro gestor:
 "Sei que tá furando, mas não sei em qual etapa."
 
 E ele te devolve:
-
 1. em quais dos meus vídeos eu trato daquele problema
 2. o *minuto exato* onde a resposta começa, com o vídeo abrindo ali
 3. um *plano de ação de gestão* pra semana: a rotina, o que cobrar e o que olhar na reunião de segunda
 
-É o diagnóstico que ninguém tem tempo de fazer no meio do mês, em 2 minutos.
-
-São cerca de *500 vídeos* de vendas no canal, de graça.
+É o diagnóstico que ninguém tem tempo de fazer no meio do mês, em 2 minutos. E é *de graça*.
 
 Escreve a dor que o teu time repete há três meses e vê o que volta:
 https://thiagoconcer.com.br/go/cf-wppg
