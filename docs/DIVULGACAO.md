@@ -46,13 +46,16 @@ O app captura UTM, referrer e página de entrada sozinho, na primeira visita, e 
 
 | Canal | Link |
 |---|---|
-| WhatsApp grupos | `https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder` |
+| WhatsApp grupos, vendedores | `https://thiagoconcer.com.br/go/cf-wpp` |
+| WhatsApp grupos, gestores | `https://thiagoconcer.com.br/go/cf-wppg` |
 | WhatsApp disparo (API) | `https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=disparo&utm_campaign=lancamento-concerfinder` |
 | E-mail vendedores | `https://finder.thiagoconcer.com.br/?utm_source=email&utm_medium=broadcast&utm_campaign=lancamento-concerfinder&utm_content=vendedor` |
 | E-mail gestores | `https://finder.thiagoconcer.com.br/?utm_source=email&utm_medium=broadcast&utm_campaign=lancamento-concerfinder&utm_content=gestor` |
 | Instagram Stories | `https://finder.thiagoconcer.com.br/?utm_source=instagram&utm_medium=stories&utm_campaign=lancamento-concerfinder` |
 | Instagram bio (feed) | `https://finder.thiagoconcer.com.br/?utm_source=instagram&utm_medium=bio&utm_campaign=lancamento-concerfinder` |
 | LinkedIn | `https://finder.thiagoconcer.com.br/?utm_source=linkedin&utm_medium=post&utm_campaign=lancamento-concerfinder` |
+
+**Os dois links curtos do WhatsApp.** As mensagens de grupo saem com `thiagoconcer.com.br/go/cf-wpp` (vendedores) e `/go/cf-wppg` (gestores), encurtador do próprio domínio. Ganha-se um link limpo no grupo e a separação dos dois públicos sem UTM à vista. Duas condições para o relatório continuar funcionando: cada atalho precisa apontar para o link completo com os UTMs da linha correspondente (senão o lead entra como "direto") e o redirecionamento precisa ser server side, 301 ou 302, porque redirecionamento em JavaScript perde a query em parte dos aplicativos.
 
 **Truque do `?q=`.** A landing aceita a dor pré-preenchida: adicionar `&q=cliente%20sumiu%20depois%20da%20proposta` faz a pessoa cair com a busca pronta, cadastrar e ver o resultado na sequência. Usar nas peças em que a copy termina numa dor específica, porque a promessa do clique vira a primeira experiência.
 
@@ -79,23 +82,20 @@ Pensa na tua semana. Alguma dessas é tua?
 "Mandei a proposta e ele sumiu."
 "Faço follow-up e sinto que tô incomodando."
 "Chego no fechamento e enrolo na hora de pedir o pedido."
-"Ligo, ligo, e não passo da secretária."
 "O cara diz que vai pensar e eu aceito e desligo."
 
-Escreve uma dessas no *ConcerFinder*, com as tuas palavras mesmo, e ele te devolve três coisas:
+Escreve uma dessas no *ConcerFinder*, com as tuas palavras, e ele te devolve:
 
 1. em quais dos meus vídeos eu resolvo aquilo
-2. o *minuto exato* onde começa a resposta, e o vídeo abre já nesse ponto
+2. o *minuto exato* onde começa a resposta, com o vídeo abrindo nesse ponto
 3. um *plano de ação* pra tua semana, com o que fazer na próxima ligação
 
-Você não precisa adivinhar palavra-chave nem garimpar título. Descreve a situação do jeito que contaria pro colega do lado, e ele acha o trecho.
+Sem adivinhar palavra-chave nem garimpar título: descreve como contaria pro colega do lado.
 
-São cerca de *500 vídeos* de vendas no canal, e agora dá pra chegar direto no que interessa pro teu caso.
-
-É *grátis*. Leva 2 minutos do cadastro à primeira resposta.
+São cerca de *500 vídeos* de vendas no canal. É *grátis*, e leva 2 minutos do cadastro à primeira resposta.
 
 Testa com a tua maior dor de agora e me conta qual vídeo ele te mandou assistir:
-https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder
+https://thiagoconcer.com.br/go/cf-wpp
 ```
 
 ### Versão B, grupos de gestores e donos
@@ -107,19 +107,18 @@ Só que no meio do mês ninguém para pra diagnosticar. Cobra-se mais, o time co
 
 Lançamos o *ConcerFinder* pra isso.
 
-Você escreve a tua dor de gestão do jeito que falaria com outro gestor:
+Escreve a tua dor de gestão do jeito que falaria com outro gestor:
 
 "Meu time não faz follow-up e eu só descubro no fim do mês."
 "Treinei fechamento e em duas semanas voltaram a vender do jeito antigo."
 "A reunião de segunda virou reunião de desculpa."
 "Todo mundo dá desconto pra fechar e a margem vai embora."
-"Um vendedor carrega o mês nas costas e o resto empurra."
 "Sei que tá furando, mas não sei em qual etapa."
 
-E ele te devolve três coisas:
+E ele te devolve:
 
 1. em quais dos meus vídeos eu trato daquele problema
-2. o *minuto exato* onde a resposta começa, com o vídeo abrindo nesse ponto
+2. o *minuto exato* onde a resposta começa, com o vídeo abrindo ali
 3. um *plano de ação de gestão* pra semana: a rotina, o que cobrar e o que olhar na reunião de segunda
 
 É o diagnóstico que ninguém tem tempo de fazer no meio do mês, em 2 minutos.
@@ -127,7 +126,7 @@ E ele te devolve três coisas:
 São cerca de *500 vídeos* de vendas no canal, de graça.
 
 Escreve a dor que o teu time repete há três meses e vê o que volta:
-https://finder.thiagoconcer.com.br/?utm_source=whatsapp&utm_medium=grupos&utm_campaign=lancamento-concerfinder
+https://thiagoconcer.com.br/go/cf-wppg
 ```
 
 ---
