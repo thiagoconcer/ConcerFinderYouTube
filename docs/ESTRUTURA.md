@@ -20,6 +20,7 @@ Perfil de cada usuário cadastrado, estendendo `auth.users` (papel comercial e d
 | `commercial_role` | text | NOT NULL, CHECK IN ('vendedor','gestor_comercial','dono_empresa'). **Derivado de `cargo`** pelo trigger `deriva_perfil_do_cargo()`. |
 | `cargo` | text | NULL. **[Extensão do doc]** CHECK `perfil_do_cargo(cargo) is not null`: fundador, socio, presidente_ceo, vice_presidente, diretor, coordenador, supervisor, gerente, vendedor. Mesmos rótulos do campo Cargo Newsletter do ActiveCampaign. |
 | `role` | text | NOT NULL, default `'user'`, CHECK IN ('user','content_admin','audience_manager','admin') |
+| `is_internal` | boolean | NOT NULL, default `false`. **[Extensão do doc]** Conta da equipe: papel diferente de `user` **ou** e-mail `@thiagoconcer.com.br`. Materializada pelo trigger `marca_conta_interna()` porque entra no WHERE de todos os relatórios. Fica fora do painel e da lista de leads; nada é apagado, e a ficha da pessoa continua abrindo. |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
 ### `limites_de_uso` **[Extensão do doc]**
 
@@ -36,7 +37,7 @@ Teto de buscas por pessoa. O acervo transcrito é o ativo do produto e a busca �
 
 A aplicação do limite fica **dentro da RPC `search_videos`**, não só na Edge Function: quem estiver logado pode chamar a RPC direto com o próprio JWT, e conferir só na borda protegeria o caminho do app deixando o outro aberto. Staff é ilimitado, porque a equipe testa o produto o dia inteiro.
 
-**Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; `idx_profiles_cargo` em `cargo`; `idx_profiles_role` em `role`.
+**Índices:** PK em `id`; `idx_profiles_commercial_role` em `commercial_role`; parcial `idx_profiles_is_internal` em `is_internal` where `is_internal`; `idx_profiles_cargo` em `cargo`; `idx_profiles_role` em `role`.
 
 ### `leads`
 Registro do lead gerado no cadastro e o estado de envio para a régua de nutrição.
@@ -189,6 +190,8 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`search_videos(query_embedding, match_count)`** (SECURITY DEFINER) — busca vetorial por similaridade de cosseno em `video_segments`, retorna vídeo, `start_seconds`, `similarity_score`, `rank_position`; persiste `searches` + `search_results`. *Ação: usuário submete a dor na caixa de busca.*
 - **`handle_new_user()`** (trigger) — cria `profiles` no signup.
 - **`is_concer_staff()`** — helper de RLS para os painéis internos.
+- **`eh_conta_interna(email, role)`** / **`marca_conta_interna()`** (trigger) / **`perfil_interno(p_profile_id)`** — a regra de conta interna em um lugar só. A primeira decide, o trigger materializa em `profiles.is_internal`, a terceira serve as tabelas que só têm `profile_id` (leads, searches, video_views). **[Extensão do doc]**
+- **`get_leads_facetas()`** (SECURITY DEFINER, staff-only) — o que existe para filtrar na lista de leads, com contagem: origens, cargos, temas buscados e situação na régua. Origem é aberta (qualquer `utm_source`, qualquer domínio de referrer), então a tela não pode ter uma lista fixa: um canal novo ficaria invisível justamente na semana em que começou a trazer gente. **[Extensão do doc]**
 - **`get_busca_detail(p_search_id)`** (SECURITY DEFINER, staff-only) — o que a pessoa recebeu numa busca: pergunta de contexto, resposta, plano inteiro e os trechos na ordem entregue, marcando quais ela abriu. Separada de `get_lead_detail` porque é lida uma busca por vez; trazer o plano de todas junto pesaria a ficha inteira. **[Extensão do doc]**
 - **`get_contexto_insights(from_date, to_date, filter_commercial_role)`** (SECURITY DEFINER, staff-only) — quantos respondem a pergunta de contexto, por perfil, e trechos abertos por busca com e sem contexto. **[Extensão do doc]**
 - **`get_audience_insights()`** (SECURITY DEFINER, staff-only) — agrega `searches.detected_topics` × `profiles.commercial_role` para o painel de audiência.

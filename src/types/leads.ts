@@ -12,6 +12,11 @@ export interface LeadResumo {
   lead_id: string | null
   status_nutricao: string | null
   nutricao_enviada_em: string | null
+  /** utm_source, senão o domínio do referrer, senão 'direto'. */
+  origem: string | null
+  campanha: string | null
+  /** Conta da equipe. Só aparece quando a lista pede para incluir internos. */
+  interno: boolean
   /** 0 a 100. Vem de score_do_lead no banco, nunca calculado aqui. */
   score: number
   /** 'quente' | 'morno' | 'frio', o mesmo corte que o data lake usa. */
@@ -23,6 +28,15 @@ export interface LeadResumo {
   temas: string[]
   /** A dor mais recente, que é o assunto que a pessoa tem na cabeça agora. */
   ultima_dor: string | null
+}
+
+/** Retorno de `get_leads_facetas`: o que existe para filtrar, com contagem. */
+export interface LeadsFacetas {
+  total: number
+  origens: Array<{ valor: string; total: number }>
+  cargos: Array<{ valor: string; total: number }>
+  temas: Array<{ valor: string; total: number }>
+  reguas: Array<{ valor: string; total: number }>
 }
 
 /**

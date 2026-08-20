@@ -1,25 +1,33 @@
 import { useCallback, useEffect, useState } from 'react'
-import { AlertCircle, ChevronRight, Mail, Phone, RefreshCw, Search as SearchIcon } from 'lucide-react'
+import {
+  AlertCircle,
+  ChevronRight,
+  Compass,
+  Mail,
+  Phone,
+  RefreshCw,
+  Search as SearchIcon,
+} from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  FILTROS_VAZIOS,
+  FiltrosLeadsBar,
+  TODOS,
+  temFiltro,
+  type FiltrosLeads,
+} from '@/components/admin/filtros-leads'
 import { Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { ROUTES } from '@/lib/routes'
 import { formatDateTime, topicLabel } from '@/lib/format'
 import { CARGO_LABELS, COMMERCIAL_ROLE_LABELS } from '@/types/database'
 import type { Cargo, CommercialRole } from '@/types/database'
-import type { LeadResumo, SituacaoNutricao } from '@/types/leads'
+import type { LeadResumo, LeadsFacetas, SituacaoNutricao } from '@/types/leads'
 
 /**
  * /admin/leads
@@ -35,7 +43,6 @@ import type { LeadResumo, SituacaoNutricao } from '@/types/leads'
  * de comportamento é nosso.
  */
 
-const TODOS = 'todos'
 
 const FAIXA_VARIANT: Record<string, 'default' | 'secondary' | 'outline'> = {
   quente: 'default',
@@ -71,15 +78,25 @@ export function AdminLeadsPage() {
   const [erro, setErro] = useState<string | null>(null)
   const [busca, setBusca] = useState('')
   const [termo, setTermo] = useState('')
-  const [perfil, setPerfil] = useState<string>(TODOS)
+  const [filtros, setFiltros] = useState<FiltrosLeads>(FILTROS_VAZIOS)
+  const [facetas, setFacetas] = useState<LeadsFacetas | null>(null)
 
   const carregar = useCallback(async () => {
     setErro(null)
     setLeads(null)
 
+    // TODOS vira undefined: o banco entende ausência de filtro, não a string.
+    const so = (valor: string) => (valor === TODOS ? undefined : valor)
+
     const { data, error } = await supabase.rpc('get_leads', {
       p_busca: termo || undefined,
-      p_perfil: perfil === TODOS ? undefined : perfil,
+      p_perfil: so(filtros.perfil),
+      p_cargo: so(filtros.cargo),
+      p_origem: so(filtros.origem),
+      p_regua: so(filtros.regua),
+      p_tema: so(filtros.tema),
+      p_faixa: so(filtros.faixa),
+      p_atividade: so(filtros.atividade),
       p_limit: 200,
     })
 
@@ -89,7 +106,15 @@ export function AdminLeadsPage() {
       return
     }
     setLeads((data as unknown as LeadResumo[]) ?? [])
-  }, [termo, perfil])
+  }, [termo, filtros])
+
+  // As opções de origem, tema e régua vêm do banco com contagem: origem é
+  // aberta (qualquer utm_source), e opção que devolveria zero não deveria
+  // aparecer. Carrega uma vez, junto com a lista.
+  const carregarFacetas = useCallback(async () => {
+    const { data } = await supabase.rpc('get_leads_facetas')
+    setFacetas((data as unknown as LeadsFacetas) ?? null)
+  }, [])
 
   // Consulta separada e sem bloquear a lista: o ActiveCampaign é um terceiro,
   // e a lentidão ou a queda dele não pode segurar o dado que já é nosso.
@@ -112,6 +137,10 @@ export function AdminLeadsPage() {
   }, [carregar])
 
   useEffect(() => {
+    void carregarFacetas()
+  }, [carregarFacetas])
+
+  useEffect(() => {
     void carregarNutricao()
   }, [carregarNutricao])
 
@@ -131,7 +160,11 @@ export function AdminLeadsPage() {
             Quem se cadastrou, o que cada um procurou e onde está na régua de nutrição.
           </p>
         </div>
-        <Button variant="outline" onClick={() => { void carregar(); void carregarNutricao() }}>
+        <Button variant="outline" onClick={() => {
+            void carregar()
+            void carregarNutricao()
+            void carregarFacetas()
+          }}>
           <RefreshCw />
           Atualizar
         </Button>
@@ -150,19 +183,15 @@ export function AdminLeadsPage() {
             Buscar
           </Button>
         </form>
-        <Select value={perfil} onValueChange={setPerfil}>
-          <SelectTrigger className="w-52">
-            <SelectValue placeholder="Todos os perfis" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={TODOS}>Todos os perfis</SelectItem>
-            {(Object.keys(COMMERCIAL_ROLE_LABELS) as CommercialRole[]).map((p) => (
-              <SelectItem key={p} value={p}>
-                {COMMERCIAL_ROLE_LABELS[p]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      </div>
+
+      <div className="mb-6">
+        <FiltrosLeadsBar
+          filtros={filtros}
+          facetas={facetas}
+          onChange={setFiltros}
+          onLimpar={() => setFiltros(FILTROS_VAZIOS)}
+        />
       </div>
 
       {erro && (
@@ -195,7 +224,7 @@ export function AdminLeadsPage() {
       {leads !== null && leads.length === 0 && (
         <Card>
           <CardContent className="py-14 text-center text-sm text-muted-foreground">
-            {termo || perfil !== TODOS
+            {termo || temFiltro(filtros)
               ? 'Nenhum lead para esse filtro.'
               : 'Nenhum lead cadastrado ainda.'}
           </CardContent>
@@ -264,6 +293,17 @@ export function AdminLeadsPage() {
                             <Phone className="size-3" aria-hidden="true" />
                             {lead.whatsapp}
                           </div>
+                          {/* A origem fica junto do contato porque é dado de
+                              cadastro, não de comportamento: ela responde "de
+                              onde essa pessoa veio", que é a primeira pergunta
+                              de quem vai falar com ela. */}
+                          {lead.origem && (
+                            <div className="flex items-center gap-1.5">
+                              <Compass className="size-3" aria-hidden="true" />
+                              {lead.origem}
+                              {lead.campanha ? ` · ${lead.campanha}` : ''}
+                            </div>
+                          )}
                         </div>
                       </td>
 

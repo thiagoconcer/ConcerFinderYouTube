@@ -198,6 +198,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_internal: boolean
           role: string
           updated_at: string
           whatsapp: string
@@ -209,6 +210,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_internal?: boolean
           role?: string
           updated_at?: string
           whatsapp: string
@@ -220,6 +222,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_internal?: boolean
           role?: string
           updated_at?: string
           whatsapp?: string
@@ -497,6 +500,10 @@ export type Database = {
         Args: { p_profile_id: string; p_role: string }
         Returns: Json
       }
+      eh_conta_interna: {
+        Args: { p_email: string; p_role: string }
+        Returns: boolean
+      }
       faixa_do_score: { Args: { p_score: number }; Returns: string }
       get_audience_insights: {
         Args: {
@@ -506,6 +513,7 @@ export type Database = {
         }
         Returns: Json
       }
+      get_busca_detail: { Args: { p_search_id: string }; Returns: Json }
       get_cargo_insights: {
         Args: {
           filter_commercial_role?: string
@@ -514,7 +522,6 @@ export type Database = {
         }
         Returns: Json
       }
-      get_busca_detail: { Args: { p_search_id: string }; Returns: Json }
       get_content_dashboard: { Args: never; Returns: Json }
       get_contexto_insights: {
         Args: {
@@ -539,9 +546,22 @@ export type Database = {
       get_equipe: { Args: never; Returns: Json }
       get_lead_detail: { Args: { p_profile_id: string }; Returns: Json }
       get_leads: {
-        Args: { p_busca?: string; p_limit?: number; p_perfil?: string }
+        Args: {
+          p_atividade?: string
+          p_busca?: string
+          p_cargo?: string
+          p_desde?: string
+          p_faixa?: string
+          p_incluir_internos?: boolean
+          p_limit?: number
+          p_origem?: string
+          p_perfil?: string
+          p_regua?: string
+          p_tema?: string
+        }
         Returns: Json
       }
+      get_leads_facetas: { Args: never; Returns: Json }
       get_origem_insights: {
         Args: { from_date?: string; to_date?: string }
         Returns: Json
@@ -575,6 +595,7 @@ export type Database = {
         Returns: string
       }
       perfil_do_cargo: { Args: { p_cargo: string }; Returns: string }
+      perfil_interno: { Args: { p_profile_id: string }; Returns: boolean }
       run_ingestion_step: { Args: { step: string }; Returns: number }
       score_do_lead: { Args: { p_profile_id: string }; Returns: number }
       score_do_lead_detalhe: { Args: { p_profile_id: string }; Returns: Json }
