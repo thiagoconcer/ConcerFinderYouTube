@@ -62,6 +62,8 @@ O app captura UTM, referrer e página de entrada sozinho, na primeira visita, e 
 
 Formato da casa: asterisco simples para negrito, sem linha divisória, sem hashtag, chamada distribuída. Duas versões porque os grupos têm públicos diferentes.
 
+As duas seguem a mesma estrutura, e ela existe por um motivo: em grupo a pessoa decide em três segundos se aquilo é sobre ela. Por isso vem primeiro um bloco de dores escritas como ela fala (é ali que ela se reconhece e já sabe o que vai digitar), e só depois o que a ferramenta devolve, em três itens: os vídeos, o minuto e o plano de ação. Mensagem que só anuncia o lançamento não passa desse teste.
+
 ### Versão A, grupos de vendedores
 
 ```
@@ -71,9 +73,24 @@ Quantas vezes você já pensou "o Thiago Concer tem um vídeo sobre isso" e não
 
 Agora dá pra saber.
 
-*ConcerFinder*: você escreve a tua dor do teu jeito, tipo "cliente diz que tá caro e eu congelo", e ele te mostra em quais dos meus vídeos eu resolvo isso e em qual *minuto exato*. Você clica e assiste dali. Com plano de ação pra tua semana junto.
+Pensa na tua semana. Alguma dessas é tua?
 
-São cerca de *500 vídeos* de vendas no canal, e agora dá pra chegar direto no trecho que interessa.
+"O cliente diz que tá caro e eu congelo."
+"Mandei a proposta e ele sumiu."
+"Faço follow-up e sinto que tô incomodando."
+"Chego no fechamento e enrolo na hora de pedir o pedido."
+"Ligo, ligo, e não passo da secretária."
+"O cara diz que vai pensar e eu aceito e desligo."
+
+Escreve uma dessas no *ConcerFinder*, com as tuas palavras mesmo, e ele te devolve três coisas:
+
+1. em quais dos meus vídeos eu resolvo aquilo
+2. o *minuto exato* onde começa a resposta, e o vídeo abre já nesse ponto
+3. um *plano de ação* pra tua semana, com o que fazer na próxima ligação
+
+Você não precisa adivinhar palavra-chave nem garimpar título. Descreve a situação do jeito que contaria pro colega do lado, e ele acha o trecho.
+
+São cerca de *500 vídeos* de vendas no canal, e agora dá pra chegar direto no que interessa pro teu caso.
 
 É *grátis*. Leva 2 minutos do cadastro à primeira resposta.
 
@@ -90,7 +107,22 @@ Só que no meio do mês ninguém para pra diagnosticar. Cobra-se mais, o time co
 
 Lançamos o *ConcerFinder* pra isso.
 
-Você escreve a tua dor de gestão do jeito que falaria com outro gestor, tipo "meu time não faz follow-up e eu só descubro no fim do mês", e ele te mostra em quais dos meus vídeos eu trato disso, no *minuto exato*, com um *plano de ação de gestão* pra semana: a rotina, o que cobrar e o que olhar na reunião de segunda.
+Você escreve a tua dor de gestão do jeito que falaria com outro gestor:
+
+"Meu time não faz follow-up e eu só descubro no fim do mês."
+"Treinei fechamento e em duas semanas voltaram a vender do jeito antigo."
+"A reunião de segunda virou reunião de desculpa."
+"Todo mundo dá desconto pra fechar e a margem vai embora."
+"Um vendedor carrega o mês nas costas e o resto empurra."
+"Sei que tá furando, mas não sei em qual etapa."
+
+E ele te devolve três coisas:
+
+1. em quais dos meus vídeos eu trato daquele problema
+2. o *minuto exato* onde a resposta começa, com o vídeo abrindo nesse ponto
+3. um *plano de ação de gestão* pra semana: a rotina, o que cobrar e o que olhar na reunião de segunda
+
+É o diagnóstico que ninguém tem tempo de fazer no meio do mês, em 2 minutos.
 
 São cerca de *500 vídeos* de vendas no canal, de graça.
 
