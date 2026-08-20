@@ -522,7 +522,21 @@ PS: mudou uma coisa lá dentro. Depois dos trechos ele te pergunta como o teu co
 
 **Decisão do Bruno em 20/08.** Muda a regra anterior, que mantinha o parceiro só dentro do plano de ação. O convite entra **apenas nas réguas de gestor e dono** e **apenas do E2 em diante**, ou seja, depois que a pessoa já recebeu conteúdo. A régua de vendedor não leva convite: o produto do parceiro é vendido para empresa, e mandar vendedor para o formulário seria mandá-lo para algo que não é dele.
 
-Formato: um bloco curto no fim do e-mail, depois da assinatura, separado por linha, em corpo menor e cinza. Ele é uma nota, não a chamada principal do e-mail, porque a chamada principal continua sendo voltar ao ConcerFinder.
+**Formato, corrigido em 20/08 depois da primeira versão.** A primeira tentativa colocou o bloco em cinza e corpo menor, para ele parecer uma nota. Ficou apagado: o convite some no fim do e-mail e ninguém clica no que parece rodapé. O bloco agora tem **o mesmo peso visual do resto do e-mail**, e o link vira **botão**.
+
+Regras de estilo, e elas valem para o e-mail inteiro, não só para este bloco:
+- Fundo **transparente**, sem caixa cinza, sem bloco colorido atrás do texto.
+- Fonte **#000000**, Arial, 18px, a mesma do corpo. Nada de cinza claro nem de corpo menor.
+- O link é um **botão azul** (`#2E74E8`, texto branco), igual ao botão do site.
+- Uma linha fina separando do resto (`border-top:1px solid #dddddd`), só para marcar que ali começa outro assunto.
+
+O bloco continua no fim, depois da assinatura, e continua sendo o segundo assunto do e-mail: a chamada principal é voltar ao ConcerFinder. O que muda é que ele está legível.
+
+**HTML do botão**, o mesmo nos seis, trocando só o texto:
+
+```html
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:4px 0 18px 0"><tr><td bgcolor="#2E74E8" style="border-radius:6px"><a href="LINK_AQUI" style="display:inline-block;padding:14px 28px;font-family:Arial, Helvetica, sans-serif;font-size:17px;font-weight:bold;color:#FFFFFF;text-decoration:none">TEXTO DO BOTÃO</a></td></tr></table>
+```
 
 Regras da parceria valem inteiras: nada de preço, nada de "a IA substitui vendedor", "formação" e nunca "curso", nunca dizer que Thiago Concer e Viver de IA "se juntaram", e a expressão é **"a plataforma de IA que eu indico"**. Quantidade sempre como "dezenas de soluções prontas", nunca o número exato.
 
@@ -533,42 +547,54 @@ Link (UTM próprio, para separar do convite que já existe dentro do plano):
 ```
 Uma nota prática: o passo que mais morre é o que depende de alguém repetindo a mesma coisa toda semana, e treino é o caso clássico. Hoje a IA já ouve as calls do time e devolve o que cada vendedor errou, sem você assistir a todas.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu time: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver como isso encaixa no meu time]
 ```
 
 **Gestor E3** (tema: reunião de segunda)
 ```
 Uma nota prática: a reunião boa depende de dado atualizado, e é aí que ela emperra, porque preencher CRM é a tarefa que ninguém faz na sexta. A IA sustenta essa parte: o funil atualizado e o relatório pronto na segunda de manhã, sem você cobrar preenchimento.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa na sua rotina: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver como isso encaixa na minha rotina]
 ```
 
 **Gestor E4** (tema: o que travou o time)
 ```
 Uma nota prática: quando a mesma trava aparece toda semana, o problema deixou de ser diagnóstico e virou execução diária. A IA segura o que é repetitivo, o follow-up que ninguém faz, o cliente que esfria, o registro que não acontece, e devolve o seu tempo para o que exige gente.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu time: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver como isso encaixa no meu time]
 ```
 
 **Dono E2** (tema: comercial é sistema)
 ```
 Uma nota prática, já que estamos falando de sistema: o passo que mais morre na segunda-feira é sempre o que depende de alguém repetindo a mesma tarefa todo dia, registrar, cobrar retorno, olhar o funil. É aí que a IA sustenta a rotina que a empresa não sustenta na mão.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas para isso, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu comercial: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas para isso, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver como isso encaixa no meu comercial]
 ```
 
 **Dono E3** (tema: previsibilidade)
 ```
 Uma nota prática: aquelas três perguntas só têm resposta se alguém registrar tudo, todo dia, e é exatamente aí que a empresa passa a depender de uma disciplina que ela não tem. A IA fecha esse buraco: funil atualizado e número na sua mão sem depender de cobrança.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver como isso encaixa no seu comercial: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver como isso encaixa no meu comercial]
 ```
 
 **Dono E4** (tema: o dinheiro que fica na mesa)
 ```
 Uma nota prática: boa parte desse dinheiro some em tarefa simples e repetida, a proposta que não teve retorno, o cliente que ninguém lembrou de chamar. É o tipo de coisa que a IA faz sem esquecer e sem cansar.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa. Ver o que dá para automatizar primeiro: [LINK]
+A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+
+[BOTÃO: Ver o que dá para automatizar primeiro]
 ```
 
 ## 3. Nota de execução: o conector não grava corpo de e-mail
@@ -576,3 +602,8 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entreg
 Tentado em 20/08 pelo conector do ActiveCampaign (`update_campaign_message`), nas mensagens 606 (E1 vendedor, já enviada) e 619 (E2 dono, nunca enviada): a chamada volta sem erro, mas **nada é gravado**. Conferido lendo de volta as duas: `mdate` não muda e o HTML continua o antigo. O mesmo teste com `subject` também não alterou `mdate`.
 
 Então a aplicação desta copy é manual no editor do ActiveCampaign, ou por uma função com as credenciais que o produto já usa (as mesmas do `sync-nurture`). Não repetir a tentativa pelo conector esperando resultado diferente.
+
+
+## 4. Correção de 20/08 à noite: o que já foi aplicado precisa ser refeito
+
+Gestor E2 (campanha 283) e Gestor E3 (284) receberam o bloco na versão cinza e em corpo menor. Os dois precisam voltar com o estilo desta seção: texto #000000 em 18px, fundo transparente e botão azul. Os outros quatro (Gestor E4 285, Dono E2 287, Dono E3 288, Dono E4 289) ainda não têm o bloco e já entram no formato certo.
