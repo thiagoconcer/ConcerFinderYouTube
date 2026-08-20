@@ -527,7 +527,7 @@ Formato: um bloco curto no fim do e-mail, depois da assinatura, separado por lin
 Regras da parceria valem inteiras: nada de preço, nada de "a IA substitui vendedor", "formação" e nunca "curso", nunca dizer que Thiago Concer e Viver de IA "se juntaram", e a expressão é **"a plataforma de IA que eu indico"**. Quantidade sempre como "dezenas de soluções prontas", nunca o número exato.
 
 Link (UTM próprio, para separar do convite que já existe dentro do plano):
-`https://type.viverdeia.ai/new?utm_source=embaixador&utm_medium=email-regua&utm_campaign=concer-finder&utm_term=concer`
+`https://type.viverdeia.ai/new?utm_source=embaixador&utm_medium=email&utm_campaign=concer-finder&utm_term=concer`
 
 **Gestor E2** (tema: treino e role play)
 ```
