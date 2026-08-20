@@ -14,6 +14,11 @@ import { generateActionPlan, type PlanSegment } from '../_shared/ai.ts'
  *    QUALQUER busca com `force`, e monta os trechos a partir do que ficou
  *    persistido em search_results. É o que permite reprocessar os planos
  *    antigos depois de mudar o prompt, sem impersonar o usuário dono.
+ *
+ * REFINAMENTO POR CONTEXTO. Quando o corpo traz `context_answer`, a pessoa
+ * respondeu a pergunta que o context-question fez e o plano é gerado de novo,
+ * agora com o caso concreto dela. É UMA regeração por busca: `plan_has_context`
+ * marca que ela já aconteceu, senão cada reenvio pagaria outra chamada de LLM.
  */
 
 interface Body {
@@ -21,6 +26,8 @@ interface Body {
   query_text?: string
   top_segments?: PlanSegment[]
   force?: boolean
+  /** Resposta à pergunta de contexto. Dispara a regeração do plano. */
+  context_answer?: string
 }
 
 Deno.serve(handler(async (req) => {
@@ -37,7 +44,7 @@ Deno.serve(handler(async (req) => {
 
   const { data: busca, error } = await db
     .from('searches')
-    .select('id, profile_id, query_text, action_plan, profiles(commercial_role)')
+    .select('id, profile_id, query_text, action_plan, plan_has_context, context_answer, profiles(commercial_role)')
     .eq('id', body.search_id)
     .maybeSingle()
 
@@ -50,11 +57,29 @@ Deno.serve(handler(async (req) => {
     throw new AppError('Esta busca não pertence a você.', 403, 'forbidden')
   }
 
-  // Idempotência: se o plano já foi gerado, devolve o que está gravado em
-  // vez de pagar outra chamada de LLM. `force` (só no modo interno) ignora.
+  /*
+    Três caminhos, e a ordem importa.
+
+    O contexto só refina UMA vez: `plan_has_context` já verdadeiro significa que
+    o plano na tela nasceu com a resposta dela, e reenviar o formulário (duplo
+    clique, voltar de um vídeo) não pode pagar outra geração.
+  */
+  const contexto = (body.context_answer ?? '').trim()
+  const refinar = contexto.length > 0 && !busca.plan_has_context
+
+  // `force` (só no modo interno) regera de qualquer jeito, para reprocessar
+  // planos antigos depois de mudar o prompt.
   const regerar = interno && body.force === true
-  if (busca.action_plan && !regerar) {
-    return json({ search_id: busca.id, action_plan: busca.action_plan, cached: true })
+
+  // Idempotência: se o plano já foi gerado e não há nada novo a acrescentar,
+  // devolve o que está gravado em vez de pagar outra chamada de LLM.
+  if (busca.action_plan && !regerar && !refinar) {
+    return json({
+      search_id: busca.id,
+      action_plan: busca.action_plan,
+      cached: true,
+      has_context: busca.plan_has_context === true,
+    })
   }
 
   let segmentos = (body.top_segments ?? []).filter(
@@ -81,18 +106,36 @@ Deno.serve(handler(async (req) => {
 
   const perfil = (busca as Record<string, any>).profiles?.commercial_role as string | undefined
 
+  // No modo interno o contexto não vem no corpo: quem reprocessa é um cron, e o
+  // que a pessoa respondeu está gravado na própria busca.
+  const contextoDoPlano = refinar ? contexto : (regerar ? busca.context_answer : null)
+
   const plano = await generateActionPlan(
     body.query_text?.trim() || busca.query_text,
     segmentos.slice(0, 8),
     perfil,
+    contextoDoPlano,
   )
 
   // Trava de concorrência: duas gerações simultâneas (duplo clique, duas
   // abas) pagariam o LLM duas vezes e a última venceria. Fora do modo force,
   // só grava se ainda não há plano; se outra chamada chegou antes, devolve o
   // que ela gravou.
-  let query = db.from('searches').update({ action_plan: plano }).eq('id', busca.id)
-  if (!regerar) query = query.is('action_plan', null)
+  const gravar: Record<string, unknown> = { action_plan: plano }
+  if (contextoDoPlano) {
+    gravar.plan_has_context = true
+    if (refinar) {
+      gravar.context_answer = contexto
+      gravar.context_answered_at = new Date().toISOString()
+    }
+  }
+
+  let query = db.from('searches').update(gravar).eq('id', busca.id)
+  // No refinamento a trava é outra: o plano JÁ existe e é ele que está sendo
+  // substituído. Quem impede a segunda cobrança é plan_has_context, conferido
+  // aqui de novo para o caso de duas abas terem entrado juntas.
+  if (refinar) query = query.eq('plan_has_context', false)
+  else if (!regerar) query = query.is('action_plan', null)
   const { data: gravadas, error: upErr } = await query.select('id')
 
   if (upErr) throw new AppError(`Falha ao gravar o plano: ${upErr.message}`, 500)
@@ -100,11 +143,22 @@ Deno.serve(handler(async (req) => {
   if (!regerar && (gravadas ?? []).length === 0) {
     const { data: existente } = await db
       .from('searches')
-      .select('action_plan')
+      .select('action_plan, plan_has_context')
       .eq('id', busca.id)
       .maybeSingle()
-    return json({ search_id: busca.id, action_plan: existente?.action_plan ?? plano, cached: true })
+    return json({
+      search_id: busca.id,
+      action_plan: existente?.action_plan ?? plano,
+      cached: true,
+      has_context: existente?.plan_has_context === true,
+    })
   }
 
-  return json({ search_id: busca.id, action_plan: plano, cached: false, regenerated: regerar })
+  return json({
+    search_id: busca.id,
+    action_plan: plano,
+    cached: false,
+    regenerated: regerar,
+    has_context: Boolean(contextoDoPlano),
+  })
 }))

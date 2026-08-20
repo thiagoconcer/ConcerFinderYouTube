@@ -12,6 +12,11 @@ verify_jwt = true
 [functions.search-pain]
 verify_jwt = true
 
+# Pergunta de contexto: chamada pelo frontend com o JWT do usuário, logo depois
+# da busca. Só o dono da busca gera a pergunta dela.
+[functions.context-question]
+verify_jwt = true
+
 # A autenticação real acontece dentro da função (requireUser + dono da busca),
 # e ela também aceita X-Cron-Secret para reprocessar planos antigos depois de
 # uma mudança de prompt. O gateway barraria essa chamada interna antes de a

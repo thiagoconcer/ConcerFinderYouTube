@@ -22,7 +22,10 @@ interface Body {
 }
 
 Deno.serve(handler(async (req) => {
-  await requireUser(req)
+  // O id é usado lá embaixo, no fallback que recupera o search_id quando a
+  // busca não devolve linha nenhuma. Sem guardar o retorno aqui, aquele
+  // caminho estourava ReferenceError: user is not defined.
+  const user = await requireUser(req)
 
   const body: Body = await req.json().catch(() => ({}))
   const queryText = (body.query_text ?? '').trim()

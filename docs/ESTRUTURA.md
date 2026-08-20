@@ -96,8 +96,13 @@ Cada busca de dor/tema feita por um usuário cadastrado — alimenta a segmenta�
 | `query_text` | text | NOT NULL |
 | `detected_topics` | text[] | NULL |
 | `action_plan` | text | NULL |
+| `context_question` | text | NULL. **[Extensão do doc]** Pergunta gerada a partir da dor e dos trechos, para refinar o plano. |
+| `context_options` | text[] | NULL. **[Extensão do doc]** Respostas sugeridas, geradas junto com a pergunta. |
+| `context_answer` | text | NULL. **[Extensão do doc]** O que a pessoa respondeu (opções clicadas e/ou texto livre). |
+| `context_answered_at` | timestamptz | NULL. **[Extensão do doc]** |
+| `plan_has_context` | boolean | NOT NULL, default `false`. **[Extensão do doc]** true quando o plano gravado nasceu já com a resposta. Sem ela o relatório não separa plano refinado de plano original. |
 | `created_at` | timestamptz | NOT NULL, default `now()` |
-**Índices:** PK; `idx_searches_profile_id` em `profile_id`; `idx_searches_created_at` em `created_at`; GIN `idx_searches_detected_topics` em `detected_topics`.
+**Índices:** PK; `idx_searches_profile_id` em `profile_id`; `idx_searches_created_at` em `created_at`; GIN `idx_searches_detected_topics` em `detected_topics`; parcial `idx_searches_contexto_respondido` em `created_at` where `context_answer is not null` (os relatórios de contexto só olham as respondidas, que são a minoria).
 
 ### `search_results`
 Recomendações retornadas para cada busca (vídeo + minutagem + relevância).
@@ -184,6 +189,8 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`search_videos(query_embedding, match_count)`** (SECURITY DEFINER) — busca vetorial por similaridade de cosseno em `video_segments`, retorna vídeo, `start_seconds`, `similarity_score`, `rank_position`; persiste `searches` + `search_results`. *Ação: usuário submete a dor na caixa de busca.*
 - **`handle_new_user()`** (trigger) — cria `profiles` no signup.
 - **`is_concer_staff()`** — helper de RLS para os painéis internos.
+- **`get_busca_detail(p_search_id)`** (SECURITY DEFINER, staff-only) — o que a pessoa recebeu numa busca: pergunta de contexto, resposta, plano inteiro e os trechos na ordem entregue, marcando quais ela abriu. Separada de `get_lead_detail` porque é lida uma busca por vez; trazer o plano de todas junto pesaria a ficha inteira. **[Extensão do doc]**
+- **`get_contexto_insights(from_date, to_date, filter_commercial_role)`** (SECURITY DEFINER, staff-only) — quantos respondem a pergunta de contexto, por perfil, e trechos abertos por busca com e sem contexto. **[Extensão do doc]**
 - **`get_audience_insights()`** (SECURITY DEFINER, staff-only) — agrega `searches.detected_topics` × `profiles.commercial_role` para o painel de audiência.
 - **`get_search_results(p_search_id)`** (SECURITY DEFINER) — reabre os resultados de uma busca anterior em `/busca/historico`.
 - **`get_video_detail(p_video_id)`** (SECURITY DEFINER) — metadados do vídeo e os trechos que o usuário já recuperou, para `/video/:id`.

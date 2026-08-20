@@ -120,6 +120,7 @@ export async function generateActionPlan(
   queryText: string,
   segmentos: PlanSegment[],
   perfil?: string | null,
+  contexto?: string | null,
 ): Promise<string> {
   // Regra da doc: sem trechos relevantes, devolve orientação de refinar a dor.
   if (segmentos.length === 0) return planoSemResultado()
@@ -153,12 +154,30 @@ Regras rígidas:
 - Entregue só o plano, sem introdução sobre você mesmo e sem repetir a dor inteira.
 - Seja objetivo: cada frase precisa mudar o que a pessoa vai fazer. Nada de preâmbulo, ressalva longa ou recapitulação.`
 
+  /*
+    O contexto é resposta a uma pergunta que o próprio sistema fez depois da
+    busca (veja generateContextQuestion). Entra ANTES dos trechos e com peso
+    declarado: é a única informação do caso concreto que o modelo tem, e sem
+    dizer isso ele trata a resposta como um detalhe e volta a escrever o plano
+    genérico que o contexto veio corrigir.
+  */
+  const contextoDaPessoa = contexto?.trim()
+    ? `A pessoa ainda contou isto sobre a situação dela:
+"""
+${contexto.trim()}
+"""
+
+Este contexto é o caso concreto: cada passo do plano precisa caber nele (no que ela vende, no canal que ela usa, no tamanho do time que ela tem) em vez de descrever o caso médio. Não repita o contexto de volta para ela.
+
+`
+    : ''
+
   const prompt = `A pessoa descreveu esta dor de vendas:
 """
 ${queryText}
 """
 
-${quemE ? quemE + '\n\n' : ''}Estes são os trechos das transcrições dos vídeos do canal que a busca semântica encontrou como mais relevantes. Eles são a sua única fonte.
+${quemE ? quemE + '\n\n' : ''}${contextoDaPessoa}Estes são os trechos das transcrições dos vídeos do canal que a busca semântica encontrou como mais relevantes. Eles são a sua única fonte.
 
 ${contexto}
 
@@ -245,4 +264,132 @@ ${instrucaoDaSecaoIA()}`
     throw new AppError('O modelo não retornou um plano de ação.', 502, 'empty_completion')
   }
   return texto
+}
+
+// ------------------------------------------------------------------
+// Pergunta de contexto (Claude)
+// ------------------------------------------------------------------
+
+export interface ContextQuestion {
+  /** Uma pergunta, em português brasileiro, feita a partir da dor. */
+  pergunta: string
+  /** Respostas plausíveis para clicar. Vazio quando a dor não comporta opção. */
+  opcoes: string[]
+}
+
+/**
+ * Gera a pergunta que refina o plano.
+ *
+ * Por que a pergunta é gerada e não fixa: um formulário perguntaria a mesma
+ * coisa para "o cliente some depois da proposta" e para "não passo da
+ * secretária", e nos dois casos perguntaria o que não muda o plano. Aqui a
+ * pergunta nasce da dor E dos trechos recuperados, porque o que se quer saber é
+ * como aplicar AQUELES vídeos no caso desta pessoa.
+ *
+ * Devolve null quando não vale perguntar: a dor já está detalhada, ou a busca
+ * não achou trecho nenhum. Perguntar por perguntar gasta a atenção da pessoa no
+ * momento em que ela ia ler o plano.
+ *
+ * Effort baixo e saída de duas linhas: isso roda em paralelo com o plano e
+ * precisa aparecer na tela antes dele.
+ */
+export async function generateContextQuestion(
+  queryText: string,
+  segmentos: PlanSegment[],
+  perfil?: string | null,
+): Promise<ContextQuestion | null> {
+  if (segmentos.length === 0) return null
+
+  const apiKey = requireSecret('ANTHROPIC_API_KEY')
+  const model = optionalSecret('ANTHROPIC_MODEL') ?? DEFAULT_CLAUDE_MODEL
+  const client = new Anthropic({ apiKey })
+
+  const assuntos = segmentos
+    .slice(0, 5)
+    .map((s, i) => `[${i + 1}] ${s.title ?? 'sem título'}: ${s.segment_text.slice(0, 400)}`)
+    .join('\n')
+
+  const quemE = perfil ? CONTEXTO_PERFIL[perfil] : undefined
+
+  const system = `Você prepara a pergunta que o ConcerFinder faz a uma pessoa logo depois de ela descrever uma dor de vendas, para que o plano de ação seja escrito para o caso dela e não para o caso médio.
+
+Regras:
+- UMA pergunta só, curta, do jeito que um consultor perguntaria numa conversa. No máximo duas frases.
+- Pergunte a coisa cuja resposta MUDARIA o plano. Se a resposta não muda nada, não é a pergunta certa.
+- Nunca pergunte o que a pessoa já escreveu na dor.
+- Nunca peça número que ela não teria de cabeça, nem dado de sistema (taxa de conversão, CAC, ticket médio exato).
+- Português brasileiro, tratamento por "você", sem travessão e sem jargão.
+- As opções são respostas possíveis, curtas (até 5 palavras), plausíveis e mutuamente distintas. De 2 a 4, ou nenhuma quando a pergunta não comporta alternativa.
+- Se a dor já vier detalhada a ponto de a pergunta ser redundante, devolva pergunta vazia.`
+
+  const prompt = `Dor descrita pela pessoa:
+"""
+${queryText}
+"""
+
+${quemE ? quemE + '\n\n' : ''}Os trechos do canal que a busca vai entregar para ela tratam disto:
+${assuntos}
+
+Qual é a única pergunta que falta para aplicar esses trechos no caso dela?`
+
+  let resposta: any
+  try {
+    resposta = await client.messages.create({
+      model,
+      max_tokens: 400,
+      system,
+      messages: [{ role: 'user', content: prompt }],
+      output_config: {
+        effort: 'low',
+        format: {
+          type: 'json_schema',
+          schema: {
+            type: 'object',
+            properties: {
+              pergunta: { type: 'string' },
+              opcoes: { type: 'array', items: { type: 'string' } },
+            },
+            required: ['pergunta', 'opcoes'],
+            additionalProperties: false,
+          },
+        },
+      },
+    } as any)
+  } catch (error) {
+    // A pergunta é um bônus: se ela falhar, o plano segue sem contexto. Erro
+    // aqui não pode virar erro de busca na cara de quem está esperando trecho.
+    console.warn('Falha ao gerar a pergunta de contexto:', error)
+    return null
+  }
+
+  if (resposta.stop_reason === 'refusal') return null
+
+  const texto = (resposta.content ?? [])
+    .filter((bloco: any) => bloco.type === 'text')
+    .map((bloco: any) => bloco.text)
+    .join('')
+    .trim()
+
+  if (!texto) return null
+
+  let dado: { pergunta?: unknown; opcoes?: unknown }
+  try {
+    dado = JSON.parse(texto)
+  } catch {
+    console.warn('Pergunta de contexto veio fora do formato JSON.')
+    return null
+  }
+
+  const pergunta = typeof dado.pergunta === 'string' ? dado.pergunta.trim() : ''
+  if (pergunta.length < 10) return null
+
+  const opcoes = Array.isArray(dado.opcoes)
+    ? dado.opcoes
+        .filter((o): o is string => typeof o === 'string')
+        .map((o) => o.trim())
+        .filter(Boolean)
+        .slice(0, 4)
+    : []
+
+  return { pergunta, opcoes }
 }

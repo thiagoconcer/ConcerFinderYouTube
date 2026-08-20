@@ -73,6 +73,7 @@ export interface LeadDetalheDados {
     dor: string
     temas: string[]
     gerou_plano: boolean
+    respondeu_contexto: boolean
     buscado_em: string
     trechos_recomendados: number
     trechos_abertos: number
@@ -83,5 +84,39 @@ export interface LeadDetalheDados {
     titulo: string
     inicio_segundos: number
     aberto_em: string
+  }>
+}
+
+/**
+ * Retorno de `get_busca_detail`: o que a pessoa recebeu numa busca específica.
+ * Vem separado de `LeadDetalheDados` porque é lido uma busca por vez, e o plano
+ * de cada uma é grande demais para viajar junto com a ficha inteira.
+ */
+export interface BuscaDetalheDados {
+  busca: {
+    busca_id: string
+    profile_id: string
+    dor: string
+    temas: string[]
+    buscado_em: string
+    plano: string | null
+    plano_com_contexto: boolean
+  }
+  contexto: {
+    pergunta: string | null
+    opcoes: string[]
+    resposta: string | null
+    respondida_em: string | null
+  }
+  trechos: Array<{
+    video_id: string
+    youtube_video_id: string
+    titulo: string
+    thumbnail_url: string | null
+    inicio_segundos: number
+    relevancia: number
+    posicao: number
+    trecho: string | null
+    abriu: boolean
   }>
 }

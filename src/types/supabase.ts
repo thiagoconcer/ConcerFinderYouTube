@@ -287,27 +287,42 @@ export type Database = {
       searches: {
         Row: {
           action_plan: string | null
+          context_answer: string | null
+          context_answered_at: string | null
+          context_options: string[] | null
+          context_question: string | null
           created_at: string
           detected_topics: string[] | null
           id: string
+          plan_has_context: boolean
           profile_id: string
           query_text: string
           updated_at: string
         }
         Insert: {
           action_plan?: string | null
+          context_answer?: string | null
+          context_answered_at?: string | null
+          context_options?: string[] | null
+          context_question?: string | null
           created_at?: string
           detected_topics?: string[] | null
           id?: string
+          plan_has_context?: boolean
           profile_id: string
           query_text: string
           updated_at?: string
         }
         Update: {
           action_plan?: string | null
+          context_answer?: string | null
+          context_answered_at?: string | null
+          context_options?: string[] | null
+          context_question?: string | null
           created_at?: string
           detected_topics?: string[] | null
           id?: string
+          plan_has_context?: boolean
           profile_id?: string
           query_text?: string
           updated_at?: string
@@ -499,7 +514,16 @@ export type Database = {
         }
         Returns: Json
       }
+      get_busca_detail: { Args: { p_search_id: string }; Returns: Json }
       get_content_dashboard: { Args: never; Returns: Json }
+      get_contexto_insights: {
+        Args: {
+          filter_commercial_role?: string
+          from_date?: string
+          to_date?: string
+        }
+        Returns: Json
+      }
       get_cta_insights: {
         Args: { from_date?: string; to_date?: string }
         Returns: Json

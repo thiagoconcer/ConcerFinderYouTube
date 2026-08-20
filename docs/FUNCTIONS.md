@@ -153,6 +153,37 @@
 
 ---
 
+### `context-question`
+
+**[Extensão do doc]** Gera a pergunta que o sistema faz depois de entregar os trechos, para o plano ser escrito para o caso da pessoa e não para o caso médio.
+
+- **Propósito:** a partir da dor descrita e dos trechos recuperados, produzir UMA pergunta (com 2 a 4 respostas sugeridas) cuja resposta mudaria o plano.
+- **Autenticação exigida:** **usuário logado**, e a busca precisa ser dele.
+- **Input (body JSON):**
+  ```json
+  {
+    "search_id": "uuid",
+    "top_segments": [{ "title": "string", "segment_text": "string", "start_seconds": 0 }]
+  }
+  ```
+- **Output:**
+  ```json
+  {
+    "search_id": "uuid",
+    "question": "string ou null",
+    "options": ["string"],
+    "answered": false
+  }
+  ```
+- **Regras de negócio / validações:**
+  - **Por que é função separada do `search-pain`:** a busca é o momento em que a pessoa está olhando a tela esperando os trechos. Somar outra chamada de LLM ali atrasaria a entrega para todo mundo, inclusive para quem nunca vai responder. O frontend dispara esta função **em paralelo** com o `generate-action-plan`, depois que os trechos já apareceram.
+  - **Por que a pergunta é gerada e não fixa:** um formulário perguntaria a mesma coisa para "o cliente some depois da proposta" e para "não passo da secretária", e nos dois casos perguntaria o que não muda o plano. Aqui ela nasce da dor **e** dos trechos, porque o que se quer saber é como aplicar aqueles vídeos naquele caso.
+  - **Pode não perguntar nada:** dor já detalhada, busca sem trecho relevante ou falha na chamada devolvem `question: null`, e a tela simplesmente não mostra a caixa. Nada aqui pode segurar o plano.
+  - Idempotente: a pergunta de uma busca é gerada uma vez (`searches.context_question`); recarregar a tela devolve a mesma.
+  - Effort `low` e saída de duas linhas, porque ela precisa aparecer antes do plano.
+
+---
+
 ### `generate-action-plan`
 - **Propósito:** gerar o texto do plano de ação a partir da dor descrita pelo usuário e dos top segmentos recuperados na busca.
 - **Autenticação exigida:** **usuário logado** (chamada dentro do fluxo de busca; o JWT do usuário é validado).
@@ -179,6 +210,7 @@
   - Trata `stop_reason: "refusal"` antes de ler o conteúdo e usa o fallback de servidor do Claude, que reexecuta a chamada em outro modelo em vez de devolver a recusa. **[Extensão do doc]**
   - O plano é construído **apenas** a partir dos segmentos recuperados (Regra/Suposição: o plano deriva dos próprios insights dos vídeos relacionados à dor). **Uma exceção declarada:** a quinta seção, `## Como a IA acelera isso`, tem fonte própria (`_shared/viverdeia.ts`) e não sai dos trechos.
   - **Seção de parceiro [Extensão do doc]:** o modelo escolhe uma ou duas famílias de solução do Viver de IA de uma **lista fechada**, e não pode inventar produto, integração ou funcionalidade fora dela; sem a lista ele criaria uma solução plausível que o parceiro não tem, e a pessoa cairia no formulário procurando algo que ninguém vende. O prompt carrega junto a régua editorial da parceria: nada de contar quantas soluções existem (usa "dezenas de soluções prontas"), nada de preço, promessa de resultado ou "a IA substitui vendedor", e a IA nunca aparece criando processo ou disciplina que a empresa não tem. Quem escreve a chamada para ação é a tela, não o modelo.
+  - **Refinamento por contexto [Extensão do doc]:** quando o corpo traz `context_answer` (a resposta à pergunta do `context-question`), o plano é gerado de novo, agora com o caso concreto da pessoa, e grava `context_answer`, `context_answered_at` e `plan_has_context = true`. É **uma** regeração por busca: sem essa trava, cada reenvio do formulário (duplo clique, voltar de um vídeo) pagaria outra chamada de LLM. No modo interno (`force`), o contexto usado é o que já está gravado na busca.
   - Persiste o resultado em `searches.action_plan` (via `service_role`).
   - Se não houver segmentos relevantes (nenhum resultado), retorna um `action_plan` indicando que não foram encontrados trechos e sugere refinar a dor. **[Extensão do doc]**
 

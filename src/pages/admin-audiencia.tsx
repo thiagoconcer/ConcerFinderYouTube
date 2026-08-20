@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Ativacao } from '@/components/admin/ativacao'
 import { Cargos } from '@/components/admin/cargos'
 import { Crescimento } from '@/components/admin/crescimento'
+import { Contexto } from '@/components/admin/contexto'
 import { Cta } from '@/components/admin/cta'
 import { Origem } from '@/components/admin/origem'
 import { QualidadeBusca } from '@/components/admin/qualidade-busca'
@@ -29,6 +30,7 @@ import type { CommercialRole } from '@/types/database'
 import type {
   AudienceInsights,
   CargoInsights,
+  ContextoInsights,
   EngagementInsights,
   CtaInsights,
   OrigemInsights,
@@ -58,6 +60,7 @@ export function AdminAudienciaPage() {
   const [engajamento, setEngajamento] = useState<EngagementInsights | null>(null)
   const [origem, setOrigem] = useState<OrigemInsights | null>(null)
   const [cta, setCta] = useState<CtaInsights | null>(null)
+  const [contexto, setContexto] = useState<ContextoInsights | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
 
@@ -68,23 +71,28 @@ export function AdminAudienciaPage() {
     setEngajamento(null)
     setOrigem(null)
     setCta(null)
+    setContexto(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
     // O filtro vai para as TRÊS. Filtrar pela metade é pior que não filtrar:
     // a pessoa lê a tela inteira como se fosse do recorte escolhido.
     const filtro = perfil ? { filter_commercial_role: perfil } : {}
-    const [insightsRes, cargosRes, engajamentoRes, origemRes, ctaRes] = await Promise.all([
-      supabase.rpc('get_audience_insights', filtro),
-      supabase.rpc('get_cargo_insights', filtro),
-      supabase.rpc('get_engagement_insights', filtro),
-      // A origem não usa o filtro de perfil: a pergunta é de captação, e
-      // recortar por perfil esconderia justamente o canal que traz os outros.
-      supabase.rpc('get_origem_insights', {}),
-      // O CTA também não: o relatório já separa dono e gestor por dentro, e o
-      // recorte "vendedor" zeraria a seção (vendedor não recebe o botão).
-      supabase.rpc('get_cta_insights', {}),
-    ])
+    const [insightsRes, cargosRes, engajamentoRes, origemRes, ctaRes, contextoRes] =
+      await Promise.all([
+        supabase.rpc('get_audience_insights', filtro),
+        supabase.rpc('get_cargo_insights', filtro),
+        supabase.rpc('get_engagement_insights', filtro),
+        // A origem não usa o filtro de perfil: a pergunta é de captação, e
+        // recortar por perfil esconderia justamente o canal que traz os outros.
+        supabase.rpc('get_origem_insights', {}),
+        // O CTA também não: o relatório já separa dono e gestor por dentro, e o
+        // recorte "vendedor" zeraria a seção (vendedor não recebe o botão).
+        supabase.rpc('get_cta_insights', {}),
+        // O contexto usa o filtro de perfil: a pergunta é gerada da dor, e a dor
+        // do gestor não se parece com a do vendedor. Recortar aqui é informação.
+        supabase.rpc('get_contexto_insights', filtro),
+      ])
 
     if (insightsRes.error) {
       setErro('Não foi possível carregar os insights de audiência.')
@@ -94,6 +102,7 @@ export function AdminAudienciaPage() {
     setEngajamento((engajamentoRes.data as unknown as EngagementInsights) ?? null)
     setOrigem((origemRes.data as unknown as OrigemInsights) ?? null)
     setCta((ctaRes.data as unknown as CtaInsights) ?? null)
+    setContexto((contextoRes.data as unknown as ContextoInsights) ?? null)
   }, [filtroPerfil])
 
   useEffect(() => {
@@ -223,6 +232,8 @@ export function AdminAudienciaPage() {
 
           {/* O convite do parceiro: taxa de clique de quem viu, e a dor que precede */}
           <Cta dados={cta} />
+
+          <Contexto dados={contexto} />
 
           {/* Cadastro que não vira busca é e-mail, não lead qualificado. */}
           {engajamento && (

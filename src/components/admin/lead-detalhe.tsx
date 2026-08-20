@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CheckCircle2, Circle, PlayCircle } from 'lucide-react'
+import { CheckCircle2, ChevronDown, Circle, PlayCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { BuscaDetalhe } from '@/components/admin/busca-detalhe'
 import { supabase } from '@/lib/supabase'
 import { ROUTES } from '@/lib/routes'
 import { formatDateTime, formatTimestamp, topicLabel } from '@/lib/format'
@@ -31,6 +32,8 @@ export function LeadDetalhe({
 }) {
   const [dados, setDados] = useState<LeadDetalheDados | null>(null)
   const [erro, setErro] = useState(false)
+  /** Qual busca está aberta. Uma por vez: a leitura é comparar, não empilhar. */
+  const [buscaAberta, setBuscaAberta] = useState<string | null>(null)
 
   useEffect(() => {
     let ativo = true
@@ -170,23 +173,47 @@ export function LeadDetalhe({
           <p className="text-sm text-muted-foreground">Cadastrou-se e ainda não buscou nada.</p>
         ) : (
           <ul className="space-y-2">
-            {dados.buscas.map((b) => (
-              <li key={b.busca_id} className="rounded-lg border p-3">
-                <p className="text-sm">“{b.dor}”</p>
-                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                  <span>{formatDateTime(b.buscado_em)}</span>
-                  <span>
-                    {b.trechos_abertos} de {b.trechos_recomendados} trechos abertos
-                  </span>
-                  {b.gerou_plano && <Badge variant="outline">plano de ação</Badge>}
-                  {b.temas.map((t) => (
-                    <Badge key={t} variant="secondary" className="font-normal">
-                      {topicLabel(t)}
-                    </Badge>
-                  ))}
-                </div>
-              </li>
-            ))}
+            {dados.buscas.map((b) => {
+              const aberta = buscaAberta === b.busca_id
+              return (
+                <li key={b.busca_id} className="rounded-lg border p-3">
+                  {/* A linha inteira abre a busca: a pergunta da equipe quase
+                      nunca para na dor, ela continua em "e o que ele recebeu?" */}
+                  <button
+                    type="button"
+                    onClick={() => setBuscaAberta(aberta ? null : b.busca_id)}
+                    aria-expanded={aberta}
+                    className="flex w-full items-start gap-2 text-left"
+                  >
+                    <ChevronDown
+                      className={`mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform ${
+                        aberta ? 'rotate-180' : ''
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm">“{b.dor}”</span>
+                      <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        <span>{formatDateTime(b.buscado_em)}</span>
+                        <span>
+                          {b.trechos_abertos} de {b.trechos_recomendados} trechos abertos
+                        </span>
+                        {b.gerou_plano && <Badge variant="outline">plano de ação</Badge>}
+                        {b.respondeu_contexto && (
+                          <Badge variant="outline">respondeu o contexto</Badge>
+                        )}
+                        {b.temas.map((t) => (
+                          <Badge key={t} variant="secondary" className="font-normal">
+                            {topicLabel(t)}
+                          </Badge>
+                        ))}
+                      </span>
+                    </span>
+                  </button>
+                  {aberta && <BuscaDetalhe searchId={b.busca_id} />}
+                </li>
+              )
+            })}
           </ul>
         )}
       </section>

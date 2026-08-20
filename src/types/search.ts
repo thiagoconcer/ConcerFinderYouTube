@@ -28,6 +28,21 @@ export interface ActionPlanResponse {
   search_id: string
   action_plan: string
   cached: boolean
+  /** true quando o plano foi escrito já com a resposta de contexto. */
+  has_context?: boolean
+}
+
+/**
+ * Resposta da Edge Function `context-question`: a pergunta que refina o plano.
+ * `question` vem null quando não vale perguntar (dor já detalhada, busca sem
+ * trecho) ou quando a geração falhou. Nos dois casos a tela não mostra a caixa.
+ */
+export interface ContextQuestionResponse {
+  search_id: string
+  question: string | null
+  options: string[]
+  answered: boolean
+  cached?: boolean
 }
 
 /** Linha da RPC `get_search_results`. */
@@ -215,4 +230,31 @@ export interface CargoInsights {
     temas: Array<{ topico: string; total: number }>
   }>
   buscas_no_periodo: number
+}
+
+/** Retorno de `get_contexto_insights`: a pergunta de contexto está pegando? */
+export interface ContextoInsights {
+  periodo: { de: string; ate: string }
+  funil: {
+    buscas: number
+    com_pergunta: number
+    responderam: number
+    planos_refinados: number
+  }
+  por_perfil: Array<{ perfil: string; com_pergunta: number; responderam: number }>
+  /** Aberturas por busca dos dois lados. Null quando não houve busca do lado. */
+  efeito: {
+    com_contexto: { buscas: number; aberturas_por_busca: number | null }
+    sem_contexto: { buscas: number; aberturas_por_busca: number | null }
+  }
+  ultimas: Array<{
+    busca_id: string
+    profile_id: string
+    perfil: string
+    dor: string
+    pergunta: string | null
+    resposta: string | null
+    respondida_em: string | null
+  }>
+  ignoradas: Array<{ dor: string; pergunta: string | null; buscado_em: string }>
 }
