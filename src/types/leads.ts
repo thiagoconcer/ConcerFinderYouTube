@@ -62,6 +62,23 @@ export interface LeadDetalheDados {
     status_nutricao: string | null
     nutricao_enviada_em: string | null
   } | null
+  /**
+   * Origem como foi capturada, e não a derivada do relatório de captação. Na
+   * ficha de uma pessoa a pergunta é operacional (de qual anúncio, de qual
+   * link), e aí a derivada esconde o que interessa. Null quando a pessoa se
+   * cadastrou antes de o rastreio existir.
+   */
+  origem: {
+    origem: string | null
+    utm_source: string | null
+    utm_medium: string | null
+    utm_campaign: string | null
+    utm_content: string | null
+    utm_term: string | null
+    referrer: string | null
+    landing_page: string | null
+    capturado_em: string | null
+  } | null
   /** Composição do score, para a tela explicar o número sem recalculá-lo. */
   score: {
     total: number

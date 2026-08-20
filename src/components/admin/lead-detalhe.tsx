@@ -132,6 +132,63 @@ export function LeadDetalhe({
         ))}
       </section>
 
+      {/*
+        Origem como foi capturada, e não a derivada do relatório de captação.
+        Quem abre esta ficha vai falar com a pessoa, e aí a pergunta é de qual
+        anúncio ela veio, de qual link do grupo, em que página caiu. Duas
+        pessoas que aparecem como "whatsapp" no painel podem ter vindo de
+        disparos diferentes, e é essa diferença que decide o que dizer.
+      */}
+      {dados.origem && (
+        <section>
+          <h3 className="mb-3 text-sm font-semibold">De onde veio</h3>
+          <div className="rounded-lg border p-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="secondary">{dados.origem.origem ?? 'direto'}</Badge>
+              {dados.origem.utm_campaign && (
+                <span className="text-sm">{dados.origem.utm_campaign}</span>
+              )}
+              {dados.origem.capturado_em && (
+                <span className="text-xs text-muted-foreground">
+                  primeiro toque em {formatDateTime(dados.origem.capturado_em)}
+                </span>
+              )}
+            </div>
+
+            {/* Só as UTMs que existem. Linha "utm_term: vazio" para cinco
+                campos ocuparia a tela dizendo que não há nada para ver. */}
+            <dl className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
+              {(
+                [
+                  ['utm_source', dados.origem.utm_source],
+                  ['utm_medium', dados.origem.utm_medium],
+                  ['utm_campaign', dados.origem.utm_campaign],
+                  ['utm_content', dados.origem.utm_content],
+                  ['utm_term', dados.origem.utm_term],
+                  ['Veio de', dados.origem.referrer],
+                  ['Caiu em', dados.origem.landing_page],
+                ] as Array<[string, string | null]>
+              )
+                .filter(([, valor]) => Boolean(valor))
+                .map(([rotulo, valor]) => (
+                  <div key={rotulo} className="flex gap-2">
+                    <dt className="shrink-0 text-muted-foreground">{rotulo}</dt>
+                    <dd className="min-w-0 break-all">{valor}</dd>
+                  </div>
+                ))}
+            </dl>
+
+            {!dados.origem.utm_source && !dados.origem.referrer && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Sem UTM e sem referrer: chegou digitando o endereço, por link salvo ou por
+                aplicativo que não repassa a origem. É o comportamento normal de quem vem
+                da descrição de um vídeo no celular.
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       <section>
         <h3 className="mb-3 text-sm font-semibold">Régua de nutrição</h3>
         {situacao?.fluxo ? (
