@@ -134,12 +134,15 @@ ANTES = """
 .tempo{margin-top:42px;font-size:31px;color:#9DB3D4}
 """
 
+# O sticker de link do Instagram é colado por cima da arte, e ele é grande. Então
+# a arte reserva o lugar dele (`.vaga`) e o destaque é só a chamada logo abaixo,
+# apontando pra cima: bloco cheio ali viraria dois blocos empilhados brigando.
 LINK_CSS = """
-.fecho{margin-top:52px;background:#2E74E8;border-radius:26px;padding:44px 44px 40px;text-align:center}
-.fecho .seta{font-size:60px;line-height:1;margin-bottom:10px}
-.fecho .grande{font-size:52px;font-weight:800;letter-spacing:-1.4px;line-height:1.12}
-.fecho .toque{margin-top:20px;font-size:32px;font-weight:600;color:#fff;
-  border-top:1px solid rgba(255,255,255,.35);padding-top:20px}
+.vaga{height:250px}
+.fecho{display:inline-flex;align-self:flex-start;align-items:center;gap:16px;background:#2E74E8;
+  border-radius:999px;padding:20px 34px}
+.fecho .seta{font-size:38px;line-height:1}
+.fecho .grande{font-size:34px;font-weight:700;letter-spacing:-.4px}
 """
 
 CTA = "<b>Grátis.</b> Toca no link aqui em cima &#8593;"
@@ -221,11 +224,8 @@ CARROSSEIS = {
         dict(tema=DARK, css=FOTO_CSS + LINK_CSS, luz=False, passo="4 &#183; 4",
              rodape="Leva 2 minutos, e é de graça", foto=True, indice=4, corpo="""
   <h1 style="font-size:66px">Testa com a dor<br>que <em>tá travando</em><br>a tua semana.</h1>
-  <div class="fecho">
-    <p class="seta">&#8593;</p>
-    <p class="grande">Toca no link<br>aqui em cima</p>
-    <p class="toque">e faz a tua primeira busca agora</p>
-  </div>"""),
+  <div class="vaga"></div>
+  <div class="fecho"><span class="seta">&#8593;</span><span class="grande">Toca no link</span></div>"""),
     ],
 }
 
