@@ -407,7 +407,7 @@ Abraço,
 
 ### E-mail 4 (4 dias depois)
 
-**Assunto:** A conta que vale a pena fazer
+**Assunto:** Quanto ficou na mesa no mês passado?
 **Preheader:** Uma pergunta para o seu domingo
 
 ```
@@ -539,7 +539,9 @@ O bloco continua no fim, depois da assinatura, e continua sendo o segundo assunt
 <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:4px 0 18px 0"><tr><td bgcolor="#2E74E8" style="border-radius:6px"><a href="LINK_AQUI" style="display:inline-block;padding:14px 28px;font-family:Arial, Helvetica, sans-serif;font-size:17px;font-weight:bold;color:#FFFFFF;text-decoration:none">TEXTO DO BOTÃO</a></td></tr></table>
 ```
 
-Regras da parceria valem inteiras: nada de preço, nada de "a IA substitui vendedor", "formação" e nunca "curso", nunca dizer que Thiago Concer e Viver de IA "se juntaram", e a expressão é **"a plataforma de IA que eu indico"**. Quantidade sempre como "dezenas de soluções prontas", nunca o número exato.
+Regras da parceria valem inteiras: nada de preço, nada de "a IA substitui vendedor", "formação" e nunca "curso", nunca dizer que Thiago Concer e Viver de IA "se juntaram". Quantidade sempre como "dezenas de soluções prontas", nunca o número exato.
+
+**O parceiro é citado pelo nome, como já acontece dentro do ConcerFinder.** No plano de ação a frase é "soluções prontas do Viver de IA, a plataforma de IA que Thiago Concer indica". No e-mail, que é escrito em primeira pessoa, ela vira **"o Viver de IA, a plataforma de IA que eu indico"**. Sem o nome, o convite manda a pessoa clicar num botão sem saber para onde vai, e quem chegar no formulário encontra uma marca que nunca foi apresentada.
 
 Link (UTM próprio, para separar do convite que já existe dentro do plano):
 `https://type.viverdeia.ai/new?utm_source=embaixador&utm_medium=email&utm_campaign=concer-finder&utm_term=concer`
@@ -548,7 +550,7 @@ Link (UTM próprio, para separar do convite que já existe dentro do plano):
 ```
 Uma nota prática: o passo que mais morre é o que depende de alguém repetindo a mesma coisa toda semana, e treino é o caso clássico. Hoje a IA já ouve as calls do time e devolve o que cada vendedor errou, sem você assistir a todas.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver como isso encaixa no meu time]
 ```
@@ -557,7 +559,7 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entreg
 ```
 Uma nota prática: a reunião boa depende de dado atualizado, e é aí que ela emperra, porque preencher CRM é a tarefa que ninguém faz na sexta. A IA sustenta essa parte: o funil atualizado e o relatório pronto na segunda de manhã, sem você cobrar preenchimento.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver como isso encaixa na minha rotina]
 ```
@@ -566,7 +568,7 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entreg
 ```
 Uma nota prática: quando a mesma trava aparece toda semana, o problema deixou de ser diagnóstico e virou execução diária. A IA segura o que é repetitivo, o follow-up que ninguém faz, o cliente que esfria, o registro que não acontece, e devolve o seu tempo para o que exige gente.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver como isso encaixa no meu time]
 ```
@@ -575,7 +577,7 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entreg
 ```
 Uma nota prática, já que estamos falando de sistema: o passo que mais morre na segunda-feira é sempre o que depende de alguém repetindo a mesma tarefa todo dia, registrar, cobrar retorno, olhar o funil. É aí que a IA sustenta a rotina que a empresa não sustenta na mão.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas para isso, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas para isso, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver como isso encaixa no meu comercial]
 ```
@@ -584,7 +586,7 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas para isso, en
 ```
 Uma nota prática: aquelas três perguntas só têm resposta se alguém registrar tudo, todo dia, e é exatamente aí que a empresa passa a depender de uma disciplina que ela não tem. A IA fecha esse buraco: funil atualizado e número na sua mão sem depender de cobrança.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver como isso encaixa no meu comercial]
 ```
@@ -593,7 +595,7 @@ A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entreg
 ```
 Uma nota prática: boa parte desse dinheiro some em tarefa simples e repetida, a proposta que não teve retorno, o cliente que ninguém lembrou de chamar. É o tipo de coisa que a IA faz sem esquecer e sem cansar.
 
-A plataforma de IA que eu indico tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
+O Viver de IA, a plataforma de IA que eu indico, tem dezenas de soluções prontas assim, entregues montadas na conta da sua empresa.
 
 [BOTÃO: Ver o que dá para automatizar primeiro]
 ```
@@ -608,3 +610,15 @@ Então a aplicação desta copy é manual no editor do ActiveCampaign, ou por um
 ## 4. Correção de 20/08 à noite: o que já foi aplicado precisa ser refeito
 
 Gestor E2 (campanha 283) e Gestor E3 (284) receberam o bloco na versão cinza e em corpo menor. Os dois precisam voltar com o estilo desta seção: texto #000000 em 18px, fundo transparente e botão azul. Os outros quatro (Gestor E4 285, Dono E2 287, Dono E3 288, Dono E4 289) ainda não têm o bloco e já entram no formato certo.
+
+## 5. Rodada de correções de 20/08 à noite
+
+O que a execução no ActiveCampaign devolveu, e o que fazer com cada coisa:
+
+1. **Nome do parceiro no convite.** Os seis blocos foram aplicados com "a plataforma de IA que eu indico", sem citar Viver de IA. Precisa citar, pela regra acima.
+2. **Link do corpo ficou preto.** A regra "fonte #000000" foi aplicada também aos links: o link do ConcerFinder no meio do parágrafo ficou preto sublinhado e deixou de parecer clicável. Link no corpo é azul `#2E74E8` sublinhado; `#000000` é a cor do texto.
+3. **Terceira pessoa nos três E1.** Está "O Concer trata exatamente disso em..."; a régua é escrita em primeira pessoa e assinada por ele, então é "Eu trato exatamente disso em...". No Vendedor E1 também há "é o minuto onde ele responde a sua pergunta", que vira "eu respondo".
+4. **Assinatura.** Uns assinam "Thiago Concer" e outros "Time do Thiago Concer". Como o texto inteiro fala em primeira pessoa ("eu trato", "eu indico"), a assinatura é **Thiago Concer** em negrito, nos doze.
+5. **Assunto do Dono E4.** No ar está "Quanto ficou na mesa no mês passado?" e este documento pedia "A conta que vale a pena fazer". Fica o que está no ar, que é mais concreto, e o documento passa a registrar esse. **Corrigido aqui.**
+6. **Nome interno das mensagens 615 e 619** diz "Vendedor" sendo Gestor E2 e Dono E2. É só rótulo interno, mas confunde na hora de procurar: renomear.
+7. **`multientry=1` nas três automações.** O desenho é uma execução por contato. Com entrada múltipla, quem for re-tagueado recebe a régua inteira de novo, o que é grave numa base pequena. Conferir na tela do gatilho e deixar em execução única.
