@@ -1,0 +1,36 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1920px;background:#0A1628;font-family:Geist,-apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff;overflow:hidden;position:relative}
+  /* a foto entra pelo pé e desmancha na faixa: o navy dela não é o mesmo da marca */
+  .foto{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1240px;height:1460px;object-fit:cover;object-position:50% 12%}
+  .fade{position:absolute;inset:0;background:linear-gradient(180deg,#0A1628 0%,rgba(10,22,40,.94) 30%,rgba(10,22,40,.55) 48%,rgba(10,22,40,.85) 74%,#0A1628 100%)}
+  .luz{position:absolute;width:1000px;height:1000px;right:-280px;top:-200px;background:radial-gradient(circle,rgba(46,116,232,.26) 0%,rgba(46,116,232,0) 62%)}
+  .topo{position:absolute;top:250px;left:80px;right:80px}
+  .marca{display:flex;align-items:center;gap:14px;margin-bottom:52px}
+  .marca .bola{width:44px;height:44px;border-radius:50%;background:#2E74E8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+  .marca span{font-size:30px;font-weight:600;letter-spacing:-.5px}
+  .marca b{color:#2E74E8}
+  h1{font-size:80px;line-height:1.04;letter-spacing:-3px;font-weight:700}
+  h1 em{font-style:normal;color:#4E92FF}
+  .sub{margin-top:34px;font-size:36px;line-height:1.4;color:#C6D6F0;max-width:820px}
+  /* o número é a razão de existir a ferramenta, então ele fica sozinho */
+  .numero{position:absolute;left:80px;bottom:330px;display:flex;align-items:baseline;gap:20px}
+  .numero .kicker{position:absolute;top:-40px;left:6px;font-size:28px;color:#9DB3D4;letter-spacing:.5px}
+  .numero b{font-size:110px;font-weight:800;letter-spacing:-5px;line-height:1}
+  .numero span{font-size:34px;color:#C6D6F0;line-height:1.25;max-width:420px}
+  .rodape{position:absolute;left:80px;right:80px;bottom:150px;font-size:32px;color:#9DB3D4}
+  .rodape b{color:#fff;font-weight:600}
+</style></head><body>
+<img class="foto" src="../../../public/thiago-concer-palco.webp" alt="">
+<div class="fade"></div><div class="luz"></div>
+<div class="topo">
+  <div class="marca"><div class="bola">▶</div><span><b>Concer</b>Finder</span></div>
+  <h1>A resposta pra<br>tua dor <em>já está<br>gravada</em>.</h1>
+  <p class="sub">Faltava saber em qual vídeo, e em qual minuto.</p>
+</div>
+<div class="numero" style="position:absolute"><span class="kicker">cerca de</span><b>500</b><span>vídeos de vendas no canal, agora com índice</span></div>
+<div class="rodape"><b>Grátis.</b> Link aqui em cima ↑</div>
+</body></html>

@@ -1,0 +1,39 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1920px;background:#0A1628;font-family:Geist,-apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff;overflow:hidden;position:relative}
+  /* brilho de palco, o mesmo azul da marca */
+  .luz{position:absolute;width:1200px;height:1200px;left:-260px;top:-160px;background:radial-gradient(circle,rgba(46,116,232,.30) 0%,rgba(46,116,232,0) 62%)}
+  .luz2{position:absolute;width:1000px;height:1000px;right:-300px;bottom:-180px;background:radial-gradient(circle,rgba(46,116,232,.18) 0%,rgba(46,116,232,0) 65%)}
+  .area{position:absolute;inset:250px 80px 260px;display:flex;flex-direction:column;justify-content:center}
+  .marca{display:flex;align-items:center;gap:14px;margin-bottom:64px}
+  .marca .bola{width:44px;height:44px;border-radius:50%;background:#2E74E8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+  .marca span{font-size:30px;font-weight:600;letter-spacing:-.5px}
+  .marca b{color:#2E74E8}
+  h1{font-size:78px;line-height:1.05;letter-spacing:-3px;font-weight:700}
+  h1 em{font-style:normal;color:#2E74E8}
+  /* a caixa de busca é o produto inteiro em um elemento */
+  .campo{margin-top:56px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.16);border-radius:24px;padding:38px 40px}
+  .campo p{font-size:40px;line-height:1.35;color:#DCE6F7;font-weight:400}
+  .cursor{display:inline-block;width:3px;height:40px;background:#2E74E8;vertical-align:-6px;margin-left:6px}
+  .resposta{margin-top:44px;display:flex;align-items:center;gap:22px}
+  .play{width:76px;height:76px;border-radius:20px;background:#2E74E8;display:flex;align-items:center;justify-content:center;font-size:34px}
+  .resposta div p:first-child{font-size:31px;font-weight:600;letter-spacing:-.4px}
+  .resposta div p:last-child{font-size:27px;color:#9DB3D4;margin-top:6px}
+  .rodape{position:absolute;left:80px;right:80px;bottom:150px;font-size:30px;color:#9DB3D4;text-align:center}
+  .rodape b{color:#fff;font-weight:600}
+</style></head><body>
+<div class="luz"></div><div class="luz2"></div>
+<div class="area">
+  <div class="marca"><div class="bola">▶</div><span><b>Concer</b>Finder</span></div>
+  <h1>Escreve a tua dor.<br>Ele te dá o vídeo<br>e o <em>minuto exato</em>.</h1>
+  <div class="campo"><p>“meu time trava quando o cliente diz que tá caro”<span class="cursor"></span></p></div>
+  <div class="resposta">
+    <div class="play">▶</div>
+    <div><p>Objeção de preço: o que fazer antes do desconto</p><p>abre no minuto 4:12</p></div>
+  </div>
+</div>
+<div class="rodape"><b>Grátis.</b> Link aqui em cima ↑</div>
+</body></html>
