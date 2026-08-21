@@ -1,0 +1,130 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!--
+  Simulação da busca para story em vídeo, 1080x1920.
+
+  O estado é função do tempo, e o tempo vem da URL (?ms=1234). Isso existe para
+  o vídeo ser gerado quadro a quadro por capturas independentes: animação de CSS
+  com relógio próprio daria quadros fora de ordem, porque cada captura sobe um
+  Chrome novo e o relógio recomeça. Aqui o quadro 37 é sempre o mesmo desenho.
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1080px;height:1920px;overflow:hidden;background:#0A1628;
+    font-family:Geist,-apple-system,'Helvetica Neue',Arial,sans-serif;color:#fff}
+  .luz{position:absolute;width:1100px;height:1100px;left:-260px;top:-300px;
+    background:radial-gradient(circle,rgba(46,116,232,.26) 0%,rgba(46,116,232,0) 62%)}
+  .marca{position:absolute;top:250px;left:80px;display:flex;align-items:center;gap:14px}
+  .marca .bola{width:44px;height:44px;border-radius:50%;background:#2E74E8;display:flex;
+    align-items:center;justify-content:center;font-size:22px;font-weight:800}
+  .marca span{font-size:30px;font-weight:600;letter-spacing:-.5px}
+  .marca b{color:#2E74E8}
+
+  /* a tela do app ocupa o miolo, como se o story fosse o próprio celular */
+  .app{position:absolute;top:350px;left:60px;right:60px;bottom:250px;background:#fff;
+    border-radius:40px;overflow:hidden;color:#0C1726;box-shadow:0 40px 90px rgba(0,0,0,.45)}
+  .barra{height:96px;border-bottom:1px solid #E3E8F0;display:flex;align-items:center;
+    padding:0 34px;gap:12px;font-size:26px;color:#647189}
+  .ponto{width:12px;height:12px;border-radius:50%;background:#D5DDEA}
+  .conteudo{padding:38px 34px}
+  h2{font-size:44px;letter-spacing:-1.4px;font-weight:700;line-height:1.1}
+  .ajuda{margin-top:14px;font-size:26px;color:#647189;line-height:1.4}
+  .campo{margin-top:28px;border:2px solid #D5DDEA;border-radius:20px;padding:26px 28px;
+    min-height:150px;font-size:30px;line-height:1.4;color:#0C1726}
+  .campo.foco{border-color:#2E74E8;box-shadow:0 0 0 6px rgba(46,116,232,.12)}
+  .cursor{display:inline-block;width:3px;height:32px;background:#2E74E8;vertical-align:-5px}
+  .botao{margin-top:26px;display:inline-flex;align-items:center;gap:12px;background:#2E74E8;
+    color:#fff;font-size:28px;font-weight:600;padding:22px 34px;border-radius:14px}
+  .botao.apertado{transform:scale(.96);filter:brightness(.9)}
+  .carregando{margin-top:34px;display:flex;align-items:center;gap:16px;font-size:26px;color:#647189}
+  .spin{width:30px;height:30px;border-radius:50%;border:4px solid #D5DDEA;border-top-color:#2E74E8}
+  .esqueleto{margin-top:24px;height:26px;border-radius:8px;background:#EDF1F7}
+
+  .resultado{margin-top:30px;opacity:0;transform:translateY(26px)}
+  .rotulo{font-size:20px;font-weight:700;letter-spacing:1.8px;color:#647189;text-transform:uppercase}
+  .item{display:flex;gap:20px;align-items:flex-start;margin-top:22px}
+  .thumb{width:116px;height:78px;border-radius:12px;background:#0A1628;flex:none;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px}
+  .item h3{font-size:27px;line-height:1.25;font-weight:600}
+  .min{display:inline-block;margin-top:8px;background:#E8F0FE;color:#1A5CCC;font-size:21px;
+    font-weight:600;padding:6px 12px;border-radius:8px}
+  .plano{margin-top:26px;background:#0A1628;color:#fff;border-radius:20px;padding:26px 28px}
+  .plano p:first-child{font-size:20px;font-weight:700;letter-spacing:1.6px;color:#4E92FF;text-transform:uppercase}
+  .plano p:last-child{margin-top:10px;font-size:27px;line-height:1.35}
+
+  .rodape{position:absolute;left:80px;right:80px;bottom:140px;font-size:31px;color:#9DB3D4}
+  .rodape b{color:#fff;font-weight:600}
+</style></head><body>
+<div class="luz"></div>
+<div class="marca"><div class="bola">&#9654;</div><span><b>Concer</b>Finder</span></div>
+
+<div class="app">
+  <div class="barra"><span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>
+    <span style="margin-left:14px">finder.thiagoconcer.com.br</span></div>
+  <div class="conteudo">
+    <h2>Qual é a sua dor de vendas?</h2>
+    <p class="ajuda">Escreva com as suas palavras, como você contaria para um colega.</p>
+    <div class="campo" id="campo"><span id="texto"></span><span class="cursor" id="cursor"></span></div>
+    <div class="botao" id="botao">Buscar insights</div>
+
+    <div class="carregando" id="carregando" style="display:none">
+      <div class="spin" id="spin"></div><span>Analisando sua dor e localizando os melhores trechos...</span>
+    </div>
+    <div id="esqueletos" style="display:none">
+      <div class="esqueleto" style="width:86%"></div>
+      <div class="esqueleto" style="width:96%"></div>
+      <div class="esqueleto" style="width:72%"></div>
+    </div>
+
+    <div class="resultado" id="res1">
+      <p class="rotulo">3 trechos para assistir</p>
+      <div class="item"><div class="thumb">&#9654;</div>
+        <div><h3>Objeção de preço: o que fazer antes de dar desconto</h3><span class="min">minuto 4:12</span></div></div>
+      <div class="item"><div class="thumb">&#9654;</div>
+        <div><h3>Como treinar a resposta que o time ainda não tem</h3><span class="min">minuto 9:38</span></div></div>
+    </div>
+
+    <div class="resultado" id="res2">
+      <div class="plano"><p>Seu plano de ação</p>
+        <p>O que fazer na próxima ligação, o que levar pra reunião de segunda e como saber se funcionou.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="rodape" id="rodape" style="opacity:0"><b>Grátis.</b> Toca no link aqui em cima &#8593;</div>
+
+<script>
+  const FRASE = 'meu time trava quando o cliente diz que tá caro'
+  const ms = Number(new URLSearchParams(location.search).get('ms') || 0)
+
+  // linha do tempo, em milissegundos
+  const DIGITA_DE = 700, DIGITA_ATE = 3400
+  const CLIQUE = 3900, BUSCA_ATE = 5200, RES1 = 5500, RES2 = 6400, CTA = 7000
+
+  const entre = (a, b) => Math.min(1, Math.max(0, (ms - a) / (b - a)))
+
+  const n = Math.round(entre(DIGITA_DE, DIGITA_ATE) * FRASE.length)
+  document.getElementById('texto').textContent = FRASE.slice(0, n)
+  document.getElementById('campo').classList.toggle('foco', ms > DIGITA_DE && ms < CLIQUE)
+  // cursor pisca a cada 500ms, e some quando o campo perde o foco
+  document.getElementById('cursor').style.opacity =
+    (ms > DIGITA_DE && ms < CLIQUE && Math.floor(ms / 500) % 2 === 0) ? 1 : 0
+
+  document.getElementById('botao').classList.toggle('apertado', ms >= CLIQUE - 120 && ms < CLIQUE + 120)
+
+  const buscando = ms >= CLIQUE && ms < BUSCA_ATE
+  document.getElementById('carregando').style.display = buscando ? 'flex' : 'none'
+  document.getElementById('esqueletos').style.display = buscando ? 'block' : 'none'
+  document.getElementById('spin').style.transform = `rotate(${(ms / 2) % 360}deg)`
+
+  for (const [id, quando] of [['res1', RES1], ['res2', RES2]]) {
+    const p = entre(quando, quando + 450)
+    const el = document.getElementById(id)
+    el.style.opacity = p
+    el.style.transform = `translateY(${26 * (1 - p)}px)`
+  }
+  document.getElementById('rodape').style.opacity = entre(CTA, CTA + 500)
+</script>
+</body></html>

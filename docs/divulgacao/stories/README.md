@@ -30,6 +30,27 @@ livre da interface do Instagram, e o rodapé fica acima da faixa do sticker.
 **Regra do número.** "cerca de 500 vídeos", nunca junto com "20 anos", conforme
 `docs/DIVULGACAO.md`. São 501 no canal e 489 pesquisáveis.
 
+## Vídeo da busca (`video-busca.mp4`)
+
+Simulação da tela do produto em 1080x1920: o campo sendo digitado com uma dor real, o
+clique em Buscar, o estado de carregando, os trechos com minutagem aparecendo e o plano
+de ação. Dura 9,5 segundos, que cabe num story sem cortar.
+
+**Como é feito, e por que assim.** O estado da tela é função do tempo, e o tempo vem da
+URL (`video-busca.html?ms=4200`). Cada quadro é uma captura independente do Chrome, e é
+por isso que o estado não pode vir de animação CSS: cada captura sobe um Chrome novo e o
+relógio recomeçaria do zero, o que daria quadros fora de ordem. Com o tempo na URL, o
+quadro 37 é sempre o mesmo desenho, e a renderização pode rodar em paralelo.
+
+```
+cd docs/divulgacao/stories && python3 render_video.py
+```
+
+São 191 quadros a 20 fps, montados com ffmpeg em H.264. A renderização leva alguns
+minutos; o script pula quadros que já existem, então dá para retomar de onde parou.
+Para mudar a dor digitada ou os tempos, editar `FRASE` e a linha do tempo no
+`video-busca.html`.
+
 ## Regerar
 
 A copy das nove peças está em `gerar.py`, no dicionário `CARROSSEIS`. Editar e rodar:

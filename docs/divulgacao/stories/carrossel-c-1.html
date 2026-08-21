@@ -28,13 +28,15 @@ h1 em{font-style:normal;color:#2E74E8}
 .sub{margin-top:30px;font-size:36px;line-height:1.4;color:#9DB3D4;max-width:840px}
 .rodape{position:absolute;left:80px;right:80px;bottom:150px;z-index:2;font-size:31px;color:#9DB3D4}
 .rodape b{color:#fff;font-weight:600}
+/* o CTA final tem peso de botão: é a única linha da peça que pede ação */
+.rodape.cta{background:#2E74E8;color:#fff;font-size:36px;font-weight:600;text-align:center;
+  padding:26px 30px;border-radius:18px;box-shadow:0 18px 44px rgba(46,116,232,.38)}
+.rodape.cta b{color:#fff;font-weight:800}
 
-.lista{margin-top:44px;display:flex;flex-direction:column;gap:18px}
-.lista div{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.05);
-  border-radius:18px;padding:24px 28px;font-size:31px;color:#C6D6F0}
-.lista .barra{width:96px;height:56px;border-radius:10px;background:rgba(255,255,255,.09);flex:none}
-.risco{text-decoration:line-through;text-decoration-color:#2E74E8;text-decoration-thickness:5px}
-.tempo{margin-top:40px;font-size:33px;color:#9DB3D4}
+.lista{margin-top:44px;display:flex;flex-direction:column;gap:20px}
+.lista div{display:flex;gap:20px;align-items:flex-start;font-size:33px;line-height:1.32;color:#DCE6F7}
+.lista .x{color:#FF5B5B;font-size:30px;flex:none;margin-top:5px}
+.tempo{margin-top:42px;font-size:31px;color:#9DB3D4}
 </style></head><body>
 
 <div class="luz"></div>
@@ -43,12 +45,12 @@ h1 em{font-style:normal;color:#2E74E8}
     <span class="passo">1 &#183; 3</span></div>
   <div class="miolo">
   <span class="selo">LANÇAMENTO</span>
-  <h1>Como era achar<br>a resposta <em>ontem</em>.</h1>
+  <h1 style="font-size:64px">Como você fazia<br>pra achar conteúdo<br>no YouTube <em>ontem</em>?</h1>
   <div class="lista">
-    <div><span class="barra"></span> abrir o canal e rolar</div>
-    <div><span class="barra"></span> chutar a palavra do título</div>
-    <div><span class="barra"></span> assistir 20 minutos pra achar 4</div>
-    <div><span class="barra"></span> desistir e ligar sem resposta</div>
+    <div><span class="x">&#10006;</span> Pesquisar e torcer pro algoritmo te entregar bons vídeos</div>
+    <div><span class="x">&#10006;</span> Perder 20, 30 minutos ou até 1h procurando algo que resolva</div>
+    <div><span class="x">&#10006;</span> Assistir 3, 4, 5 vídeos pra tentar achar 1 resposta</div>
+    <div><span class="x">&#10006;</span> Desistir e ficar sem resposta</div>
   </div>
   <p class="tempo">A resposta estava lá o tempo todo.</p></div>
 </div>

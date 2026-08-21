@@ -44,6 +44,10 @@ h1 em{font-style:normal;color:#2E74E8}
 .sub{margin-top:30px;font-size:36px;line-height:1.4;color:%(suave)s;max-width:840px}
 .rodape{position:absolute;left:80px;right:80px;bottom:150px;z-index:2;font-size:31px;color:%(suave)s}
 .rodape b{color:%(texto)s;font-weight:600}
+/* o CTA final tem peso de botão: é a única linha da peça que pede ação */
+.rodape.cta{background:#2E74E8;color:#fff;font-size:36px;font-weight:600;text-align:center;
+  padding:26px 30px;border-radius:18px;box-shadow:0 18px 44px rgba(46,116,232,.38)}
+.rodape.cta b{color:#fff;font-weight:800}
 """
 
 DARK = {"fundo": "#0A1628", "texto": "#fff", "suave": "#9DB3D4", "passo": "#4E92FF", "titulo": "76"}
@@ -63,7 +67,7 @@ def pagina(tema, extra_css, corpo, passo, rodape, luz=True, fundo=""):
     <span class="passo">{passo}</span></div>
   <div class="miolo">{corpo}</div>
 </div>
-<div class="rodape">{rodape}</div>
+<div class="rodape{' cta' if 'Grátis' in rodape else ''}">{rodape}</div>
 </body></html>"""
 
 
@@ -102,13 +106,32 @@ FOTO_CSS = """
 .numero span{font-size:33px;color:#C6D6F0;line-height:1.25;max-width:430px}
 """
 
+APP = """
+/* o print da ferramenta: mesma tela do vídeo, parada no resultado */
+.app{margin-top:40px;background:#fff;border-radius:28px;overflow:hidden;color:#0C1726;
+  box-shadow:0 30px 70px rgba(0,0,0,.45)}
+.app .barra{height:72px;border-bottom:1px solid #E3E8F0;display:flex;align-items:center;
+  padding:0 26px;gap:10px;font-size:21px;color:#647189}
+.app .ponto{width:10px;height:10px;border-radius:50%;background:#D5DDEA}
+.app .dentro{padding:28px 26px 30px}
+.app .dor{border:2px solid #D5DDEA;border-radius:16px;padding:20px 22px;font-size:26px;color:#0C1726}
+.app .rotulo{margin-top:26px;font-size:18px;font-weight:700;letter-spacing:1.6px;color:#647189;text-transform:uppercase}
+.app .item{display:flex;gap:18px;align-items:flex-start;margin-top:20px}
+.app .thumb{width:104px;height:70px;border-radius:11px;background:#0A1628;flex:none;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:24px}
+.app .item h3{font-size:25px;line-height:1.25;font-weight:600}
+.app .min{display:inline-block;margin-top:8px;background:#E8F0FE;color:#1A5CCC;font-size:20px;
+  font-weight:600;padding:5px 11px;border-radius:8px}
+.app .plano{margin-top:24px;background:#0A1628;color:#fff;border-radius:16px;padding:22px 24px}
+.app .plano p:first-child{font-size:18px;font-weight:700;letter-spacing:1.5px;color:#4E92FF;text-transform:uppercase}
+.app .plano p:last-child{margin-top:8px;font-size:24px;line-height:1.35}
+"""
+
 ANTES = """
-.lista{margin-top:44px;display:flex;flex-direction:column;gap:18px}
-.lista div{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.05);
-  border-radius:18px;padding:24px 28px;font-size:31px;color:#C6D6F0}
-.lista .barra{width:96px;height:56px;border-radius:10px;background:rgba(255,255,255,.09);flex:none}
-.risco{text-decoration:line-through;text-decoration-color:#2E74E8;text-decoration-thickness:5px}
-.tempo{margin-top:40px;font-size:33px;color:#9DB3D4}
+.lista{margin-top:44px;display:flex;flex-direction:column;gap:20px}
+.lista div{display:flex;gap:20px;align-items:flex-start;font-size:33px;line-height:1.32;color:#DCE6F7}
+.lista .x{color:#FF5B5B;font-size:30px;flex:none;margin-top:5px}
+.tempo{margin-top:42px;font-size:31px;color:#9DB3D4}
 """
 
 CTA = "<b>Grátis.</b> Toca no link aqui em cima &#8593;"
@@ -171,25 +194,37 @@ CARROSSEIS = {
     "c": [
         dict(tema=DARK, css=ANTES, passo="1 &#183; 3", rodape="Toca pra ver o resto &#8594;", corpo="""
   <span class="selo">LANÇAMENTO</span>
-  <h1>Como era achar<br>a resposta <em>ontem</em>.</h1>
+  <h1 style="font-size:64px">Como você fazia<br>pra achar conteúdo<br>no YouTube <em>ontem</em>?</h1>
   <div class="lista">
-    <div><span class="barra"></span> abrir o canal e rolar</div>
-    <div><span class="barra"></span> chutar a palavra do título</div>
-    <div><span class="barra"></span> assistir 20 minutos pra achar 4</div>
-    <div><span class="barra"></span> desistir e ligar sem resposta</div>
+    <div><span class="x">&#10006;</span> Pesquisar e torcer pro algoritmo te entregar bons vídeos</div>
+    <div><span class="x">&#10006;</span> Perder 20, 30 minutos ou até 1h procurando algo que resolva</div>
+    <div><span class="x">&#10006;</span> Assistir 3, 4, 5 vídeos pra tentar achar 1 resposta</div>
+    <div><span class="x">&#10006;</span> Desistir e ficar sem resposta</div>
   </div>
   <p class="tempo">A resposta estava lá o tempo todo.</p>"""),
         dict(tema=DARK, css=CAIXA, passo="2 &#183; 3", rodape="Toca pra ver o resto &#8594;", corpo="""
-  <h1>Como é <em>hoje</em>,<br>com o ConcerFinder.</h1>
-  <p class="oque">O <b>índice do canal</b>: você descreve a situação e ele acha o trecho
-    em que eu trato exatamente dela.</p>
+  <h1>Como você pode<br>fazer <em>hoje</em>.</h1>
+  <p class="oque">Com o ConcerFinder, o <b>índice do canal</b>: você descreve a situação
+    e ele acha o trecho em que eu trato exatamente dela.</p>
   <div class="campo"><p>“o cliente some depois que eu mando a proposta”<span class="cursor"></span></p></div>
   <div class="res"><div class="play">&#9654;</div>
     <div><h3>Follow-up: como voltar sem parecer insistente</h3><p>abre no minuto 6:41</p></div></div>"""),
-        dict(tema=DARK, css=FOTO_CSS, luz=False, passo="3 &#183; 3", rodape=CTA, foto=True, corpo="""
-  <h1>A resposta pra<br>tua dor <em>já está<br>gravada</em>.</h1>
-  <div class="numero"><span class="kicker">cerca de</span><b>500</b>
-    <span>vídeos de vendas no canal, agora com índice</span></div>"""),
+        dict(tema=DARK, css=APP, passo="3 &#183; 3", rodape=CTA, corpo="""
+  <h1 style="font-size:62px">Segundos, e não<br>uma noite de<br>domingo <em>garimpando</em>.</h1>
+  <div class="app">
+    <div class="barra"><span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>
+      <span style="margin-left:12px">finder.thiagoconcer.com.br</span></div>
+    <div class="dentro">
+      <div class="dor">“o cliente some depois que eu mando a proposta”</div>
+      <p class="rotulo">3 trechos para assistir</p>
+      <div class="item"><div class="thumb">&#9654;</div>
+        <div><h3>Follow-up: como voltar sem parecer insistente</h3><span class="min">minuto 6:41</span></div></div>
+      <div class="item"><div class="thumb">&#9654;</div>
+        <div><h3>O erro que faz o cliente sumir depois da proposta</h3><span class="min">minuto 2:08</span></div></div>
+      <div class="plano"><p>Seu plano de ação</p>
+        <p>O que fazer na próxima ligação e o que cobrar na segunda.</p></div>
+    </div>
+  </div>"""),
     ],
 }
 

@@ -22,6 +22,8 @@ export interface FiltrosLeads {
   tema: string
   faixa: string
   atividade: string
+  /** 'nao' esconde as contas da equipe, que é a leitura do dia a dia. */
+  internos: string
 }
 
 export const FILTROS_VAZIOS: FiltrosLeads = {
@@ -32,10 +34,11 @@ export const FILTROS_VAZIOS: FiltrosLeads = {
   tema: TODOS,
   faixa: TODOS,
   atividade: TODOS,
+  internos: 'nao',
 }
 
 export function temFiltro(f: FiltrosLeads): boolean {
-  return Object.values(f).some((v) => v !== TODOS)
+  return Object.entries(f).some(([k, v]) => (k === 'internos' ? v !== 'nao' : v !== TODOS))
 }
 
 const REGUA_LABELS: Record<string, string> = {
@@ -190,6 +193,19 @@ export function FiltrosLeadsBar({
               {a.rotulo}
             </SelectItem>
           ))}
+        </SelectContent>
+      </Select>
+
+      {/* As contas da equipe ficam fora por padrão, senão elas dominam os
+          números de uma base pequena. Mas quem procura a Bárbara na lista
+          precisa de um jeito de achá-la sem ir no banco. */}
+      <Select value={filtros.internos} onValueChange={set('internos')}>
+        <SelectTrigger className="w-48">
+          <SelectValue placeholder="Contas internas" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="nao">Sem contas internas</SelectItem>
+          <SelectItem value="sim">Incluir contas internas</SelectItem>
         </SelectContent>
       </Select>
 
