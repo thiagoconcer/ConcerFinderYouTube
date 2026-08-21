@@ -13,7 +13,7 @@ URL dentro da imagem não é clicável e ainda concorre com o sticker.
 |---|---|---|
 | `carrossel-a-1/2/3` | **A ferramenta explicada** | Diz o que é ("o índice do meu canal"), mostra o que volta (vídeo e minuto) e fecha no plano da semana |
 | `carrossel-b-1/2/3` | **Identificação** | Abre com quatro dores em que a pessoa se reconhece, depois explica o que é e fecha no "agora dá pra perguntar" |
-| `carrossel-c-1/2` + `-3.mp4` + `-4` | **Antes e agora** | Contrasta como se garimpava o canal com como se pergunta hoje, prova em vídeo com uma busca real e fecha no convite com o link |
+| `carrossel-c-1/2` + `-3.mp4` + `-4` | **Antes e agora** | Contrasta como se garimpava o canal com como se pergunta hoje, prova em vídeo com uma busca real e fecha mandando tocar no sticker de link |
 
 **Por que as três abrem dizendo o que é.** É lançamento: quem vê o story não sabe
 o que é ConcerFinder, e peça de lançamento que só provoca gasta o primeiro frame

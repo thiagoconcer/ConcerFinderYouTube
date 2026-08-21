@@ -135,11 +135,11 @@ ANTES = """
 """
 
 LINK_CSS = """
-.fecho{margin-top:52px;background:#2E74E8;border-radius:26px;padding:42px 44px;text-align:center}
-.fecho .grande{font-size:46px;font-weight:700;letter-spacing:-1px;line-height:1.15}
-.fecho .url{margin-top:20px;font-size:34px;font-weight:600;color:#fff;
-  border-top:1px solid rgba(255,255,255,.35);padding-top:20px;word-break:break-all}
-.fecho .toque{margin-top:14px;font-size:28px;color:rgba(255,255,255,.82)}
+.fecho{margin-top:52px;background:#2E74E8;border-radius:26px;padding:44px 44px 40px;text-align:center}
+.fecho .seta{font-size:60px;line-height:1;margin-bottom:10px}
+.fecho .grande{font-size:52px;font-weight:800;letter-spacing:-1.4px;line-height:1.12}
+.fecho .toque{margin-top:20px;font-size:32px;font-weight:600;color:#fff;
+  border-top:1px solid rgba(255,255,255,.35);padding-top:20px}
 """
 
 CTA = "<b>Grátis.</b> Toca no link aqui em cima &#8593;"
@@ -219,12 +219,12 @@ CARROSSEIS = {
   <div class="res"><div class="play">&#9654;</div>
     <div><h3>Follow-up: como voltar sem parecer insistente</h3><p>abre no minuto 6:41</p></div></div>"""),
         dict(tema=DARK, css=FOTO_CSS + LINK_CSS, luz=False, passo="4 &#183; 4",
-             rodape="&#8593; O link também está no sticker aqui em cima", foto=True, indice=4, corpo="""
+             rodape="Leva 2 minutos, e é de graça", foto=True, indice=4, corpo="""
   <h1 style="font-size:66px">Testa com a dor<br>que <em>tá travando</em><br>a tua semana.</h1>
   <div class="fecho">
-    <p class="grande">É grátis, e leva 2 minutos</p>
-    <p class="url">finder.thiagoconcer.com.br</p>
-    <p class="toque">ou toca no link aqui em cima</p>
+    <p class="seta">&#8593;</p>
+    <p class="grande">Toca no link<br>aqui em cima</p>
+    <p class="toque">e faz a tua primeira busca agora</p>
   </div>"""),
     ],
 }
