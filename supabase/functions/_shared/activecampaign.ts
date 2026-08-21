@@ -17,7 +17,16 @@ const AC_BASE = 'https://thiagoconcer56558.api-us1.com/api/3'
 
 export type PerfilComercial = 'vendedor' | 'gestor_comercial' | 'dono_empresa'
 
-export const TAG_NEWSLETTER = 'newsletter gestores e donos'
+/**
+ * Newsletter da base, por perfil. Até 21/08 todo lead do ConcerFinder recebia a
+ * de gestores e donos, vendedor incluído, e uma automação do AC ainda carimbava
+ * "Gestor/Dono" em cima: 13 vendedores entraram na base como gestor.
+ */
+export const TAG_NEWSLETTER_POR_PERFIL: Record<PerfilComercial, string> = {
+  vendedor: 'Newsletter Vendedores',
+  gestor_comercial: 'newsletter gestores e donos',
+  dono_empresa: 'newsletter gestores e donos',
+}
 export const TAG_LEAD = 'concerfinder - lead'
 export const TAG_ENGAJOU = 'concerfinder - engajou'
 export const TAG_BUSCOU_DE_NOVO = 'concerfinder - buscou de novo'
@@ -244,7 +253,7 @@ export async function sincronizarLead(
     console.warn('não consegui inscrever o contato na lista:', erro)
   }
 
-  const aAplicar = [TAG_LEAD, TAG_NEWSLETTER]
+  const aAplicar = [TAG_LEAD, TAG_NEWSLETTER_POR_PERFIL[dados.perfil]]
   if ((dados.totalBuscas ?? 0) > 1) aAplicar.push(TAG_BUSCOU_DE_NOVO)
   if (dados.abriuAlgumTrecho) aAplicar.push(TAG_ENGAJOU)
   // por último: é a tag de gatilho, e o AC dispara na hora que ela entra,
