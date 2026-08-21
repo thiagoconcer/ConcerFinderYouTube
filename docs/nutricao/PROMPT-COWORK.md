@@ -671,3 +671,16 @@ Botão no formato da referência:
 O rótulo vai escrito em maiúsculas no próprio texto, não por `text-transform`, que parte dos clientes ignora.
 
 O rodapé com ícones sociais já existe nas campanhas antigas da conta: copiar o bloco de lá em vez de recriar, para os e-mails do ConcerFinder terminarem igual ao resto do que a conta manda.
+
+## 7. Aplicado por API em 20/08 à noite
+
+Os doze e-mails foram reconstruídos no template de `docs/nutricao/TEMPLATE-EMAIL.html` e gravados pela **API v3 do ActiveCampaign** (`PUT /api/3/messages/{id}` com `Api-Token`), não pelo conector MCP, que continua não gravando corpo. A copy veio do que já estava no ar, para não perder nenhuma revisão de texto; o que mudou foi a moldura e o estilo, mais quatro correções aplicadas no texto:
+
+- o parceiro passou a ser citado pelo nome ("O Viver de IA, a plataforma de IA que eu indico");
+- link do corpo voltou a ser azul (`#2660F5`) sublinhado, e o `#000000` ficou só no texto;
+- terceira pessoa que sobrava virou primeira ("o que o Concer fala" → "o que eu falo");
+- assinatura igual nos doze, "Thiago Concer" em negrito.
+
+Conferido lendo os doze de volta: margem lateral, ícones sociais e rodapé de 12px nos doze; bloco do parceiro com botão apenas nos seis de gestor e dono; nenhuma terceira pessoa e nenhum link preto sobrando.
+
+**O que não deu:** o envio de teste pela API v1 (`api_action=campaign_send&type=test`) responde "Você não tem nenhum endereço de correspondência" mesmo passando `addressid`. O teste continua sendo pelo botão "Testar e visualizar" do editor.
