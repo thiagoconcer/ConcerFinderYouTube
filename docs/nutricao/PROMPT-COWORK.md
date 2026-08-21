@@ -651,3 +651,23 @@ Trechos exatos a mudar no `<style>` do template:
 ```
 
 O `<td>` do conteúdo ganha `class="cf-corpo"` e `padding:0 24px`. A classe existe para a regra de mobile não pegar todos os `<td>` do e-mail, o que estragaria o botão e o rodapé.
+
+### Referência de acabamento
+
+O Bruno mandou como referência um e-mail da própria conta (as campanhas antigas do Thiago Concer, com os ícones sociais e o texto de missão no pé). É esse o padrão a alcançar, e ele resolve tudo o que está no item 6:
+
+- margem lateral confortável, o texto nunca encosta na borda da tela;
+- corpo em 16px no celular, com respiro entre parágrafos;
+- **botão centralizado, largo, rótulo em CAIXA ALTA e negrito, com a seta `→` no fim**, cantos arredondados;
+- assinatura "Thiago Concer" em negrito, e uma linha fina fechando a mensagem;
+- rodapé em corpo pequeno e cinza, visivelmente menor que o texto, com os ícones sociais acima.
+
+Botão no formato da referência:
+
+```html
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="margin:24px auto"><tr><td bgcolor="#2E74E8" align="center" style="border-radius:8px"><a href="LINK_AQUI" style="display:inline-block;padding:16px 32px;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:bold;letter-spacing:0.04em;color:#FFFFFF;text-decoration:none">RÓTULO EM CAIXA ALTA →</a></td></tr></table>
+```
+
+O rótulo vai escrito em maiúsculas no próprio texto, não por `text-transform`, que parte dos clientes ignora.
+
+O rodapé com ícones sociais já existe nas campanhas antigas da conta: copiar o bloco de lá em vez de recriar, para os e-mails do ConcerFinder terminarem igual ao resto do que a conta manda.
