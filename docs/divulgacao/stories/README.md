@@ -1,27 +1,43 @@
 # Stories do ConcerFinder
 
-Três variações em 1080x1920 para o Instagram. O link vai pelo sticker nativo, então
-o rodapé de cada peça só aponta para cima e não repete a URL: URL escrita dentro da
-imagem não é clicável e ainda concorre com o sticker.
+Nove peças em 1080x1920: **três sequências de três frames**, mais três avulsas
+(`story-1`, `story-2`, `story-3`) que funcionam sozinhas.
 
-| Arquivo | Ângulo | Quando usar |
+O link vai pelo sticker nativo do Instagram, então nenhuma arte traz URL escrita:
+URL dentro da imagem não é clicável e ainda concorre com o sticker.
+
+## As três sequências
+
+| Arquivo | Sequência | O que faz |
 |---|---|---|
-| `story-1.png` | A mecânica em uma frase, com a caixa de busca preenchida | Abertura da sequência, é o que explica o produto mais rápido |
-| `story-2.png` | A tela do produto: a dor escrita e o que volta, com minutagem | Segundo frame, prova o que o primeiro prometeu |
-| `story-3.png` | Thiago Concer no palco, o acervo e o índice | Fecho, ou peça avulsa para republicar em outro dia |
+| `carrossel-a-1/2/3` | **A ferramenta explicada** | Diz o que é ("o índice do meu canal"), mostra o que volta (vídeo e minuto) e fecha no plano da semana |
+| `carrossel-b-1/2/3` | **Identificação** | Abre com quatro dores em que a pessoa se reconhece, depois explica o que é e fecha no "agora dá pra perguntar" |
+| `carrossel-c-1/2/3` | **Antes e agora** | Contrasta garimpar o canal com perguntar, e fecha na foto de palco com o tamanho do acervo |
 
-**Margens.** Tudo importante fica entre 250px do topo e 260px do rodapé, que é a área
-livre da interface do Instagram. O rodapé de cada peça foi posicionado acima da faixa
-onde o sticker de link costuma cair.
+**Por que as três abrem dizendo o que é.** É lançamento: quem vê o story não sabe
+o que é ConcerFinder, e peça de lançamento que só provoca gasta o primeiro frame
+sem entregar contexto. Por isso o selo LANÇAMENTO e a definição aparecem já no
+frame 1 de cada sequência (na B, a definição fecha o frame 2, porque ali a
+identificação vem antes de propósito).
 
-**Regra do número.** Aparece "cerca de 500 vídeos" e nunca junto com "20 anos", conforme
-`docs/DIVULGACAO.md`. São 501 no canal e 489 pesquisáveis, e por isso o "cerca de".
+**Navegação.** Story não tem carrossel: os frames são stories consecutivos. Por isso
+o rodapé diz "Toca pra ver o resto" e não "arrasta", e cada peça traz o marcador
+`1 · 3`, `2 · 3`, `3 · 3` para quem cair no meio da sequência.
 
-**Como regerar** (a copy de cada uma está no HTML ao lado):
+**Margens.** Tudo importante fica entre 250px do topo e 260px do pé, que é a área
+livre da interface do Instagram, e o rodapé fica acima da faixa do sticker.
+
+**Regra do número.** "cerca de 500 vídeos", nunca junto com "20 anos", conforme
+`docs/DIVULGACAO.md`. São 501 no canal e 489 pesquisáveis.
+
+## Regerar
+
+A copy das nove peças está em `gerar.py`, no dicionário `CARROSSEIS`. Editar e rodar:
 
 ```
-cd docs/divulgacao/stories
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
-  --hide-scrollbars --virtual-time-budget=4000 --window-size=1080,1920 \
-  --screenshot=story-1.png "file://$PWD/story-1.html"
+cd docs/divulgacao/stories && python3 gerar.py
 ```
+
+O gerador existe para as nove dividirem a mesma grade: nove HTML soltos divergem no
+detalhe, e é a repetição do sistema visual que faz a pessoa reconhecer que os frames
+são do mesmo assunto.

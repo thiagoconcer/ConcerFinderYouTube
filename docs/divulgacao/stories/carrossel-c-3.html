@@ -1,0 +1,52 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1920px;overflow:hidden;position:relative;
+  font-family:Geist,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:#0A1628;color:#fff}
+.luz{position:absolute;width:1100px;height:1100px;left:-240px;top:-240px;
+  background:radial-gradient(circle,rgba(46,116,232,.28) 0%,rgba(46,116,232,0) 62%)}
+.area{position:absolute;top:250px;left:80px;right:80px;bottom:260px;display:flex;flex-direction:column;z-index:2}
+.miolo{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px}
+.marca{display:flex;align-items:center;gap:14px}
+.marca .bola{width:44px;height:44px;border-radius:50%;background:#2E74E8;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+.marca span{font-size:30px;font-weight:600;letter-spacing:-.5px}
+.marca b{color:#2E74E8}
+/* marcador de posição: story não tem carrossel nativo, então a ordem precisa
+   ficar visível para quem cai no segundo frame primeiro */
+.passo{margin-left:auto;font-size:26px;font-weight:600;letter-spacing:2px;color:#4E92FF}
+h1{font-size:76px;line-height:1.05;letter-spacing:-3px;font-weight:700}
+h1 em{font-style:normal;color:#2E74E8}
+.selo{display:inline-block;align-self:flex-start;background:#2E74E8;color:#fff;font-size:24px;
+  font-weight:700;letter-spacing:2.4px;padding:12px 20px;border-radius:10px;margin-bottom:34px}
+.oque{margin-top:38px;border-left:5px solid #2E74E8;padding-left:26px;font-size:34px;line-height:1.4;color:#9DB3D4}
+.oque b{color:#fff;font-weight:600}
+.sub{margin-top:30px;font-size:36px;line-height:1.4;color:#9DB3D4;max-width:840px}
+.rodape{position:absolute;left:80px;right:80px;bottom:150px;z-index:2;font-size:31px;color:#9DB3D4}
+.rodape b{color:#fff;font-weight:600}
+
+.foto{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1240px;height:1420px;
+  object-fit:cover;object-position:50% 12%}
+.fade{position:absolute;inset:0;background:linear-gradient(180deg,#0A1628 0%,rgba(10,22,40,.93) 32%,
+  rgba(10,22,40,.55) 50%,rgba(10,22,40,.86) 76%,#0A1628 100%)}
+.numero{margin-top:70px;display:flex;align-items:baseline;gap:20px}
+.numero .kicker{font-size:27px;color:#9DB3D4;position:absolute;margin-top:-44px}
+.numero b{font-size:104px;font-weight:800;letter-spacing:-5px;line-height:1}
+.numero span{font-size:33px;color:#C6D6F0;line-height:1.25;max-width:430px}
+</style></head><body>
+<img class="foto" src="../../../public/thiago-concer-palco.webp" alt=""><div class="fade"></div>
+
+<div class="area">
+  <div class="marca"><div class="bola">&#9654;</div><span><b>Concer</b>Finder</span>
+    <span class="passo">3 &#183; 3</span></div>
+  <div class="miolo">
+  <h1>A resposta pra<br>tua dor <em>já está<br>gravada</em>.</h1>
+  <div class="numero"><span class="kicker">cerca de</span><b>500</b>
+    <span>vídeos de vendas no canal, agora com índice</span></div></div>
+</div>
+<div class="rodape"><b>Grátis.</b> Toca no link aqui em cima &#8593;</div>
+</body></html>
