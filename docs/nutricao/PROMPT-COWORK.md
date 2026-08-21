@@ -527,6 +527,7 @@ PS: mudou uma coisa lá dentro. Depois dos trechos ele te pergunta como o teu co
 Regras de estilo, e elas valem para o e-mail inteiro, não só para este bloco:
 - Fundo **transparente**, sem caixa cinza, sem bloco colorido atrás do texto.
 - Fonte **#000000**, Arial, 18px, a mesma do corpo. Nada de cinza claro nem de corpo menor.
+- **Link dentro do texto continua azul e sublinhado** (`#2E74E8`). O `#000000` é a cor do TEXTO; se o link também ficar preto, ele deixa de parecer clicável e some no parágrafo, que foi o que aconteceu na primeira aplicação da regra. O único texto que não é preto nem azul é o de dentro do botão, que é branco.
 - O link é um **botão azul** (`#2E74E8`, texto branco), igual ao botão do site.
 - Uma linha fina separando do resto (`border-top:1px solid #dddddd`), só para marcar que ali começa outro assunto.
 
