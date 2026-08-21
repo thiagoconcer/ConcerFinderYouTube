@@ -216,6 +216,34 @@ export async function sincronizarLead(
   const contatoId = String(sync.contact?.id ?? '')
   if (!contatoId) throw new Error('AC não devolveu o id do contato')
 
+  /*
+    Inscrição na lista, e não só tag.
+
+    O `contact/sync` cria o contato, mas contato sem lista não entra em
+    campanha nenhuma: a régua funciona (automação dispara por tag), e qualquer
+    disparo pontual passa por cima da pessoa em silêncio. Descoberto em 21/08,
+    quando o e-mail de aviso da falha alcançava 9 de 15 cadastrados.
+
+    Quem cancelou inscrição fica de fora: reinscrever alguém que pediu para
+    sair é a única coisa aqui que não se conserta depois.
+  */
+  const listaId = optionalSecret('AC_LIST_ID') ?? '3'
+  try {
+    const jaTem = await ac('GET', `contacts/${contatoId}/contactLists`)
+    const nessaLista = (jaTem.contactLists ?? []).find(
+      (l: Record<string, unknown>) => String(l.list) === listaId,
+    )
+    const cancelou = nessaLista && String(nessaLista.status) === '2'
+    if (!cancelou && String(nessaLista?.status ?? '') !== '1') {
+      await ac('POST', 'contactLists', {
+        contactList: { list: Number(listaId), contact: Number(contatoId), status: 1 },
+      })
+    }
+  } catch (erro) {
+    // inscrição é acessório: se falhar, o lead e as tags já estão gravados
+    console.warn('não consegui inscrever o contato na lista:', erro)
+  }
+
   const aAplicar = [TAG_LEAD, TAG_NEWSLETTER]
   if ((dados.totalBuscas ?? 0) > 1) aAplicar.push(TAG_BUSCOU_DE_NOVO)
   if (dados.abriuAlgumTrecho) aAplicar.push(TAG_ENGAJOU)
