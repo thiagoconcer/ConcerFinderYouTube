@@ -120,7 +120,9 @@ export async function generateActionPlan(
   queryText: string,
   segmentos: PlanSegment[],
   perfil?: string | null,
-  contexto?: string | null,
+  // Nome longo de propósito: `contexto` já é o texto dos trechos, logo abaixo,
+  // e a colisão entre os dois derrubou o boot das três funções em 20/08.
+  respostaDeContexto?: string | null,
 ): Promise<string> {
   // Regra da doc: sem trechos relevantes, devolve orientação de refinar a dor.
   if (segmentos.length === 0) return planoSemResultado()
@@ -161,10 +163,10 @@ Regras rígidas:
     dizer isso ele trata a resposta como um detalhe e volta a escrever o plano
     genérico que o contexto veio corrigir.
   */
-  const contextoDaPessoa = contexto?.trim()
+  const contextoDaPessoa = respostaDeContexto?.trim()
     ? `A pessoa ainda contou isto sobre a situação dela:
 """
-${contexto.trim()}
+${respostaDeContexto.trim()}
 """
 
 Este contexto é o caso concreto: cada passo do plano precisa caber nele (no que ela vende, no canal que ela usa, no tamanho do time que ela tem) em vez de descrever o caso médio. Não repita o contexto de volta para ela.
