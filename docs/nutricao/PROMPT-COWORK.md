@@ -622,3 +622,32 @@ O que a execução no ActiveCampaign devolveu, e o que fazer com cada coisa:
 5. **Assunto do Dono E4.** No ar está "Quanto ficou na mesa no mês passado?" e este documento pedia "A conta que vale a pena fazer". Fica o que está no ar, que é mais concreto, e o documento passa a registrar esse. **Corrigido aqui.**
 6. **Nome interno das mensagens 615 e 619** diz "Vendedor" sendo Gestor E2 e Dono E2. É só rótulo interno, mas confunde na hora de procurar: renomear.
 7. **`multientry=1` nas três automações.** O desenho é uma execução por contato. Com entrada múltipla, quem for re-tagueado recebe a régua inteira de novo, o que é grave numa base pequena. Conferir na tela do gatilho e deixar em execução única.
+
+---
+
+## 6. Template no celular: margem, hierarquia e rodapé
+
+Conferido no Gmail do Android em 20/08. A maior parte da base lê pelo celular, e lá o e-mail estava assim: texto colado nas duas bordas da tela, tudo do mesmo tamanho e o rodapé tão grande quanto o corpo. Três correções no HTML do template, e elas valem para os doze e-mails.
+
+**1. Margem lateral.** O `<td>` que envolve o texto está com `padding:0`. No desktop o e-mail tem 650px centrados e ninguém percebe; no celular a largura vira a da tela e a primeira letra encosta na borda. Esse `<td>` passa a ter `padding:0 24px`, e a regra de mobile reduz para 18px.
+
+**2. Rodapé menor.** A causa não é o rodapé estar grande no desktop (lá ele é 14px), é uma regra do próprio template: dentro do `@media (max-width:600px)` existe `.es-footer-body p { font-size:16px!important }`, que **aumenta** o rodapé no celular até quase o tamanho do corpo. Trocar esse `16px` por `12px`. No desktop, deixar os parágrafos do rodapé em `font-size:12px;color:#666666`.
+
+**3. Hierarquia.** O corpo continua em 18px (16px no celular, pela regra que já existe). O que dava a impressão de "tudo igual" era o rodapé inflado; resolvido o item 2, a escala fica corpo 18 > botão 17 > rodapé 12.
+
+Além disso, duas metas no `<head>` para o cliente de e-mail saber que o design é claro, o que evita a inversão torta em modo escuro:
+
+```html
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+```
+
+Trechos exatos a mudar no `<style>` do template:
+
+```css
+/* dentro de @media only screen and (max-width:600px) */
+.es-footer-body p, .es-footer-body ul li, .es-footer-body ol li, .es-footer-body a { font-size:12px!important }
+.cf-corpo { padding-left:18px!important; padding-right:18px!important }
+```
+
+O `<td>` do conteúdo ganha `class="cf-corpo"` e `padding:0 24px`. A classe existe para a regra de mobile não pegar todos os `<td>` do e-mail, o que estragaria o botão e o rodapé.
