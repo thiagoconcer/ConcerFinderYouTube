@@ -134,6 +134,14 @@ ANTES = """
 .tempo{margin-top:42px;font-size:31px;color:#9DB3D4}
 """
 
+LINK_CSS = """
+.fecho{margin-top:52px;background:#2E74E8;border-radius:26px;padding:42px 44px;text-align:center}
+.fecho .grande{font-size:46px;font-weight:700;letter-spacing:-1px;line-height:1.15}
+.fecho .url{margin-top:20px;font-size:34px;font-weight:600;color:#fff;
+  border-top:1px solid rgba(255,255,255,.35);padding-top:20px;word-break:break-all}
+.fecho .toque{margin-top:14px;font-size:28px;color:rgba(255,255,255,.82)}
+"""
+
 CTA = "<b>Grátis.</b> Toca no link aqui em cima &#8593;"
 
 CARROSSEIS = {
@@ -192,7 +200,7 @@ CARROSSEIS = {
     # Contraste: como era procurar contra como é perguntar. Fecha na foto,
     # onde a autoridade entra sem precisar ser dita.
     "c": [
-        dict(tema=DARK, css=ANTES, passo="1 &#183; 3", rodape="Toca pra ver o resto &#8594;", corpo="""
+        dict(tema=DARK, css=ANTES, passo="1 &#183; 4", rodape="Toca pra ver o resto &#8594;", corpo="""
   <span class="selo">LANÇAMENTO</span>
   <h1 style="font-size:64px">Como você fazia<br>pra achar conteúdo<br>no YouTube <em>ontem</em>?</h1>
   <div class="lista">
@@ -202,28 +210,21 @@ CARROSSEIS = {
     <div><span class="x">&#10006;</span> Desistir e ficar sem resposta</div>
   </div>
   <p class="tempo">A resposta estava lá o tempo todo.</p>"""),
-        dict(tema=DARK, css=CAIXA, passo="2 &#183; 3", rodape="Toca pra ver o resto &#8594;", corpo="""
+        dict(tema=DARK, css=CAIXA, passo="2 &#183; 4",
+             rodape="No próximo: a busca acontecendo, sem corte &#8594;", corpo="""
   <h1>Como você pode<br>fazer <em>hoje</em>.</h1>
   <p class="oque">Com o ConcerFinder, o <b>índice do canal</b>: você descreve a situação
     e ele acha o trecho em que eu trato exatamente dela.</p>
   <div class="campo"><p>“o cliente some depois que eu mando a proposta”<span class="cursor"></span></p></div>
   <div class="res"><div class="play">&#9654;</div>
     <div><h3>Follow-up: como voltar sem parecer insistente</h3><p>abre no minuto 6:41</p></div></div>"""),
-        dict(tema=DARK, css=APP, passo="3 &#183; 3", rodape=CTA, corpo="""
-  <h1 style="font-size:62px">Segundos, e não<br>uma noite de<br>domingo <em>garimpando</em>.</h1>
-  <div class="app">
-    <div class="barra"><span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>
-      <span style="margin-left:12px">finder.thiagoconcer.com.br</span></div>
-    <div class="dentro">
-      <div class="dor">“o cliente some depois que eu mando a proposta”</div>
-      <p class="rotulo">3 trechos para assistir</p>
-      <div class="item"><div class="thumb">&#9654;</div>
-        <div><h3>Follow-up: como voltar sem parecer insistente</h3><span class="min">minuto 6:41</span></div></div>
-      <div class="item"><div class="thumb">&#9654;</div>
-        <div><h3>O erro que faz o cliente sumir depois da proposta</h3><span class="min">minuto 2:08</span></div></div>
-      <div class="plano"><p>Seu plano de ação</p>
-        <p>O que fazer na próxima ligação e o que cobrar na segunda.</p></div>
-    </div>
+        dict(tema=DARK, css=FOTO_CSS + LINK_CSS, luz=False, passo="4 &#183; 4",
+             rodape="&#8593; O link também está no sticker aqui em cima", foto=True, indice=4, corpo="""
+  <h1 style="font-size:66px">Testa com a dor<br>que <em>tá travando</em><br>a tua semana.</h1>
+  <div class="fecho">
+    <p class="grande">É grátis, e leva 2 minutos</p>
+    <p class="url">finder.thiagoconcer.com.br</p>
+    <p class="toque">ou toca no link aqui em cima</p>
   </div>"""),
     ],
 }
@@ -233,7 +234,9 @@ def main():
     gerados = []
     for nome, frames in CARROSSEIS.items():
         for i, f in enumerate(frames, start=1):
-            arquivo = AQUI / f"carrossel-{nome}-{i}.html"
+            # o índice do arquivo pode ser forçado: na sequência C o terceiro
+            # frame é o vídeo, e o fecho é o quarto
+            arquivo = AQUI / f"carrossel-{nome}-{f.get('indice', i)}.html"
             fundo = f'<img class="foto" src="{FOTO}" alt=""><div class="fade"></div>' if f.get("foto") else ""
             arquivo.write_text(
                 pagina(f["tema"], f["css"], f["corpo"], f["passo"], f["rodape"],
