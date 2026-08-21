@@ -69,7 +69,7 @@ try {
   await pagina.evaluate(() => window.scrollTo({ top: 240, behavior: 'smooth' }))
 
   await pagina.waitForFunction(
-    () => document.body.innerText.includes('Antes do plano, uma pergunta'),
+    () => document.body.innerText.includes('Para o plano ficar do seu jeito'),
     { timeout: 90_000 },
   )
   marcar('pergunta')
@@ -84,14 +84,16 @@ try {
   await new Promise((r) => setTimeout(r, 1100))
   await pagina.evaluate(() => {
     const botao = [...document.querySelectorAll('button')].find((b) =>
-      b.textContent.trim().startsWith('Gerar meu plano'),
+      b.textContent.trim().startsWith('Refinar meu plano'),
     )
     botao?.click()
   })
   marcar('respondeu')
 
+  // o plano já estava na tela quando ela respondeu, então esperar por texto de
+  // plano não diz nada: o que marca o fim é o botão parar de dizer "Refazendo"
   await pagina.waitForFunction(
-    () => document.body.innerText.includes('O que está acontecendo'),
+    () => !document.body.innerText.includes('Refazendo o plano'),
     { timeout: 150_000 },
   )
   marcar('plano')

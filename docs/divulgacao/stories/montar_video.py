@@ -29,16 +29,16 @@ m = {k: v / 1000 for k, v in marcos.items()}
 INICIO = max(0, m["digitacao"] - 0.35)   # entra já na digitação, sem tela parada
 
 trechos = [
-    ("abertura", INICIO, m["trechos"] + 1.2, 1.35),      # digita, busca, vê os trechos
+    ("abertura", INICIO, m["trechos"] + 1.2, 1.50),      # digita, busca, vê os trechos
     ("espera da pergunta", m["trechos"] + 1.2, m["pergunta"], 8.0),
-    ("resposta", m["pergunta"], m["respondeu"] + 0.6, 1.25),
+    ("resposta", m["pergunta"], m["respondeu"] + 0.6, 1.35),
     ("espera do plano", m["respondeu"] + 0.6, m["plano"], 17.0),
 ]
 # o plano é o trecho elástico: ele recebe o tempo que sobrou do orçamento, nunca
 # mais lento que o real nem tão rápido que os títulos não deem para ler
 gasto = sum((f - i) / r for _, i, f, r in trechos)
 sobra = max(3.0, ALVO - gasto)
-trechos.append(("plano", m["plano"], m["fim"], min(2.5, max(1.0, (m["fim"] - m["plano"]) / sobra))))
+trechos.append(("plano", m["plano"], m["fim"], min(2.8, max(1.0, (m["fim"] - m["plano"]) / sobra))))
 
 dur_abertura = (trechos[0][2] - trechos[0][1]) / trechos[0][3]
 total = sum((f - i) / r for _, i, f, r in trechos)
