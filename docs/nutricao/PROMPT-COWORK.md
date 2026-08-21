@@ -687,7 +687,9 @@ Conferido lendo os doze de volta: margem lateral, ícones sociais e rodapé de 1
 
 ## 8. Template cartão, 20/08 à noite
 
-O template de tabela antiga saiu de circulação. O novo, em `TEMPLATE-EMAIL.html`, é o do e-mail de diagnóstico que o Bruno aprovou: fundo `#F6F8FC`, cartão branco de cantos arredondados, marca no topo em azul, título de 28px, corpo 17px/1.7 em `#41506A` com os pontos em `#0C1726`, link `#1A5CCC` e botão `#2E74E8`.
+O template de tabela antiga saiu de circulação. O novo, em `TEMPLATE-EMAIL.html`, é o do e-mail de diagnóstico que o Bruno aprovou: fundo `#F6F8FC`, cartão branco de cantos arredondados, marca no topo em azul, título de 28px, corpo 17px/1.7 em **`#000000`**, link `#1A5CCC` e botão `#2E74E8`.
+
+O cinza-azulado da referência (`#41506A` no corpo, `#0C1726` nos pontos) foi vetado: **texto é preto, e a única cor no meio da leitura é o azul do link**. O que separa um trecho do outro é negrito e espaço, não tom de cinza. Cinza fica só no rodapé, que é onde ele quer dizer "isto aqui é aviso legal, não é a mensagem".
 
 Três mudanças de estrutura vieram junto, e valem para os doze:
 
