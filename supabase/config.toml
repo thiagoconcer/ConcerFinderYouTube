@@ -45,6 +45,11 @@ verify_jwt = false
 [functions.nurture-webhook-callback]
 verify_jwt = false
 
+# Traz do ActiveCampaign os envios e cliques da regua para o painel.
+# Autentica por dentro (requireStaffOrService): staff, service_role ou cron.
+[functions.sync-email-events]
+verify_jwt = false
+
 # Le a situacao da regua no ActiveCampaign para o painel de leads.
 # Autentica por dentro (requireStaffOrService).
 [functions.nurture-status]

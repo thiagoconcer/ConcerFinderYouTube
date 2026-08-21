@@ -17,6 +17,7 @@ import { Cargos } from '@/components/admin/cargos'
 import { Crescimento } from '@/components/admin/crescimento'
 import { Contexto } from '@/components/admin/contexto'
 import { Cta } from '@/components/admin/cta'
+import { EngajamentoEmail } from '@/components/admin/engajamento-email'
 import { Origem } from '@/components/admin/origem'
 import { QualidadeBusca } from '@/components/admin/qualidade-busca'
 import { GestaoEquipe } from '@/components/admin/gestao-equipe'
@@ -31,6 +32,7 @@ import type {
   AudienceInsights,
   CargoInsights,
   ContextoInsights,
+  EmailInsights,
   EngagementInsights,
   CtaInsights,
   OrigemInsights,
@@ -61,6 +63,7 @@ export function AdminAudienciaPage() {
   const [origem, setOrigem] = useState<OrigemInsights | null>(null)
   const [cta, setCta] = useState<CtaInsights | null>(null)
   const [contexto, setContexto] = useState<ContextoInsights | null>(null)
+  const [email, setEmail] = useState<EmailInsights | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [filtroPerfil, setFiltroPerfil] = useState<string>(TODOS)
 
@@ -72,13 +75,14 @@ export function AdminAudienciaPage() {
     setOrigem(null)
     setCta(null)
     setContexto(null)
+    setEmail(null)
 
     const perfil = filtroPerfil === TODOS ? null : filtroPerfil
 
     // O filtro vai para as TRÊS. Filtrar pela metade é pior que não filtrar:
     // a pessoa lê a tela inteira como se fosse do recorte escolhido.
     const filtro = perfil ? { filter_commercial_role: perfil } : {}
-    const [insightsRes, cargosRes, engajamentoRes, origemRes, ctaRes, contextoRes] =
+    const [insightsRes, cargosRes, engajamentoRes, origemRes, ctaRes, contextoRes, emailRes] =
       await Promise.all([
         supabase.rpc('get_audience_insights', filtro),
         supabase.rpc('get_cargo_insights', filtro),
@@ -92,6 +96,9 @@ export function AdminAudienciaPage() {
         // O contexto usa o filtro de perfil: a pergunta é gerada da dor, e a dor
         // do gestor não se parece com a do vendedor. Recortar aqui é informação.
         supabase.rpc('get_contexto_insights', filtro),
+        // o engajamento por e-mail usa o filtro de perfil porque a régua é
+        // escrita por perfil: comparar vendedor com dono aqui é informação
+        supabase.rpc('get_email_insights', filtro),
       ])
 
     if (insightsRes.error) {
@@ -103,6 +110,7 @@ export function AdminAudienciaPage() {
     setOrigem((origemRes.data as unknown as OrigemInsights) ?? null)
     setCta((ctaRes.data as unknown as CtaInsights) ?? null)
     setContexto((contextoRes.data as unknown as ContextoInsights) ?? null)
+    setEmail((emailRes.data as unknown as EmailInsights) ?? null)
   }, [filtroPerfil])
 
   useEffect(() => {
@@ -234,6 +242,8 @@ export function AdminAudienciaPage() {
           <Cta dados={cta} />
 
           <Contexto dados={contexto} />
+
+          <EngajamentoEmail dados={email} />
 
           {/* Cadastro que não vira busca é e-mail, não lead qualificado. */}
           {engajamento && (

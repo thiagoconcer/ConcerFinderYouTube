@@ -189,6 +189,47 @@ export function LeadDetalhe({
         </section>
       )}
 
+      {/*
+        Engajamento por e-mail desta pessoa. Fica ao lado da régua de propósito:
+        a régua diz o que foi enviado, isto diz o que ela fez com o que recebeu.
+      */}
+      {dados.email && dados.email.recebidos > 0 && (
+        <section>
+          <h3 className="mb-3 text-sm font-semibold">O que fez com os e-mails</h3>
+          <div className="rounded-lg border p-3">
+            <p className="text-sm">
+              Recebeu <strong>{dados.email.recebidos}</strong> e-mail(s) da régua e clicou em{' '}
+              <strong>{dados.email.cliques}</strong>.
+              {dados.email.ultimo_open && (
+                <span className="text-muted-foreground">
+                  {' '}
+                  Última abertura registrada em {formatDateTime(dados.email.ultimo_open)}, contando
+                  todas as campanhas da conta.
+                </span>
+              )}
+            </p>
+            {dados.email.eventos.length > 0 && (
+              <ul className="mt-3 space-y-1.5">
+                {dados.email.eventos.slice(0, 8).map((e, i) => (
+                  <li key={`${e.em}-${i}`} className="flex flex-wrap items-baseline gap-x-2 text-xs">
+                    <Badge variant={e.tipo === 'clique' ? 'default' : 'outline'}>
+                      {e.tipo === 'clique' ? 'clicou' : 'recebeu'}
+                    </Badge>
+                    <span>{e.campanha.replace(/^\[CF\]\s*/, '')}</span>
+                    {e.link && (
+                      <span className="text-muted-foreground">
+                        {e.link.includes('viverdeia') ? 'convite do parceiro' : 'link do ConcerFinder'}
+                      </span>
+                    )}
+                    <span className="text-muted-foreground">{formatDateTime(e.em)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+      )}
+
       <section>
         <h3 className="mb-3 text-sm font-semibold">Régua de nutrição</h3>
         {situacao?.fluxo ? (

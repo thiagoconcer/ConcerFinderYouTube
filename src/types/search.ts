@@ -258,3 +258,44 @@ export interface ContextoInsights {
   }>
   ignoradas: Array<{ dor: string; pergunta: string | null; buscado_em: string }>
 }
+
+/**
+ * Retorno de `get_email_insights`: o que a régua provoca, do lado de quem
+ * recebe. A métrica é clique, não abertura: a API do ActiveCampaign não expõe
+ * abertura por campanha, e abertura virou número ruim desde que o Apple Mail
+ * passou a abrir e-mail sozinho.
+ */
+export interface EmailInsights {
+  periodo: { de: string; ate: string }
+  totais: {
+    pessoas_que_receberam: number
+    pessoas_que_clicaram: number
+    envios: number
+    cliques: number
+  }
+  por_email: Array<{
+    campanha: string
+    campaign_id: string
+    receberam: number
+    clicaram: number
+    taxa: number | null
+  }>
+  /** As duas portas do convite do parceiro, contando pessoas e não cliques. */
+  convite_parceiro: { pelo_email: number; pelo_app: number; pessoas_no_total: number }
+  clicou_e_nao_buscou: Array<{
+    profile_id: string
+    nome: string
+    email: string
+    perfil: string
+    ultimo_clique: string
+  }>
+  ultimos_cliques: Array<{
+    nome: string
+    profile_id: string
+    campanha: string
+    link: string
+    em: string
+  }>
+  /** Agregados do contato no ActiveCampaign, da conta inteira. */
+  leitores: { com_open_registrado: number; com_clique_registrado: number; com_bounce: number }
+}

@@ -56,6 +56,94 @@ export type Database = {
           },
         ]
       }
+      email_contatos: {
+        Row: {
+          ac_contact_id: string
+          atualizado_em: string
+          bounce: boolean
+          enviados_na_conta: number
+          profile_id: string
+          ultimo_clique: string | null
+          ultimo_open: string | null
+        }
+        Insert: {
+          ac_contact_id: string
+          atualizado_em?: string
+          bounce?: boolean
+          enviados_na_conta?: number
+          profile_id: string
+          ultimo_clique?: string | null
+          ultimo_open?: string | null
+        }
+        Update: {
+          ac_contact_id?: string
+          atualizado_em?: string
+          bounce?: boolean
+          enviados_na_conta?: number
+          profile_id?: string
+          ultimo_clique?: string | null
+          ultimo_open?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_contatos_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_events: {
+        Row: {
+          ac_contact_id: string
+          campaign_id: string
+          campaign_name: string | null
+          created_at: string
+          email: string
+          id: string
+          link_url: string | null
+          message_id: string | null
+          ocorrido_em: string
+          profile_id: string | null
+          tipo: string
+        }
+        Insert: {
+          ac_contact_id: string
+          campaign_id: string
+          campaign_name?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          link_url?: string | null
+          message_id?: string | null
+          ocorrido_em: string
+          profile_id?: string | null
+          tipo: string
+        }
+        Update: {
+          ac_contact_id?: string
+          campaign_id?: string
+          campaign_name?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          link_url?: string | null
+          message_id?: string | null
+          ocorrido_em?: string
+          profile_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_events_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ingestion_runs: {
         Row: {
           created_at: string
@@ -533,6 +621,14 @@ export type Database = {
       }
       get_cta_insights: {
         Args: { from_date?: string; to_date?: string }
+        Returns: Json
+      }
+      get_email_insights: {
+        Args: {
+          filter_commercial_role?: string
+          from_date?: string
+          to_date?: string
+        }
         Returns: Json
       }
       get_engagement_insights: {

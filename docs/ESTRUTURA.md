@@ -195,6 +195,26 @@ RLS **ligado em todas as tabelas**. Função auxiliar `is_concer_staff()` retorn
 - **`get_lead_detail(p_profile_id)`** passou a devolver o bloco `origem` com as UTMs **como foram capturadas** (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `referrer`, `landing_page`), além da origem derivada. O relatório de captação continua usando a derivada, que é a leitura certa para comparar canais; na ficha de uma pessoa a pergunta é operacional (de qual anúncio, de qual link), e aí a derivada esconde o que interessa. **[Extensão do doc]**
 > **ActiveCampaign, inscrição na lista (21/08/2026).** O `contact/sync` cria o contato, mas contato **sem lista** não entra em campanha nenhuma: a régua continua funcionando (a automação dispara por tag), e qualquer disparo pontual passa por cima da pessoa em silêncio. Descoberto quando o e-mail de aviso da falha alcançava 9 de 15 cadastrados. O `_shared/activecampaign.ts` passou a inscrever na lista (`AC_LIST_ID`, padrão 3) logo depois do sync, pulando quem cancelou inscrição, que é a única coisa ali que não se conserta depois.
 
+### `email_events` **[Extensão do doc]**
+Envios e cliques das campanhas `[CF]` no ActiveCampaign, sincronizados por `sync-email-events`.
+| Coluna | Tipo | Restrições |
+|---|---|---|
+| `id` | uuid | PK |
+| `profile_id` | uuid | FK → `profiles.id`, NULL quando o contato do AC não tem conta no produto |
+| `ac_contact_id` | text | NOT NULL |
+| `email` | text | NOT NULL |
+| `campaign_id` / `campaign_name` / `message_id` | text | identificam o e-mail |
+| `tipo` | text | NOT NULL, CHECK IN ('enviado','clique') |
+| `link_url` | text | NULL nos envios; nos cliques, o link clicado |
+| `ocorrido_em` | timestamptz | NOT NULL |
+**Índices:** PK; único `idx_email_events_unico` em (`ac_contact_id`,`campaign_id`,`tipo`,`link_url`,`ocorrido_em`) **NULLS NOT DISTINCT**, que é o que torna a sincronização idempotente e o que o upsert declara no ON CONFLICT (índice por expressão não casa com ON CONFLICT); mais `profile_id`, `ocorrido_em` e `campaign_id`.
+
+**Por que só envio e clique:** a API do ActiveCampaign entrega envio por contato (`logs`) e clique por contato (`links/{id}/linkData`), mas **abertura por campanha não existe** por contato, só o total. O que dá para saber de abertura vem agregado em `email_contatos`.
+
+### `email_contatos` **[Extensão do doc]**
+Agregados do contato no ActiveCampaign: `enviados_na_conta` (todas as campanhas da conta, não só as do ConcerFinder), `ultimo_open`, `ultimo_clique`, `bounce`. Responde "essa pessoa lê e-mail?" sem varrer eventos.
+
+- **`get_email_insights(from_date, to_date, filter_commercial_role)`** (SECURITY DEFINER, staff-only) — funil de cada e-mail da régua (receberam x clicaram), o convite do parceiro somando as duas portas (plano de ação e e-mail) contando pessoas e não cliques, e a lista de quem clicou no e-mail e nunca buscou. **[Extensão do doc]**
 - **`get_busca_detail(p_search_id)`** (SECURITY DEFINER, staff-only) — o que a pessoa recebeu numa busca: pergunta de contexto, resposta, plano inteiro e os trechos na ordem entregue, marcando quais ela abriu. Separada de `get_lead_detail` porque é lida uma busca por vez; trazer o plano de todas junto pesaria a ficha inteira. **[Extensão do doc]**
 - **`get_contexto_insights(from_date, to_date, filter_commercial_role)`** (SECURITY DEFINER, staff-only) — quantos respondem a pergunta de contexto, por perfil, e trechos abertos por busca com e sem contexto. **[Extensão do doc]**
 - **`get_audience_insights()`** (SECURITY DEFINER, staff-only) — agrega `searches.detected_topics` × `profiles.commercial_role` para o painel de audiência.

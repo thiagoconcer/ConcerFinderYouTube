@@ -79,6 +79,16 @@ export interface LeadDetalheDados {
     landing_page: string | null
     capturado_em: string | null
   } | null
+  /**
+   * Engajamento por e-mail desta pessoa. `ultimo_open` é agregado da conta
+   * inteira no ActiveCampaign: abertura por campanha a API não entrega.
+   */
+  email: {
+    recebidos: number
+    cliques: number
+    ultimo_open: string | null
+    eventos: Array<{ campanha: string; tipo: 'enviado' | 'clique'; link: string | null; em: string }>
+  } | null
   /** Composição do score, para a tela explicar o número sem recalculá-lo. */
   score: {
     total: number

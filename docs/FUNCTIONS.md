@@ -184,6 +184,21 @@
 
 ---
 
+### `sync-email-events`
+
+**[Extensão do doc]** Traz do ActiveCampaign o que a régua provocou: quem recebeu cada e-mail e quem clicou em qual link.
+
+- **Autenticação:** staff, service_role ou `X-Cron-Secret` (`requireStaffOrService`).
+- **Agenda:** `cron_email_events`, de 6 em 6 horas. Durante um lançamento a régua dispara o dia inteiro, e clique que só aparece no dia seguinte chega tarde para virar ligação.
+- **Fontes na API:** `logs?filters[campaignid]=` (envio por contato), `campaigns/{id}/links` + `links/{id}/linkData` (clique por contato, com link) e os campos do contato (`last_open_date`, `last_click_date`, `sentcnt`, bounce).
+- **Regras:**
+  - Só campanhas cujo nome começa com `[CF]`, filtradas pelo nome na API. A conta tem 191 campanhas e as do ConcerFinder não cabem nas primeiras 100 de nenhuma ordenação.
+  - Contato do AC sem conta no produto é ignorado: o painel contaria gente que nunca entrou.
+  - Idempotente pelo índice único de `email_events`; rodar de novo no mesmo período não duplica nada.
+  - **Abertura por campanha não é sincronizada porque a API não expõe.** O que existe de abertura é o agregado por contato, gravado em `email_contatos` com o nome dizendo que é da conta inteira.
+
+---
+
 ### `generate-action-plan`
 - **Propósito:** gerar o texto do plano de ação a partir da dor descrita pelo usuário e dos top segmentos recuperados na busca.
 - **Autenticação exigida:** **usuário logado** (chamada dentro do fluxo de busca; o JWT do usuário é validado).
