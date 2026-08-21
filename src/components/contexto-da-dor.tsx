@@ -4,14 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 /**
- * A pergunta que o sistema faz depois de entregar os trechos e antes de
- * escrever o plano, para ele sair para o caso da pessoa e não para o caso médio.
+ * A pergunta que o sistema faz depois de entregar os trechos, para o plano ser
+ * escrito para o caso da pessoa e não para o caso médio.
  *
- * A caixa SEGURA o plano, e essa é a decisão que importa. Na primeira versão ela
- * aparecia com o plano já pronto ao lado, e ninguém respondia: responder virava
- * pedir retrabalho de algo entregue. Agora o plano vem depois da decisão, e a
- * decisão tem duas saídas, ambas em um clique: responder, ou "Agora não" e
- * receber o plano genérico na hora. O que não existe é ficar sem plano.
+ * A caixa NÃO segura o plano, e isso foi testado do jeito caro: por um dia ela
+ * segurou, e 4 de 5 pessoas saíram sem plano nenhum em vez de responder. Agora
+ * ela aparece ACIMA do plano enquanto ele é escrito. Quem ignora fica com o
+ * plano de sempre; quem responde ganha um plano reescrito com o caso dela.
  *
  * As opções vêm antes do campo aberto porque campo aberto sozinho é respondido
  * com duas palavras. Um clique já muda o plano, e quem quiser detalhar detalha.
@@ -46,7 +45,7 @@ export function ContextoDaDor({ pergunta, opcoes, enviando, onEnviar, onDispensa
         <CardTitle className="flex items-start gap-2 text-base">
           <MessageCircleQuestion className="mt-0.5 size-5 shrink-0 text-primary" />
           <span>
-            <span className="mr-1.5 text-muted-foreground">Antes do plano, uma pergunta:</span>
+            <span className="mr-1.5 text-muted-foreground">Para o plano ficar do seu jeito:</span>
             {pergunta}
           </span>
         </CardTitle>
@@ -92,13 +91,13 @@ export function ContextoDaDor({ pergunta, opcoes, enviando, onEnviar, onDispensa
         <div className="flex flex-wrap items-center gap-3">
           <Button type="button" onClick={() => onEnviar(resposta)} disabled={!podeEnviar}>
             {enviando ? <Loader2 className="animate-spin" /> : null}
-            {enviando ? 'Escrevendo o plano...' : 'Gerar meu plano'}
+            {enviando ? 'Refazendo o plano...' : 'Refinar meu plano'}
           </Button>
           <Button type="button" variant="ghost" onClick={onDispensar} disabled={enviando}>
             Agora não
           </Button>
           <span className="text-xs text-muted-foreground">
-            Sem responder, o plano sai do mesmo jeito, só que geral.
+            Sem responder, o plano abaixo continua valendo.
           </span>
         </div>
       </CardContent>

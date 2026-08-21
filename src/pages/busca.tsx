@@ -46,11 +46,14 @@ const CACHE_BUSCA = 'concerfinder-ultima-busca'
 const LEAD_PENDENTE = 'concerfinder-lead-pendente'
 
 /**
- * O contexto é uma etapa do fluxo, não um enfeite ao lado dele: busca, trechos,
- * pergunta, e só então o plano. Ele trava porque plano entregue antes da
- * pergunta transforma a pergunta em retrabalho ("responde pra eu reescrever"),
- * e ninguém responde. Quem não quer responder clica em "Agora não" e recebe o
- * plano na hora, sem contexto.
+ * A pergunta de contexto acompanha o plano, não segura ele.
+ *
+ * Chegou a segurar, por um dia: a ideia era que ninguém responde uma pergunta
+ * sobre algo que já foi entregue. O número disse o contrário. Em 5 buscas com a
+ * trava, 4 pessoas não responderam nem dispensaram, e simplesmente saíram sem
+ * plano nenhum. Perder o plano de todo mundo para ganhar o contexto de alguns é
+ * um péssimo negócio, então o plano voltou a sair sozinho e a pergunta voltou a
+ * ser um convite, agora logo acima do plano, onde ela é vista.
  */
 interface Contexto {
   pergunta: string
@@ -67,8 +70,6 @@ type Estado =
       busca: SearchPainResponse
       plano: string | null
       gerandoPlano: boolean
-      /** Entre os trechos e a pergunta: o plano ainda nem foi pedido. */
-      aguardandoContexto: boolean
       contexto: Contexto | null
     }
 
@@ -115,14 +116,11 @@ export function BuscaPage() {
   const ultimoPronto = useRef<Estado | null>(null)
 
   /**
-   * Pede a pergunta de contexto e devolve o que veio. Falha em silêncio de
-   * propósito: sem pergunta o fluxo não pode parar, ele apenas segue direto
-   * para o plano, que era como o sistema funcionava antes dela existir.
+   * Pede a pergunta de contexto. Roda em paralelo com o plano e falha em
+   * silêncio de propósito: a pergunta é um bônus, e um erro dela não pode virar
+   * alerta vermelho na tela de quem acabou de receber os trechos.
    */
-  async function pedirPergunta(
-    searchId: string,
-    resultados: SearchHit[],
-  ): Promise<{ pergunta: string; opcoes: string[] } | null> {
+  async function pedirPergunta(searchId: string, resultados: SearchHit[]) {
     try {
       const { data, error } = await supabase.functions.invoke<ContextQuestionResponse>(
         'context-question',
@@ -137,38 +135,23 @@ export function BuscaPage() {
           },
         },
       )
-      if (error || !data?.question || data.answered) return null
-      return { pergunta: data.question as string, opcoes: data.options ?? [] }
+      if (error || !data?.question || data.answered) return
+
+      setEstado((atual) =>
+        atual.fase === 'pronto' && atual.busca.search_id === searchId && !atual.contexto
+          ? {
+              ...atual,
+              contexto: {
+                pergunta: data.question as string,
+                opcoes: data.options ?? [],
+                situacao: 'aberta',
+              },
+            }
+          : atual,
+      )
     } catch {
-      return null
+      // sem pergunta, a tela segue igual ao que era antes dela existir
     }
-  }
-
-  /**
-   * O que acontece entre os trechos e o plano: ou aparece a pergunta e o plano
-   * espera a decisão dela, ou não há pergunta e o plano sai direto.
-   */
-  async function prepararPlano(searchId: string, queryText: string, resultados: SearchHit[]) {
-    const pergunta = await pedirPergunta(searchId, resultados)
-
-    // Se ela já respondeu ou dispensou enquanto a pergunta vinha, o que estiver
-    // na tela vale mais do que esta resposta atrasada.
-    let seguir = false
-    setEstado((atual) => {
-      if (atual.fase !== 'pronto' || atual.busca.search_id !== searchId) return atual
-      if (!atual.aguardandoContexto) return atual
-      if (!pergunta) {
-        seguir = true
-        return { ...atual, aguardandoContexto: false, gerandoPlano: true }
-      }
-      return {
-        ...atual,
-        aguardandoContexto: false,
-        contexto: { ...pergunta, situacao: 'aberta' },
-      }
-    })
-
-    if (seguir) await gerarPlano(searchId, queryText, resultados)
   }
 
   async function gerarPlano(
@@ -230,7 +213,7 @@ export function BuscaPage() {
     }
   }
 
-  /** Responder libera o plano, agora escrito para o caso que ela contou. */
+  /** Responder reescreve o plano; a busca e os trechos ficam onde estão. */
   function responderContexto(resposta: string) {
     if (estado.fase !== 'pronto' || !estado.busca.search_id) return
     const { search_id: searchId, query_text: consulta, results } = estado.busca
@@ -247,21 +230,13 @@ export function BuscaPage() {
     void gerarPlano(searchId, consulta, results, resposta)
   }
 
-  /** "Agora não" não é abandono: é o plano genérico, gerado na hora. */
+  /** "Agora não" só tira a caixa: o plano já está na tela, inteiro. */
   function dispensarContexto() {
-    if (estado.fase !== 'pronto' || !estado.busca.search_id) return
-    const { search_id: searchId, query_text: consulta, results } = estado.busca
-
     setEstado((atual) =>
       atual.fase === 'pronto'
-        ? {
-            ...atual,
-            gerandoPlano: true,
-            contexto: atual.contexto && { ...atual.contexto, situacao: 'dispensada' },
-          }
+        ? { ...atual, contexto: atual.contexto && { ...atual.contexto, situacao: 'dispensada' } }
         : atual,
     )
-    void gerarPlano(searchId, consulta, results)
   }
 
   const buscar = useCallback(async function buscar(consulta: string) {
@@ -287,17 +262,19 @@ export function BuscaPage() {
         fase: 'pronto',
         busca: data,
         plano: null,
-        gerandoPlano: false,
-        aguardandoContexto: Boolean(data.search_id),
+        gerandoPlano: true,
         contexto: null,
       }
       ultimoPronto.current = novo
       setEstado(novo)
 
       if (data.search_id) {
-        // Em série, e não em paralelo: o plano é o que a pergunta modifica, e
-        // gerar antes de perguntar era pedir contexto para algo já entregue.
-        void prepararPlano(data.search_id, data.query_text, data.results)
+        // As duas em paralelo: o plano já começa com o que existe, e a pergunta
+        // aparece durante a espera dele em vez de criar uma espera nova.
+        void gerarPlano(data.search_id, data.query_text, data.results)
+        void pedirPergunta(data.search_id, data.results)
+      } else {
+        setEstado((atual) => (atual.fase === 'pronto' ? { ...atual, gerandoPlano: false } : atual))
       }
     } catch (error) {
       setErro(await mensagemDeErro(error, 'Não foi possível processar sua busca.'))
@@ -328,7 +305,6 @@ export function BuscaPage() {
         busca: cache.busca,
         plano: cache.plano,
         gerandoPlano: false,
-        aguardandoContexto: false,
         contexto: cache.contexto ?? null,
       }
       ultimoPronto.current = restaurado
@@ -339,7 +315,7 @@ export function BuscaPage() {
   // Persiste quando o plano termina (ou falha): é o momento em que a tela
   // está completa e vale a pena voltar para ela.
   useEffect(() => {
-    if (estado.fase !== 'pronto' || estado.gerandoPlano || estado.aguardandoContexto) return
+    if (estado.fase !== 'pronto' || estado.gerandoPlano) return
     try {
       sessionStorage.setItem(
         CACHE_BUSCA,
@@ -480,9 +456,9 @@ export function BuscaPage() {
           )}
 
           {/*
-            A pergunta vem antes do plano, e no lugar dele. Enquanto ela está na
-            tela o plano não existe: é isso que faz a pergunta ser respondida em
-            vez de ignorada. "Agora não" gera o plano genérico na hora.
+            A caixa fica ACIMA do plano, não abaixo. Embaixo ela era um rodapé
+            que ninguém lia; aqui ela é a primeira coisa depois dos temas, e o
+            plano continua logo em seguida, sendo escrito enquanto ela decide.
           */}
           {estado.contexto?.situacao === 'aberta' || estado.contexto?.situacao === 'enviando' ? (
             <ContextoDaDor
@@ -495,14 +471,6 @@ export function BuscaPage() {
           ) : null}
 
           {/* Plano de ação */}
-          {estado.aguardandoContexto ? (
-            <Card>
-              <CardContent className="flex items-center gap-3 py-6 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin text-primary" />
-                Preparando o seu plano de ação...
-              </CardContent>
-            </Card>
-          ) : estado.contexto?.situacao === 'aberta' || estado.contexto?.situacao === 'enviando' ? null : (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -542,12 +510,11 @@ export function BuscaPage() {
               )}
             </CardContent>
           </Card>
-          )}
 
           {estado.contexto?.situacao === 'respondida' ? (
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               <Sparkles className="size-4 text-primary" />
-              Plano escrito com o contexto que você contou.
+              Plano reescrito com o contexto que você contou.
             </p>
           ) : null}
 

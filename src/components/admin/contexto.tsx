@@ -62,8 +62,8 @@ export function Contexto({ dados }: { dados: ContextoInsights | null }) {
             Contexto da dor
           </CardTitle>
           <CardDescription>
-            De quem recebeu a pergunta antes do plano, quantos responderam em vez de
-            seguir para o plano genérico.
+            De quem recebeu a pergunta junto com o plano, quantos responderam e tiveram o
+            plano reescrito.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -79,7 +79,7 @@ export function Contexto({ dados }: { dados: ContextoInsights | null }) {
               <strong className="text-foreground">{comPergunta}</strong> buscas com pergunta,
               em <strong className="text-foreground">{funil?.buscas ?? 0}</strong> busca(s) no
               período. <strong className="text-foreground">{funil?.planos_refinados ?? 0}</strong>{' '}
-              plano(s) nasceram com o contexto.
+              plano(s) foram reescritos com o contexto.
             </p>
           </div>
 
