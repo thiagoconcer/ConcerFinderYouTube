@@ -97,7 +97,7 @@ export function AdminLeadsPage() {
       p_tema: so(filtros.tema),
       p_faixa: so(filtros.faixa),
       p_atividade: so(filtros.atividade),
-      p_incluir_internos: filtros.internos === 'sim',
+      p_internos: filtros.internos,
       p_limit: 200,
     })
 

@@ -648,7 +648,7 @@ export type Database = {
           p_cargo?: string
           p_desde?: string
           p_faixa?: string
-          p_incluir_internos?: boolean
+          p_internos?: string
           p_limit?: number
           p_origem?: string
           p_perfil?: string
