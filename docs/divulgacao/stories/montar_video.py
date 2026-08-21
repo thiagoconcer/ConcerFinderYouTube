@@ -19,22 +19,29 @@ AQUI = Path(__file__).parent
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 marcos = json.loads((AQUI / "marcos.json").read_text())
 
-ALVO = 14.5                       # segundos de vídeo final, abaixo do corte do story
-RITMO_ABERTURA = 1.25             # digitação e busca, quase em tempo real
-ACELERA = 17                      # a espera do plano passa voando
+ALVO = 14.2                       # segundos de vídeo final, abaixo do corte do story
 
-# a gravação começa com a tela parada: cortar o ocioso e entrar já na digitação
-INICIO = max(0, marcos["digitacao"] - 350) / 1000
-LEITURA = marcos["trechos"] / 1000 + 2.5   # tempo de bater o olho nos trechos
-PLANO = marcos["plano"] / 1000
-FIM = marcos["fim"] / 1000
+# A gravação tem cinco trechos, e cada um pede uma velocidade diferente. O que a
+# pessoa faz (digitar, ler, responder) fica perto do tempo real, porque é o que
+# dá credibilidade. O que ela só espera (a pergunta chegando, o plano sendo
+# escrito) passa voando, porque em story espera é abandono.
+m = {k: v / 1000 for k, v in marcos.items()}
+INICIO = max(0, m["digitacao"] - 0.35)   # entra já na digitação, sem tela parada
 
-dur_abertura = (LEITURA - INICIO) / RITMO_ABERTURA
-dur_espera = (PLANO - LEITURA) / ACELERA
-# o plano é o trecho que pode encolher: nunca mais lento que o real, nem tão rápido
-# que a pessoa não consiga ler os títulos enquanto a página desce
-sobra = max(3.0, ALVO - dur_abertura - dur_espera)
-RITMO_PLANO = min(2.2, max(1.0, (FIM - PLANO) / sobra))
+trechos = [
+    ("abertura", INICIO, m["trechos"] + 1.2, 1.35),      # digita, busca, vê os trechos
+    ("espera da pergunta", m["trechos"] + 1.2, m["pergunta"], 8.0),
+    ("resposta", m["pergunta"], m["respondeu"] + 0.6, 1.25),
+    ("espera do plano", m["respondeu"] + 0.6, m["plano"], 17.0),
+]
+# o plano é o trecho elástico: ele recebe o tempo que sobrou do orçamento, nunca
+# mais lento que o real nem tão rápido que os títulos não deem para ler
+gasto = sum((f - i) / r for _, i, f, r in trechos)
+sobra = max(3.0, ALVO - gasto)
+trechos.append(("plano", m["plano"], m["fim"], min(2.5, max(1.0, (m["fim"] - m["plano"]) / sobra))))
+
+dur_abertura = (trechos[0][2] - trechos[0][1]) / trechos[0][3]
+total = sum((f - i) / r for _, i, f, r in trechos)
 
 
 def render(nome: str, corpo: str) -> Path:
@@ -65,13 +72,14 @@ faixa = render("sobreposicao-faixa",
                '<div class="faixa">Busca real, sem corte <span>&#183; toca pra ver o resto '
                '&#8594;</span></div>')
 
-total = dur_abertura + dur_espera + (FIM - PLANO) / RITMO_PLANO
-# a faixa some enquanto o plano desce: ali ela taparia justo o que interessa ler
+# a faixa some no meio: ali ela taparia justo a pergunta e o plano, que é o que
+# a peça tem para mostrar
+partes = "".join(
+    f"[0:v]trim={i}:{f},setpts=(PTS-STARTPTS)/{r}[s{n}];" for n, (_, i, f, r) in enumerate(trechos)
+)
+juntar = "".join(f"[s{n}]" for n in range(len(trechos)))
 filtro = (
-    f"[0:v]trim={INICIO}:{LEITURA},setpts=(PTS-STARTPTS)/{RITMO_ABERTURA}[a];"
-    f"[0:v]trim={LEITURA}:{PLANO},setpts=(PTS-STARTPTS)/{ACELERA}[b];"
-    f"[0:v]trim={PLANO}:{FIM},setpts=(PTS-STARTPTS)/{RITMO_PLANO}[c];"
-    f"[a][b][c]concat=n=3:v=1:a=0[v];"
+    f"{partes}{juntar}concat=n={len(trechos)}:v=1:a=0[v];"
     f"[v][1:v]overlay=0:0[v1];"
     f"[v1][2:v]overlay=0:0:enable='lt(t,{dur_abertura - 1:.2f})+gt(t,{total - 2.2:.2f})',"
     f"fps=30,format=yuv420p[out]"
@@ -86,5 +94,5 @@ subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(AQUI / "gravacao.webm")
 dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                       "-of", "default=nk=1:nw=1", str(saida)], capture_output=True, text=True)
 print(f"vídeo: {saida.name} | {float(dur.stdout):.1f}s | {saida.stat().st_size // 1024} KB")
-print(f"abertura {dur_abertura:.1f}s a {RITMO_ABERTURA}x · espera {dur_espera:.1f}s a {ACELERA}x "
-      f"· plano {(FIM - PLANO) / RITMO_PLANO:.1f}s a {RITMO_PLANO:.2f}x")
+for nome, i, f, r in trechos:
+    print(f"  {nome}: {(f - i):.1f}s reais em {(f - i) / r:.1f}s ({r:.2f}x)")

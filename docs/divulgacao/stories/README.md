@@ -35,8 +35,13 @@ livre da interface do Instagram, e o rodapé fica acima da faixa do sticker.
 
 Terceiro frame da C, 14 segundos: a tela do produto de verdade, gravada em
 `finder.thiagoconcer.com.br` com uma dor real digitada ("meu time trava quando o
-cliente diz que tá caro"), os temas identificados, os trechos com minutagem e o
-plano de ação escrito na hora.
+cliente diz que tá caro"), os temas identificados, os trechos com minutagem, a
+pergunta de contexto sendo respondida em um toque e o plano de ação escrito na
+hora. É o fluxo inteiro, na ordem em que ele acontece.
+
+**O que fica de fora.** O convite do Viver de IA sai da tela antes da descida
+pelo plano, e a descida para quando chega na seção de IA: o vídeo é sobre o que a
+ferramenta entrega, e convite comercial no meio dele muda o assunto da peça.
 
 **Por que gravar em vez de simular.** A primeira versão era uma animação em HTML,
 e ela acertava o layout e errava justo o que convence: o tempo real das coisas

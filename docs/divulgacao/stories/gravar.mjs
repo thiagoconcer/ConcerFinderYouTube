@@ -61,17 +61,38 @@ try {
   marcar('clique')
   await pagina.click('button[type="submit"]')
 
-  // os trechos chegam primeiro, o plano depois: são duas esperas diferentes
+  // três esperas diferentes, e o corte precisa saber onde cada uma começa:
+  // os trechos, depois a pergunta de contexto, depois o plano que ela libera
   await pagina.waitForSelector('a[href*="/video/"]', { timeout: 60_000 })
   marcar('trechos')
-  await new Promise((r) => setTimeout(r, 1500))
-
-  await pagina.evaluate(() => window.scrollTo({ top: 260, behavior: 'smooth' }))
-  await new Promise((r) => setTimeout(r, 1400))
+  await new Promise((r) => setTimeout(r, 1200))
+  await pagina.evaluate(() => window.scrollTo({ top: 240, behavior: 'smooth' }))
 
   await pagina.waitForFunction(
-    () => !document.body.innerText.includes('Consolidando os insights'),
-    { timeout: 120_000 },
+    () => document.body.innerText.includes('Antes do plano, uma pergunta'),
+    { timeout: 90_000 },
+  )
+  marcar('pergunta')
+  await new Promise((r) => setTimeout(r, 2200))
+
+  // responde clicando numa das opções sugeridas, que é o caminho de um toque
+  await pagina.evaluate(() => {
+    const chip = document.querySelector('button[aria-pressed="false"]')
+    chip?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    chip?.click()
+  })
+  await new Promise((r) => setTimeout(r, 1100))
+  await pagina.evaluate(() => {
+    const botao = [...document.querySelectorAll('button')].find((b) =>
+      b.textContent.trim().startsWith('Gerar meu plano'),
+    )
+    botao?.click()
+  })
+  marcar('respondeu')
+
+  await pagina.waitForFunction(
+    () => document.body.innerText.includes('O que está acontecendo'),
+    { timeout: 150_000 },
   )
   marcar('plano')
 
@@ -83,22 +104,29 @@ try {
       .querySelectorAll('div[class*="border-primary/25"]')
       .forEach((bloco) => bloco.remove())
   })
-  await new Promise((r) => setTimeout(r, 900))
+  await new Promise((r) => setTimeout(r, 800))
 
-  // o plano é o que a pessoa leva pra semana, então ele precisa aparecer inteiro:
-  // uma descida em degraus, com pausa pra dar tempo de bater o olho em cada bloco
   await pagina.evaluate(() => {
     const alvo = [...document.querySelectorAll('h2, h3')].find((e) =>
       e.textContent.includes('Seu plano de ação'),
     )
     alvo?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   })
-  await new Promise((r) => setTimeout(r, 1400))
-  marcar('plano_topo')
+  await new Promise((r) => setTimeout(r, 1300))
 
-  for (let i = 0; i < 9; i += 1) {
+  // desce em degraus até chegar na seção de IA, que é onde o plano deixa de
+  // falar do problema dela e começa a falar de ferramenta: dali em diante o
+  // vídeo não ganha nada
+  for (let i = 0; i < 12; i += 1) {
+    const chegou = await pagina.evaluate(() => {
+      const ia = [...document.querySelectorAll('h2, h3')].find((e) =>
+        e.textContent.toLowerCase().includes('ia acelera'),
+      )
+      return ia ? ia.getBoundingClientRect().top < window.innerHeight - 120 : false
+    })
+    if (chegou) break
     await pagina.evaluate(() => window.scrollBy({ top: 300, behavior: 'smooth' }))
-    await new Promise((r) => setTimeout(r, 750))
+    await new Promise((r) => setTimeout(r, 720))
   }
   await new Promise((r) => setTimeout(r, 700))
   marcar('fim')

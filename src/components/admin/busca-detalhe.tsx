@@ -94,7 +94,7 @@ export function BuscaDetalhe({ searchId }: { searchId: string }) {
           Plano que ela recebeu
           {busca.plano_com_contexto && (
             <Badge variant="outline" className="font-normal normal-case">
-              reescrito com o contexto
+escrito com o contexto
             </Badge>
           )}
         </h4>
