@@ -20,7 +20,6 @@ import { Cta } from '@/components/admin/cta'
 import { EngajamentoEmail } from '@/components/admin/engajamento-email'
 import { Origem } from '@/components/admin/origem'
 import { QualidadeBusca } from '@/components/admin/qualidade-busca'
-import { GestaoEquipe } from '@/components/admin/gestao-equipe'
 import { PerfisPorTema } from '@/components/admin/perfis-por-tema'
 import { RankingTrechos } from '@/components/admin/ranking-trechos'
 import { supabase } from '@/lib/supabase'
@@ -169,7 +168,6 @@ export function AdminAudienciaPage() {
       )}
 
       {/* Só o admin enxerga; o componente se esconde sozinho */}
-      <GestaoEquipe />
 
       {carregando && (
         <div className="space-y-6">

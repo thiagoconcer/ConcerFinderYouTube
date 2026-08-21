@@ -11,6 +11,7 @@ export const ROUTES = {
   adminDashboard: '/admin/dashboard',
   adminLeads: '/admin/leads',
   adminLeadPerfil: (id = ':id') => `/admin/leads/${id}`,
+  adminUsuarios: '/admin/usuarios',
   /** Rota antiga; redireciona para o dashboard para não quebrar link salvo. */
   adminAudiencia: '/admin/audiencia',
 } as const

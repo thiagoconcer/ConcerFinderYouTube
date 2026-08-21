@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider } from '@/contexts/auth-context'
 import { ThemeProvider } from '@/contexts/theme-context'
 import { AdminAudienciaPage } from '@/pages/admin-audiencia'
+import { AdminUsuariosPage } from '@/pages/admin-usuarios'
 import { AdminLeadsPage } from '@/pages/admin-leads'
 import { AdminLeadPerfilPage } from '@/pages/admin-lead-perfil'
 import { RedefinirSenhaPage } from '@/pages/redefinir-senha'
@@ -49,6 +50,7 @@ export default function App() {
                 <Route path={ROUTES.adminDashboard} element={<AdminAudienciaPage />} />
                 <Route path={ROUTES.adminLeads} element={<AdminLeadsPage />} />
                 <Route path={ROUTES.adminLeadPerfil()} element={<AdminLeadPerfilPage />} />
+                <Route path={ROUTES.adminUsuarios} element={<AdminUsuariosPage />} />
                 {/* Rota antiga: quem tiver o link salvo cai no dashboard. */}
                 <Route
                   path={ROUTES.adminAudiencia}

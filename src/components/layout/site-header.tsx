@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { LogOut, Menu, User as UserIcon } from 'lucide-react'
+import { LogOut, Menu, ShieldCheck, User as UserIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Logo } from '@/components/brand/logo'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -109,6 +109,16 @@ export function SiteHeader() {
                   {user?.email}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {/* Acessos moram aqui, e não no fim do dashboard: quem procura
+                    "onde vejo os admins" abre o menu do próprio usuário. */}
+                {isStaff && (
+                  <DropdownMenuItem asChild>
+                    <Link to={ROUTES.adminUsuarios}>
+                      <ShieldCheck />
+                      Usuários e acessos
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onSelect={() => void handleSignOut()}>
                   <LogOut />
                   Sair
