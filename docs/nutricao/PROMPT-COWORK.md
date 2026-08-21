@@ -684,3 +684,17 @@ Os doze e-mails foram reconstruídos no template de `docs/nutricao/TEMPLATE-EMAI
 Conferido lendo os doze de volta: margem lateral, ícones sociais e rodapé de 12px nos doze; bloco do parceiro com botão apenas nos seis de gestor e dono; nenhuma terceira pessoa e nenhum link preto sobrando.
 
 **O que não deu:** o envio de teste pela API v1 (`api_action=campaign_send&type=test`) responde "Você não tem nenhum endereço de correspondência" mesmo passando `addressid`. O teste continua sendo pelo botão "Testar e visualizar" do editor.
+
+## 8. Template cartão, 20/08 à noite
+
+O template de tabela antiga saiu de circulação. O novo, em `TEMPLATE-EMAIL.html`, é o do e-mail de diagnóstico que o Bruno aprovou: fundo `#F6F8FC`, cartão branco de cantos arredondados, marca no topo em azul, título de 28px, corpo 17px/1.7 em `#41506A` com os pontos em `#0C1726`, link `#1A5CCC` e botão `#2E74E8`.
+
+Três mudanças de estrutura vieram junto, e valem para os doze:
+
+1. **O assunto virou o título do e-mail.** Antes todo e-mail começava em "%FIRSTNAME%," e seguia tudo do mesmo tamanho, sem ponto de entrada.
+2. **Parágrafo que era só uma URL virou botão.** O link solto no meio do texto era a forma mais fácil de o CTA passar batido. Rótulo por régua: "Descrever minha dor de vendas", "Descrever a dor da minha gestão", "Descrever a dor do meu comercial".
+3. **A assinatura saiu do corpo** e virou o rodapé do cartão, igual nos doze.
+
+A margem lateral agora vem de fora do cartão, então no celular o texto não encosta na borda em nenhuma largura.
+
+**Atenção a duas mãos escrevendo.** Em 20/08 uma sessão paralela gravou por cima do Vendedor E1 dez minutos depois de eu ter aplicado o template, e o e-mail voltou ao formato antigo. Enquanto alguém estiver editando pelo editor, as duas versões brigam. Combinado: as alterações saem por API, com leitura de volta para conferir.
